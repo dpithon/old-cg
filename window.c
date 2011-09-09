@@ -3,8 +3,8 @@
 #include "backend.h"
 #include "draw.h"
 
-#define WIDTH	256
-#define HEIGHT	200
+#define WIDTH	512
+#define HEIGHT	512
 
 
 gboolean refresh(GtkWidget *da, cairo_t *cr, gpointer dat)

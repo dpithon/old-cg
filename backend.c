@@ -1,9 +1,11 @@
+#include <math.h>
 #include "backend.h"
 
 static unsigned char *data;
 static int stride, width, height;
 static cairo_surface_t *sf;
-static unsigned char red = 255, green = 255, blue = 255;
+static struct rgb color = WHITE;
+
 
 cairo_surface_t *init_backend(int w, int h)
 {
@@ -27,28 +29,41 @@ void release_backend(void)
 }
 
 
-void plot_rgb(int x, int y, unsigned char r, unsigned char g, unsigned char b)
+void plot_rgb(int x, int y, struct rgb *col)
 {
 	unsigned int offset = stride * y + (x << 2);
 
 	/* data[offset + 3] unused */
-	data[offset + 2] = r; 
-	data[offset + 1] = g; 
-	data[offset] = b; 
+	data[offset + 2] = col->r; 
+	data[offset + 1] = col->g; 
+	data[offset]     = col->b; 
 }
+
+
+void plot_rgbd(int x, int y, struct rgbd *col)
+{
+	unsigned int offset = stride * y + (x << 2);
+
+	/* data[offset + 3] unused */
+	data[offset + 2] = (unsigned char) floor(col->r + .5);
+	data[offset + 1] = (unsigned char) floor(col->g + .5);
+	data[offset]     = (unsigned char) floor(col->b + .5);
+}
+
 
 void set_rgb(unsigned char r, unsigned char g, unsigned char b)
 {
-	red = r;
-	green = g;
-	blue = b;
+	color.r = r;
+	color.g = g;
+	color.b = b;
 }
 
 
 void plot(int x, int y)
 {
-	plot_rgb(x, y, red, green, blue);
+	plot_rgb(x, y, &color);
 }
+
 
 int get_backend_width(void)
 {

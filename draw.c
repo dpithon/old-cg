@@ -1,13 +1,11 @@
 #include "backend.h"
+#include "shader.h"
 
 
 void draw(void)
 {
-	int x;
-	int w = get_backend_width();
-	int h = get_backend_height();
+	struct rgb c1 = BLACK; struct rgb c2 = RED;
+	struct rgb c3 = YELLOW; struct rgb c4 = CYAN;
 
-	set_rgb(200, 100, 50);
-	for (x = 0; x <= (w < h ? w : h); x ++)
-		plot(x, x);
+	shade4(&c1, &c2, &c3, &c4);
 }
