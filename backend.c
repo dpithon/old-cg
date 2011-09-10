@@ -128,3 +128,12 @@ void shade4(const struct rgb *c1, const struct rgb *c2,
 		right.b += d24.b;
 	}
 }
+
+void fill(const struct rgb *col)
+{
+	register int x, y;
+	for (y = 0; y < height; y++)
+		for (x = 0; x < width; x++)
+			plot_rgb(x, y, col);
+}
+

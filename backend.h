@@ -37,4 +37,9 @@ void plot(int, int);
 void shade4(const struct rgb*, const struct rgb*, 
 	    const struct rgb*, const struct rgb*);
 
+void fill(const struct rgb*);
+void line(int, int, int, int);
+
+
+
 #endif /* _BACKEND_H */
