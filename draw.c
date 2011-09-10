@@ -2,5 +2,5 @@
 
 void draw(void)
 {
-	fill(&Black);
+	shade4(&Yellow, &Red, &Green, &Blue);
 }

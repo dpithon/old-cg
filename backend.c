@@ -43,7 +43,7 @@ int get_backend_height(void)
 }
 
 
-void set_color(unsigned char r, unsigned char g, unsigned char b)
+void set_color(double r, double g, double b)
 {
 	color.r = r;
 	color.g = g;
@@ -56,20 +56,9 @@ void plot_rgb(int x, int y, struct rgb *col)
 	unsigned int offset = stride * y + (x << 2);
 
 	/* data[offset + 3] unused */
-	data[offset + 2] = col->r; 
-	data[offset + 1] = col->g; 
-	data[offset]     = col->b; 
-}
-
-
-void plot_rgbd(int x, int y, struct rgbd *col)
-{
-	unsigned int offset = stride * y + (x << 2);
-
-	/* data[offset + 3] unused */
-	data[offset + 2] = (unsigned char) floor(col->r + .5);
-	data[offset + 1] = (unsigned char) floor(col->g + .5);
-	data[offset]     = (unsigned char) floor(col->b + .5);
+	data[offset + 2] = (unsigned char) floor(255. * col->r + .5); 
+	data[offset + 1] = (unsigned char) floor(255. * col->g + .5); 
+	data[offset]     = (unsigned char) floor(255. * col->b + .5); 
 }
 
 
@@ -83,7 +72,7 @@ void shade4(const struct rgb *c1, const struct rgb *c2,
 	    const struct rgb *c3, const struct rgb *c4)
 {
 	int x, y;
-	struct rgbd d13, d24, left, right, dlr, col;
+	struct rgb d13, d24, left, right, dlr, col;
 
 	int w = get_backend_width();
 	int h = get_backend_height();
@@ -113,7 +102,7 @@ void shade4(const struct rgb *c1, const struct rgb *c2,
 		col.g = left.g;
 		col.b = left.b;
 		for (x = 0; x < w; x ++) {
-			plot_rgbd(x, y, &col);
+			plot_rgb(x, y, &col);
 			col.r += dlr.r;
 			col.g += dlr.g;
 			col.b += dlr.b;
