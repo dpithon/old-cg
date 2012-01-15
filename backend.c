@@ -126,3 +126,59 @@ void fill(const struct rgb *col)
 			plot_rgb(x, y, col);
 }
 
+
+static void hline(int x1, int x2, int y)
+{
+	register int x;
+
+	if (x1 > x2) {
+		x = x1;
+		x1 = x2;
+		x2 = x;
+	}
+
+	for (x = x1; x <= x2; x++)
+		plot(x, y);
+		
+}
+
+
+static void vline(int y1, int y2, int x)
+{
+	register int y;
+
+	if (y1 > y2) {
+		y = y1;
+		y1 = y2;
+		y2 = y;
+	}
+
+	for (y = y1; y <= y2; y++)
+		plot(x, y);
+}
+
+
+void line(int x1, int y1, int x2, int y2)
+{
+	if (y1 == y2) {
+		hline(x1, x2, y1);
+	} else if (x1 == x2) {
+		vline(y1, y2, x1);
+	} else {
+		int dx, dy, adx, ady;
+
+		dx = x2 - x1;
+		dy = y2 - y1;
+		adx = dx > 0 ? dx : - dx;
+		ady = dy > 0 ? dy : - dy;
+
+		if (adx == ady) {
+			dline(x1, y1, dx, dy);
+		} if (adx > ady) {
+			mplinex(x1, x2, y1, y2);
+		} else {
+			mpliney(x1, x2, y1, y2);
+		}
+	}
+}
+
