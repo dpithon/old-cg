@@ -1,18 +1,33 @@
-#include "gui.h"
-#include "backend.h"
+#include <math.h>
+#include "rgp.h"
+
+#define WIDTH	768
+#define HEIGHT	768
+
+#ifndef M_PI
+#define M_PI 3.14159265F
+#endif /* M_PI */
 
 int main(int argc, char *argv[])
 {
-	gui_init(argc, argv);
+	int x0, y0, l;
+	float a;
 
-	be_set_pixel(10, 10, 0, 0, 255);
-	be_set_pixel(11, 10, 0, 0, 255);
-	be_set_pixel(12, 10, 0, 0, 255);
-	be_set_pixel(10, 11, 0, 0, 255);
-	be_set_pixel(11, 11, 0, 0, 255);
-	be_set_pixel(12, 11, 0, 0, 255);
+	rgp_init(WIDTH, HEIGHT, argc, argv);
 
-	gui_show();
+	x0 = WIDTH / 2;
+	y0 = HEIGHT / 2;
+	l  = (2 * (WIDTH > HEIGHT ? HEIGHT : WIDTH)) / 6;
+
+	rgp_set_color(0, 200, 50);
+	for (a = 0; a < M_PI * 2; a += M_PI / 180.) {
+		int x1 = x0 + (float) l * cos(a);
+		int y1 = y0 + (float) l * sin(a);
+
+		rgp_line(x0, y0, x1, y1);
+	}
+
+	rgp_gui_main();
 
 	return 0;
 }

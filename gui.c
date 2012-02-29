@@ -2,12 +2,9 @@
 #include <cairo.h>
 #include "backend.h"
 
-#define WIDTH	512
-#define HEIGHT	512
-
 static GtkWidget *win;
 
-gboolean refresh(GtkWidget *da __attribute__ ((unused)), cairo_t *cr, gpointer dat)
+static gboolean refresh(GtkWidget *da __attribute__ ((unused)), cairo_t *cr, gpointer dat)
 {
 	cairo_set_source_surface(cr, (cairo_surface_t*) dat, 0, 0);
 	cairo_paint(cr);
@@ -16,7 +13,7 @@ gboolean refresh(GtkWidget *da __attribute__ ((unused)), cairo_t *cr, gpointer d
 }
 
 
-int gui_init(int argc, char *argv[])
+int gui_init(int width, int height, int argc, char *argv[])
 {
 	GtkWidget *da;
 	cairo_surface_t *sf;
@@ -24,7 +21,7 @@ int gui_init(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 	/* create backend */
-	if ((sf = be_init(WIDTH, HEIGHT)) == NULL) {
+	if ((sf = be_init(width, height)) == NULL) {
 		return 1;
 	}
 
@@ -34,8 +31,8 @@ int gui_init(int argc, char *argv[])
 
 	g_object_set(win, 
 		"title", "Cg display", 
-		"width-request", WIDTH,
-		"height-request", HEIGHT,
+		"width-request", width,
+		"height-request", height,
 		"resizable", FALSE,
 		"border-width", 5,
 		NULL);
@@ -44,13 +41,14 @@ int gui_init(int argc, char *argv[])
 	g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	g_signal_connect(da, "draw", G_CALLBACK(refresh), sf);
 
+	gtk_widget_show_all(win);
+
 	return 0;
 }
 
 
-void gui_show(void)
+void gui_main(void)
 {
-	gtk_widget_show_all(win);
 	gtk_main();
 	be_release();
 }
