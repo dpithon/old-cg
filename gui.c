@@ -1,13 +1,13 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
 #include "backend.h"
-#include "draw.h"
 
 #define WIDTH	512
 #define HEIGHT	512
 
+static GtkWidget *win;
 
-gboolean refresh(GtkWidget *da, cairo_t *cr, gpointer dat)
+gboolean refresh(GtkWidget *da __attribute__ ((unused)), cairo_t *cr, gpointer dat)
 {
 	cairo_set_source_surface(cr, (cairo_surface_t*) dat, 0, 0);
 	cairo_paint(cr);
@@ -16,19 +16,17 @@ gboolean refresh(GtkWidget *da, cairo_t *cr, gpointer dat)
 }
 
 
-int main(int argc, char *argv[])
+int gui_init(int argc, char *argv[])
 {
-	GtkWidget *win, *da;
+	GtkWidget *da;
 	cairo_surface_t *sf;
 
 	gtk_init(&argc, &argv);
 
 	/* create backend */
-	if ((sf = init_backend(WIDTH, HEIGHT)) == NULL) {
+	if ((sf = be_init(WIDTH, HEIGHT)) == NULL) {
 		return 1;
 	}
-
-	draw();
 
 	/* create display */
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -46,11 +44,13 @@ int main(int argc, char *argv[])
 	g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	g_signal_connect(da, "draw", G_CALLBACK(refresh), sf);
 
-	gtk_widget_show_all(win);
-
-	gtk_main();
-
-	release_backend();
-
 	return 0;
+}
+
+
+void gui_show(void)
+{
+	gtk_widget_show_all(win);
+	gtk_main();
+	be_release();
 }
