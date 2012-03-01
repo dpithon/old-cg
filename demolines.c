@@ -3,8 +3,10 @@
 #include <math.h>
 #include "rgp.h"
 
-#define WIDTH	500
+#define WIDTH	800
 #define HEIGHT	500
+#define MIN_SPARKLES 30
+#define MAX_SPARKLES 90
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
@@ -33,7 +35,7 @@ void circlines(int xc, int yc, int n, int w, int h)
 	l1 = w1;
 	l0 = l1 / 4;
 
-	for (a = 0; a < M_PI * 2.; a += M_PI / (double) n) {
+	for (a = 0; a < M_PI * 2.; a += M_PI * 2. / (double) n) {
 		int x0 = xc + my_round(l0 * cos(a));
 		int y0 = yc + my_round(l0 * sin(a));
 		int x1 = xc + my_round(l1 * cos(a));
@@ -58,7 +60,8 @@ int main(int argc, char *argv[])
 		r = rand() % 256;
 		g = rand() % 256;
 		b = rand() % 256;
-		nr = rand() % 360;
+		nr = rand() % MAX_SPARKLES + 1;
+		nr = nr < MIN_SPARKLES ? MIN_SPARKLES : nr;
 		rgp_set_color(r, g, b);
 		circlines(x, y, nr, WIDTH, HEIGHT);
 	}
