@@ -29,10 +29,12 @@ int gui_init(int width, int height, int argc, char *argv[])
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	da  = gtk_drawing_area_new();
 
-	g_object_set(win, 
-		"title", "Cg display", 
+	g_object_set(da, 
 		"width-request", width,
 		"height-request", height,
+		NULL);
+	g_object_set(win, 
+		"title", "Cg display", 
 		"resizable", FALSE,
 		"border-width", 5,
 		NULL);

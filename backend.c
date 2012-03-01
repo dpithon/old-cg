@@ -1,4 +1,5 @@
 #include <cairo.h>
+#include <assert.h>
 #include <math.h>
 
 
@@ -49,6 +50,9 @@ void be_set_pixel(int x, int y, ubyte r, ubyte g, ubyte b)
 {
 	unsigned int offset = stride * y + (x << 2);
 
+	assert(x < width && x > -1);
+	assert(y < height && y > -1);
+
 	/* data[offset + 3] unused */
 	data[offset + 2] = r; 
 	data[offset + 1] = g; 
@@ -59,6 +63,9 @@ void be_set_pixel(int x, int y, ubyte r, ubyte g, ubyte b)
 void be_get_pixel(int x, int y, ubyte *r, ubyte *g, ubyte *b)
 {
 	unsigned int offset = stride * y + (x << 2);
+
+	assert(x < width && x > -1);
+	assert(y < height && y > -1);
 
 	*r = data[offset + 2]; 
 	*g = data[offset + 1]; 
