@@ -2,12 +2,15 @@ CFLAGS=-Wall -Wextra -std=c89 -pedantic -g3 -O0 -DGSEAL_ENABLE -pthread -I/usr/i
 
 LDFLAGS= -pthread -lm -lgtk-3 -lgdk-3 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo-gobject -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
 
-cg: gui.o backend.o main.o
+TARGETS=demolines
+
+demolines: gui.o backend.o rgp.o demolines.o
 	$(CC) $(LDFLAGS) $^ -o $@ 
 
 gui.o: gui.c backend.h
 backend.o: backend.c backend.h
-draw.o: main.c gui.h backend.h
+rgp.o: rgp.c backend.h
+demolines.o: demolines.c gui.h rgp.h
 
 .PHONY: clean purge
 
@@ -15,4 +18,4 @@ clean:
 	rm -f *.o
 
 purge: clean
-	rm cg
+	rm -f $(TARGETS)
