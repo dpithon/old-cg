@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <assert.h>
 #include "gui.h"
 #include "backend.h"
@@ -6,13 +7,7 @@
 #define ubyte unsigned char
 #endif /* ubyte */
 
-#ifndef ABS
-#define ABS(v)	(((v) < 0) ? (-(v)) : (v))
-#endif /* ABS */
-
-static void rgp_vline(int, int, int);
-static void rgp_hline(int, int, int);
-static void rgp_dline(int, int, int, int);
+#define swap(a,b,tmp)	tmp = a; a = b; b = tmp
 
 static ubyte Red   = 255;
 static ubyte Green = 255;
@@ -46,34 +41,22 @@ void rgp_point(int x, int y)
 
 void rgp_line(int x0, int y0, int x1, int y1)
 {
-	int dx = x1 - x0;
-	int dy = y1 - y0;
+	int x, y, dx, dy, incE, incNE, d;
 
-	if (dx < 0) {
-		int t;
-		t = x0; x0 = x1; x1 = t;
-		t = y0; y0 = y1; y1 = t;
-		dx = -dx;
-		dy = -dy;
-	} else if (dx == 0) {
-		rgp_vline(x0, y0, y1);
-		return;
-	} 
-	/* dx > 0 ! */
+	if (x0 > x1) { /* reverse points order if needed */
+		swap(x0, x1, d);
+		swap(y0, y1, d);
+	}
 
-	if (dy == 0) {
-		rgp_hline(y0, x0, x1);
-	} else if (ABS(dy) == ABS(dx)) {
-		rgp_dline(x0, y0, x1, y1);
-	} else if (dy > 0 && dx > dy) {
-		/* 1st octant */
-		int x = x0;
-		int y = y0;
+	x = x0;
+	y = y0;
+	dx = x1 - x0;
+	dy = y1 - y0;
 
-		int incE  = 2 * dy;
-		int incNE = 2 * (dy - dx);
-
-		int d = 2 * dy - dx;
+	if (dy > 0 && dx > dy) { /* 1st octant */
+		incE  = 2 * dy;
+		incNE = 2 * (dy - dx);
+		d     = 2 * dy - dx;
 
 		be_set_pixel(x, y, Red, Green, Blue);
 		while (x < x1) {
@@ -88,18 +71,11 @@ void rgp_line(int x0, int y0, int x1, int y1)
 			be_set_pixel(x, y, Red, Green, Blue);
 		}
 
-		assert(y == y1);
-
-	} else if (dy < 0 && dx > -dy) {
-		/* 8th octant */
-		int x = x0;
-		int y = y0;
-
+	} else if (dy < 0 && dx > -dy) { /* 8th octant */
 		dy = -dy;
-		int incE  = 2 * dy;
-		int incNE = 2 * (dy - dx);
-
-		int d = 2 * dy - dx;
+		incE  = 2 * dy;
+		incNE = 2 * (dy - dx);
+		d     = 2 * dy - dx;
 
 		be_set_pixel(x, y, Red, Green, Blue);
 		while (x < x1) {
@@ -114,18 +90,10 @@ void rgp_line(int x0, int y0, int x1, int y1)
 			be_set_pixel(x, y, Red, Green, Blue);
 		}
 
-		assert(y == y1);
-
-
-	} else if (dy > 0 && dy > dx) {
-		/* 2nd octant */
-		int x = x0;
-		int y = y0;
-
-		int incE  = 2 * dx;
-		int incNE = 2 * (dx - dy);
-
-		int d = 2 * dx - dy;
+	} else if (dy > 0 && dy > dx) { /* 2nd octant */
+		incE  = 2 * dx;
+		incNE = 2 * (dx - dy);
+		d     = 2 * dx - dy;
 
 		be_set_pixel(x, y, Red, Green, Blue);
 		while (y < y1) {
@@ -140,18 +108,11 @@ void rgp_line(int x0, int y0, int x1, int y1)
 			be_set_pixel(x, y, Red, Green, Blue);
 		}
 
-		assert(x == x1);
-
-	} else if (dy < 0 && -dy > dx) {
-		/* 7th octant */
-		int x = x0;
-		int y = y0;
-
+	} else if (dy < 0 && -dy > dx) { /* 7th octant */
 		dy = -dy;
-		int incE  = 2 * dx;
-		int incNE = 2 * (dx - dy);
-
-		int d = 2 * dx - dy;
+		incE  = 2 * dx;
+		incNE = 2 * (dx - dy);
+		d     = 2 * dx - dy;
 
 		be_set_pixel(x, y, Red, Green, Blue);
 		while (y > y1) {
@@ -166,50 +127,46 @@ void rgp_line(int x0, int y0, int x1, int y1)
 			be_set_pixel(x, y, Red, Green, Blue);
 		}
 
-		assert(x == x1);
-	}
-}
+	} else if (dy == 0) {
+		for (x = x0; x <= x1; x++)
+			be_set_pixel(x, y, Red, Green, Blue);
+		#ifndef NDEBUG
+		/* x == x1 + 1. Adjust x for final asserts */
+		--x;
+		#endif /* NDEBUG */
 
-static void rgp_vline(int x, int y0, int y1)
-{
-	int y;
+	} else if (dx == 0) {
+		if (y0 > y1) {
+			swap(y0, y1, y);
+		}
 
-	if (y0 > y1) {
-		y = y0;
-		y0 = y1; y1 = y; 
-	}
+		for (y = y0; y <= y1; y++)
+			be_set_pixel(x, y, Red, Green, Blue);
 
-	for (y = y0; y <= y1; y++)
-		be_set_pixel(x, y, Red, Green, Blue);
-}
+		#ifndef NDEBUG
+		/* y == y1 + 1. Adjust y for final asserts */
+		--y;
+		#endif /* NDEBUG */
 
-static void rgp_hline(int y, int x0, int x1)
-{
-	int x;
-
-	if (x0 > x1) {
-		x = x0;
-		x0 = x1; x1 = x; 
-	}
-
-	for (x = x0; x <= x1; x++)
-		be_set_pixel(x, y, Red, Green, Blue);
-}
-
-static void rgp_dline(int x0, int y0, int x1, int y1)
-{
-	int x, y, slope;
-	
-	assert(x0 < x1);
-
-	if (y0 < y1) {
-		slope = 1;
 	} else {
-		slope = -1;
+		int slope;
+
+		if (y0 < y1) {
+			slope = 1;
+		} else {
+			slope = -1;
+		}
+
+		for (x = x0, y = y0; x <= x1; x++, y += slope) {
+			be_set_pixel(x, y, Red, Green, Blue);
+		}
+		#ifndef NDEBUG
+		/* Adjust x and y for final asserts */
+		y -= slope;
+		--x;
+		#endif /* NDEBUG */
 	}
 
-	for (x = x0, y = y0; x <= x1; x++, y += slope) {
-		be_set_pixel(x, y, Red, Green, Blue);
-	}
-	
+	assert(x == x1);
+	assert(y == y1);
 }

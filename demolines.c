@@ -7,6 +7,7 @@
 #define HEIGHT	500
 #define MIN_SPARKLES 30
 #define MAX_SPARKLES 90
+#define NR	50
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
 
 	rgp_init(WIDTH, HEIGHT, argc, argv);
 
-	for (n = 0; n < 10; n ++) {
+	for (n = 0; n < NR; n ++) {
 		x = rand() % WIDTH;
 		y = rand() % HEIGHT;
 		r = rand() % 256;
