@@ -7,6 +7,7 @@
 #define ubyte unsigned char
 #endif /* ubyte */
 
+#define rgp_point(x, y) be_set_pixel(x, y, Red, Green, Blue);
 #define swap(a,b,tmp)	tmp = a; a = b; b = tmp
 
 static ubyte Red   = 255;
@@ -33,12 +34,6 @@ void rgp_set_color(ubyte r, ubyte g, ubyte b)
 }
 
 
-void rgp_point(int x, int y)
-{
-	be_set_pixel(x, y, Red, Green, Blue);
-}
-
-
 void rgp_line(int x0, int y0, int x1, int y1)
 {
 	int x, y, dx, dy, incE, incNE, d;
@@ -58,17 +53,16 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		incNE = 2 * (dy - dx);
 		d     = 2 * dy - dx;
 
-		be_set_pixel(x, y, Red, Green, Blue);
+		rgp_point(x, y);
 		while (x < x1) {
+			++x;
 			if (d < 0) {
 				d += incE;
-				x ++;
 			} else {
 				d += incNE;
-				x ++;
-				y ++;
+				++y;
 			}
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		}
 
 	} else if (dy < 0 && dx > -dy) { /* 8th octant */
@@ -77,17 +71,16 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		incNE = 2 * (dy - dx);
 		d     = 2 * dy - dx;
 
-		be_set_pixel(x, y, Red, Green, Blue);
+		rgp_point(x, y);
 		while (x < x1) {
+			x ++;
 			if (d < 0) {
 				d += incE;
-				x ++;
 			} else {
 				d += incNE;
-				x ++;
 				y --;
 			}
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		}
 
 	} else if (dy > 0 && dy > dx) { /* 2nd octant */
@@ -95,17 +88,16 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		incNE = 2 * (dx - dy);
 		d     = 2 * dx - dy;
 
-		be_set_pixel(x, y, Red, Green, Blue);
+		rgp_point(x, y);
 		while (y < y1) {
+			y ++;
 			if (d < 0) {
 				d += incE;
-				y ++;
 			} else {
 				d += incNE;
-				y ++;
 				x ++;
 			}
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		}
 
 	} else if (dy < 0 && -dy > dx) { /* 7th octant */
@@ -114,22 +106,21 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		incNE = 2 * (dx - dy);
 		d     = 2 * dx - dy;
 
-		be_set_pixel(x, y, Red, Green, Blue);
+		rgp_point(x, y);
 		while (y > y1) {
+			y --;
 			if (d < 0) {
 				d += incE;
-				y --;
 			} else {
 				d += incNE;
-				y --;
 				x ++;
 			}
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		}
 
 	} else if (dy == 0) {
 		for (x = x0; x <= x1; x++)
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		#ifndef NDEBUG
 		/* x == x1 + 1. Adjust x for final asserts */
 		--x;
@@ -141,7 +132,7 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		}
 
 		for (y = y0; y <= y1; y++)
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 
 		#ifndef NDEBUG
 		/* y == y1 + 1. Adjust y for final asserts */
@@ -158,7 +149,7 @@ void rgp_line(int x0, int y0, int x1, int y1)
 		}
 
 		for (x = x0, y = y0; x <= x1; x++, y += slope) {
-			be_set_pixel(x, y, Red, Green, Blue);
+			rgp_point(x, y);
 		}
 		#ifndef NDEBUG
 		/* Adjust x and y for final asserts */

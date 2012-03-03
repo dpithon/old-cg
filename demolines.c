@@ -1,13 +1,13 @@
-#include <unistd.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 #include "rgp.h"
 
-#define WIDTH	800
+#define WIDTH	500
 #define HEIGHT	500
-#define MIN_SPARKLES 30
-#define MAX_SPARKLES 90
-#define NR	50
+#define MIN_SPARKLES 80
+#define MAX_SPARKLES 300
+#define NR	350
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
