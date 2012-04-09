@@ -1,13 +1,16 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gtk/gtk.h>
 #include <unistd.h>
-#include "rgp.h"
+#include "gui.h"
+#include "gpix.h"
 
 #define WIDTH	500
 #define HEIGHT	500
 #define MIN_SPARKLES 80
 #define MAX_SPARKLES 300
-#define NR	350
+#define NR	10
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
@@ -19,7 +22,7 @@ int my_round(double v)
 }
 
 
-void circlines(int xc, int yc, int n, int w, int h)
+void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 {
 	int l0, l1, w1, w2, w3, w4;
 	double a;
@@ -42,7 +45,7 @@ void circlines(int xc, int yc, int n, int w, int h)
 		int x1 = xc + my_round(l1 * cos(a));
 		int y1 = yc + my_round(l1 * sin(a));
 
-		rgp_line(x0, y0, x1, y1);
+		gpix_line(gp, x0, y0, x1, y1);
 	}
 }
 
@@ -50,11 +53,19 @@ void circlines(int xc, int yc, int n, int w, int h)
 int main(int argc, char *argv[])
 {
 	int x, y, n, r, g, b, nr;
+	struct gpix gp;
+
+	gtk_init(&argc, &argv);
+
+	gpix_width(&gp) = WIDTH;
+	gpix_height(&gp) = HEIGHT;
+
+	if (gpix_create(&gp)) {
+		fprintf(stderr, "gpix error: %s\n", gpix_errstr(&gp));
+		return 1;
+	}
 
 	srand(getpid());
-
-	rgp_init(WIDTH, HEIGHT, argc, argv);
-
 	for (n = 0; n < NR; n ++) {
 		x = rand() % WIDTH;
 		y = rand() % HEIGHT;
@@ -63,10 +74,13 @@ int main(int argc, char *argv[])
 		b = rand() % 256;
 		nr = rand() % MAX_SPARKLES + 1;
 		nr = nr < MIN_SPARKLES ? MIN_SPARKLES : nr;
-		rgp_set_color(r, g, b);
-		circlines(x, y, nr, WIDTH, HEIGHT);
+		gpix_define_fg_color(&gp, r, g, b);
+		circlines(&gp, x, y, nr, WIDTH, HEIGHT);
 	}
-	rgp_gui_main();
+
+	gui_init(&gp);
+
+	gtk_main();
 
 	return 0;
 }

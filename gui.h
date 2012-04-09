@@ -1,7 +1,8 @@
 #ifndef _GUI_H
 #define _GUI_H
 
-int  gui_init(int, int, int, char* argv[]);
-void gui_main(void);
+#include "gpix.h"
+
+int gui_init(struct gpix*);
 
 #endif /* _GUI_H */
