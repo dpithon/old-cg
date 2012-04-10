@@ -3,8 +3,10 @@
 #include <math.h>
 #include <gtk/gtk.h>
 #include <unistd.h>
+#include <cairo.h>
 #include "gui.h"
 #include "gpix.h"
+#include "gpix-cairo.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -54,6 +56,7 @@ int main(int argc, char *argv[])
 {
 	int x, y, n, r, g, b, nr;
 	struct gpix gp;
+	cairo_surface_t *surf;
 
 	gtk_init(&argc, &argv);
 
@@ -74,11 +77,18 @@ int main(int argc, char *argv[])
 		b = rand() % 256;
 		nr = rand() % MAX_SPARKLES + 1;
 		nr = nr < MIN_SPARKLES ? MIN_SPARKLES : nr;
-		gpix_define_fg_color(&gp, r, g, b);
+		gp.fg_r = r;
+		gp.fg_g = g;
+		gp.fg_b = b;
 		circlines(&gp, x, y, nr, WIDTH, HEIGHT);
 	}
 
-	gui_init(&gp);
+	if (gpix_cairo_create_surface_from_gpix(&gp, &surf)) {
+		fprintf(stderr, "gpix-cairp error\n");
+		return 1;
+	}
+
+	gui_init(surf);
 
 	gtk_main();
 

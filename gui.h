@@ -1,8 +1,8 @@
 #ifndef _GUI_H
 #define _GUI_H
 
-#include "gpix.h"
+#include <cairo.h>
 
-int gui_init(struct gpix*);
+int gui_init(cairo_surface_t*);
 
 #endif /* _GUI_H */

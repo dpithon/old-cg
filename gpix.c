@@ -1,59 +1,32 @@
-#include "gpix.h"
+#include <stdlib.h>
 #include <assert.h>
+#include "gpix.h"
 
 
 const char *GPIX_ERRSTR[] = {
-	"no error",
-	"failed to create cairo surface",
-	"surface already freed",
-	"out of bound coordinates"
+	/*   0 */	"no error",
+	/*   1 */	"wrong width and/or height values",
+	/*   2 */	"failed to malloc() pixmap buffer",
+	/*   3 */	"surface already freed",
+	/*   4 */	"out of bound coordinates"
 };
 
 
 int gpix_create(struct gpix *gp)
 {
-	gp->surface = cairo_image_surface_create(
-		CAIRO_FORMAT_RGB24, gp->w, gp->h);
+	assert(sizeof(int) == 4);
 
-	if (! gp->surface) {
+	if (gp->w < 0 || gp->h < 0 || gp->w > 16384 || gp->h > 16384) {
 		return gp->error = 1;
 	}
+	gp->stride = gp->w << 2;
+	gp->sz = gp->stride * gp->h;
+	gp->int_sz = gp->sz >> 2;
 
-	gp->data   = cairo_image_surface_get_data(gp->surface);
-	gp->stride = cairo_image_surface_get_stride(gp->surface);
-	
-	gp->fg_r = GPIX_DEF_FG_R;
-	gp->fg_g = GPIX_DEF_FG_G;
-	gp->fg_b = GPIX_DEF_FG_B;
-
-	gp->bg_r = GPIX_DEF_BG_R;
-	gp->bg_g = GPIX_DEF_BG_G;
-	gp->bg_b = GPIX_DEF_BG_B;
-
-	return gp->error = 0;
-}
-
-
-int gpix_create_from_png(struct gpix *gp, const char *fname)
-{
-	gp->surface = cairo_image_surface_create_from_png(fname);
-
-	if (! gp->surface) {
-		return gp->error = 1;
+	gp->data = malloc(gp->sz);
+	if (! gp->data) {
+		return gp->error = 2;
 	}
-
-	gp->w      = cairo_image_surface_get_width(gp->surface);
-	gp->h      = cairo_image_surface_get_height(gp->surface);
-	gp->data   = cairo_image_surface_get_data(gp->surface);
-	gp->stride = cairo_image_surface_get_stride(gp->surface);
-	
-	gp->fg_r = GPIX_DEF_FG_R;
-	gp->fg_g = GPIX_DEF_FG_G;
-	gp->fg_b = GPIX_DEF_FG_B;
-
-	gp->bg_r = GPIX_DEF_BG_R;
-	gp->bg_g = GPIX_DEF_BG_G;
-	gp->bg_b = GPIX_DEF_BG_B;
 
 	return gp->error = 0;
 }
@@ -61,20 +34,32 @@ int gpix_create_from_png(struct gpix *gp, const char *fname)
 
 int gpix_destroy(struct gpix *gp)
 {
-	if (gp->surface) {
-		cairo_surface_destroy(gp->surface);
-		gp->surface = 0;
+	if (gp->data) {
+		free(gp->data);
+		gp->data = 0;
+		return gp->error = 0;
 	}
 
-	return gp->error = 2;
+	return gp->error = 3;
 }
 
+
+void gpix_fill(struct gpix *gp)
+{
+	int i, pix;
+
+	pix = (gp->bg_r << 16) + (gp->bg_g << 8) + gp->bg_b;
+
+	for (i = 0; i < gp->int_sz; i++) {
+		gp->data[i] = pix;
+	}
+}
 
 
 int gpix_set(struct gpix *gp, int x, int y, cval r, cval g, cval b)
 {
 	if (x < gp->w && x > -1 && y < gp->h && y > -1) {
-		unsigned int offset = gp->stride * y + (x << 2);
+		int offset = gp->stride * y + (x << 2);
 
 		/* data[offset + 3] unused */
 		gp->data[offset + 2] = r; 
@@ -83,7 +68,7 @@ int gpix_set(struct gpix *gp, int x, int y, cval r, cval g, cval b)
 		return gp->error = 0;
 	}
 
-	return gp->error = 3;
+	return gp->error = 4;
 }
 
 
@@ -99,17 +84,9 @@ int gpix_get(struct gpix *gp, int x, int y, cval *r, cval *g, cval *b)
 		return gp->error = 0;
 	}
 
-	return gp->error = 3;
+	return gp->error = 4;
 }
 
-
-
-void gpix_define_fg_color(struct gpix *gp, cval r, cval g, cval b)
-{
-	gp->fg_r = r;
-	gp->fg_g = g;
-	gp->fg_b = b;
-}
 
 
 #define swap(a,b,tmp)	tmp = a; a = b; b = tmp
