@@ -4,13 +4,15 @@ LDFLAGS=-pthread -lm -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgio-2.0 -lpango
 
 TARGETS=demolines_gui
 
-demolines_gui: gui.o gpix.o gpix-cairo.o demolines_gui.o
+demolines_gui: gui.o gpix.o gpix-cairo.o gpix-pnm.o gpix-error.o demolines_gui.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 gui.o: gui.c gpix.h
 gpix.o: gpix.c gpix.h
 gpix-cairo.o: gpix-cairo.c gpix-cairo.h
-demolines_gui.o: demolines_gui.c gui.h
+gpix-pnm.o: gpix-pnm.c gpix-pnm.h
+gpix-error.o: gpix-error.c gpix-error.h
+demolines_gui.o: demolines_gui.c gui.h gpix-error.h gpix-pnm.h gpix-cairo.h
 
 .PHONY: clean purge
 

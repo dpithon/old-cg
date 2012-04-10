@@ -1,4 +1,6 @@
 *.o
 *.swp
+*.pnm
+*.png
 demolines*
 Makefile
