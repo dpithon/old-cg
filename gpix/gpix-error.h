@@ -26,4 +26,5 @@ extern const char *GPIX_ERRSTR[];
 #define GPIX_ERR_IO			 30
 
 #define GPIX_ERR_MAX			 GPIX_ERR_IO
+
 #endif /* _GPIX_ERROR_H */

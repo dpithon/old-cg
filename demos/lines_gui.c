@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gtk/gtk.h>
 #include <unistd.h>
-#include "gpix.h"
-#include "gpix-pnm.h"
-#include "gpix-error.h"
-#include "gpix-raster-funcs.h"
+#include <cairo.h>
+#include "gpix/gpix.h"
+#include "gpix/gpix-cairo.h"
+#include "gui.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -55,14 +56,17 @@ int main(int argc, char *argv[])
 {
 	int x, y, n, r, g, b, nr;
 	struct gpix gp = GPIX_INIT;
+	cairo_surface_t *surf;
+
+	gtk_init(&argc, &argv);
 
 	gp.w = WIDTH;
 	gp.h = HEIGHT;
 
 	if (gpix_init(&gp)) {
-		return gp.error;
+		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
+		return 1;
 	}
-
 
 	srand(getpid());
 	for (n = 0; n < NR; n ++) {
@@ -80,9 +84,20 @@ int main(int argc, char *argv[])
 	}
 
 	if (gpix_pnm_write_to_file(&gp, "circles.pnm")) {
-		return gp.error;
+		fprintf(stderr, "gpix_pnm_write_to_file error: %s\n", gpix_errstr(&gp));
+		return 1;
 	}
 
+	if (gpix_cairo_create_surface_from_gpix(&gp, &surf)) {
+		fprintf(stderr, "gpix-cairo error: %s\n", gpix_errstr(&gp));
+		return 1;
+	}
+
+	gui_init(surf);
+
+	gtk_main();
+
+	cairo_surface_destroy(surf);
 	gpix_cleanup(&gp);
 	return 0;
 }

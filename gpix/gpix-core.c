@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
-#include "gpix.h"
+#include "gpix-core.h"
 #include "gpix-error.h"
 
 

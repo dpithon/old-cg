@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef _GPIX_H
-#define _GPIX_H
+#ifndef _GPIX_CORE_H
+#define _GPIX_CORE_H
 
 typedef unsigned char cval; /* color component: from 0 to 255 */
 
@@ -35,4 +35,4 @@ int gpix_cleanup(struct gpix*);
 int gpix_set(struct gpix*, int, int, cval, cval, cval);
 int gpix_get(struct gpix*, int, int, cval*, cval*, cval*);
 
-#endif /* _GPIX_H */
+#endif /* _GPIX_CORE_H */

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "gpix-error.h"
+#include "gpix/gpix-error.h"
 
 int main(int argc, char *argv[])
 {
