@@ -6,6 +6,8 @@ extern const char *GPIX_ERRSTR[];
 #define gpix_error(ptr)		((ptr)->error)
 #define gpix_errstr(ptr)	(GPIX_ERRSTR[((ptr)->error)])
 
+#define gpix_errstr_for_value(value)	(GPIX_ERRSTR[value])
+
 #define GPIX_ERR_NONE			  0
 
 /* gpix errors */
@@ -23,4 +25,5 @@ extern const char *GPIX_ERRSTR[];
 /* gpix-pnm errors */
 #define GPIX_ERR_IO			 30
 
+#define GPIX_ERR_MAX			 GPIX_ERR_IO
 #endif /* _GPIX_ERROR_H */

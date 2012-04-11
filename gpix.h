@@ -1,9 +1,6 @@
 /**
  * Simple pixmap module.
  *
- * Create a pixmap with direct access to raw pixels plus basic
- * raster graphic functions.
- *
  */
 
 #ifndef _GPIX_H
@@ -26,7 +23,7 @@ struct gpix {
 #define GPIX_DEF_W	800
 #define GPIX_DEF_H	600
 
-#define GPIX_INIT	{800, 600, 0, 0, 0, 0, 0, 255, 255, 255, 0, 0, 0}
+#define GPIX_INIT	{GPIX_DEF_W,GPIX_DEF_H,0,0,0,0,0,255,255,255,0,0,0}
 
 #define gpix_width(ptr)		((ptr)->w)
 #define gpix_height(ptr)	((ptr)->h)
@@ -35,10 +32,7 @@ struct gpix {
 
 int gpix_init(struct gpix*);
 int gpix_cleanup(struct gpix*);
-
 int gpix_set(struct gpix*, int, int, cval, cval, cval);
 int gpix_get(struct gpix*, int, int, cval*, cval*, cval*);
-
-void gpix_line(struct gpix*, int, int, int, int);
 
 #endif /* _GPIX_H */
