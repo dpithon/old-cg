@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	memcpy(&gp_4, &gp, sizeof(gp));
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	if (gpix_gtkwidget(&gp, &da)) {
+	if (gpix_gtkwidget_new(&gp, &da)) {
 		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
 		return 1;
 	}

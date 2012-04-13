@@ -20,7 +20,7 @@ static gboolean release(GtkWidget *da __attribute__ ((unused)), gpointer dat)
 }
 
 
-int gpix_gtkwidget(struct gpix *gp, GtkWidget **da)
+int gpix_gtkwidget_new(struct gpix *gp, GtkWidget **da)
 {
 	cairo_surface_t *surf;
 
@@ -32,7 +32,6 @@ int gpix_gtkwidget(struct gpix *gp, GtkWidget **da)
 		gp->error = GPIX_ERR_GTK;
 		return 1;
 	}
-
 
 	g_object_set(*da, "width-request",  gp->w, 
 			  "height-request", gp->h, NULL);
