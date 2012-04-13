@@ -20,14 +20,14 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "invalid command line argument!\n");
 		return 1;
 
-	} else if (nr > GPIX_ERR_MAX) {
+	} else if (nr < 0 || nr > GPIX_ERR_MAX) {
 		printf("no such error value (%d)\n", nr);
 
-	} else if (! strncmp(gpix_errstr_for_value(nr), "", 1)) {
+	} else if (! strncmp(GPIX_ERRSTR[nr], "", 1)) {
 		printf("no such error value (%d)\n", nr);
 
 	} else {
-		printf("error #%03d: %s\n", nr, gpix_errstr_for_value(nr));
+		printf("error #%03d: %s\n", nr, GPIX_ERRSTR[nr]);
 	}
 
 	return 0;

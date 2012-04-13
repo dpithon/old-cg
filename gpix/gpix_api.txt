@@ -1,0 +1,67 @@
+ gpix main package (gpix.h)
+-----------------------------------------------------------------
+
+#include <gpix.h>
+
+typedef unsigned char cval; /* color component value: from 0 to 255 */
+
+struct gpix {
+	int w, h, stride;
+	int sz, int_sz;
+	cval *data;
+	int error;
+	cval fg_r, fg_g, fg_b;
+	cval bg_r, bg_g, bg_b;
+};
+
+#define GPIX_MAX_W
+#define GPIX_MAX_H
+#define GPIX_DEF_W
+#define GPIX_DEF_H
+#define GPIX_INIT	
+
+#define GPIX_ERR_ALREADY_INIT
+#define GPIX_ERR_PIXMAP_SIZE
+#define GPIX_ERR_MALLOC
+#define GPIX_ERR_ALREADY_FREE
+#define GPIX_ERR_UNINITIALIZED
+#define GPIX_ERR_OUTSIDE
+#define GPIX_ERR_IO
+
+#define gpix_width(ptr)
+#define gpix_height(ptr)
+#define gpix_stride(ptr)
+#define gpix_data(ptr)
+#define gpix_error(ptr)
+#define gpix_errstr(ptr)
+
+extern const char *GPIX_ERRSTR[];
+
+int  gpix_init(struct gpix*);
+int  gpix_cleanup(struct gpix*);
+int  gpix_set(struct gpix*, int, int, cval, cval, cval);
+int  gpix_get(struct gpix*, int, int, cval*, cval*, cval*);
+int  gpix_pnm_write_to_file(struct gpix*, const char*);
+int  gpix_pnm_read_from_file(struct gpix*, const char*);
+
+void gpix_line(struct gpix*, int, int, int, int);
+
+
+ gpix Cairo integration
+-----------------------------------------------------------------
+
+#include <gpix-cairo.h>
+
+#define GPIX_ERR_GPIX_TO_CAIRO_FAILURE
+#define GPIX_ERR_CAIRO_TO_GPIX_FAILURE
+int gpix_cairo_create_surface_from_gpix(struct gpix*, cairo_surface_t**);
+int gpix_cairo_create_gpix_from_surface(cairo_surface_t*, struct gpix*);
+
+
+ gpix Gtk+ integration
+-----------------------------------------------------------------
+
+#include <gpix-gtk.h>
+
+#define GPIX_ERR_GTK
+int gpix_gtkwidget_new(struct gpix*, GtkWidget**);
