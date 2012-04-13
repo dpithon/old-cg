@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "gpix-drawing.h"
+#include "gpix-core.h"
 
 #define swap(a,b,tmp)	tmp = a; a = b; b = tmp
 void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)

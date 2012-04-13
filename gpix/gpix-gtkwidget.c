@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
-#include "gpix.h"
+#include "gpix-core.h"
+#include "gpix-error.h"
 #include "gpix-cairo.h"
 
 

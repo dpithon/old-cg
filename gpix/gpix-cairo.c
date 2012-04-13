@@ -1,4 +1,5 @@
-#include "gpix-cairo.h"
+#include <cairo.h>
+#include "gpix-core.h"
 #include "gpix-error.h"
 
 int gpix_cairo_create_surface_from_gpix(struct gpix *gp, 

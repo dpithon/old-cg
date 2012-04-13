@@ -1,4 +1,3 @@
-#include "gpix-error.h"
 
 const char *GPIX_ERRSTR[] = {
 	/*     0 */	"no error",
