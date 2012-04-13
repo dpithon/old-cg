@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <gtk/gtk.h>
+#include <string.h>
 #include <unistd.h>
-#include <cairo.h>
+#include <math.h>
+#include <glib.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 #include "gpix/gpix.h"
-#include "gpix/gpix-cairo.h"
-#include "gui.h"
+#include "gpix/gpix-gtkwidget.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -17,6 +18,8 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
 #endif /* M_PI */
+
+static GtkWidget *da;
 
 int my_round(double v)
 {
@@ -48,28 +51,19 @@ void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 		int y1 = yc + my_round(l1 * sin(a));
 
 		gpix_line(gp, x0, y0, x1, y1);
+		g_usleep(5000UL);
+		gdk_threads_enter();
+		gtk_widget_queue_draw(da);
+		gdk_threads_leave();
 	}
 }
 
 
-int main(int argc, char *argv[])
+static void draw(struct gpix *gp)
 {
-	int x, y, n, r, g, b, nr;
-	struct gpix gp = GPIX_INIT;
-	cairo_surface_t *surf;
+	int x, y, r, g, b, nr;
 
-	gtk_init(&argc, &argv);
-
-	gp.w = WIDTH;
-	gp.h = HEIGHT;
-
-	if (gpix_init(&gp)) {
-		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
-		return 1;
-	}
-
-	srand(getpid());
-	for (n = 0; n < NR; n ++) {
+	for (;;) {
 		x = rand() % WIDTH;
 		y = rand() % HEIGHT;
 		r = rand() % 256;
@@ -77,27 +71,65 @@ int main(int argc, char *argv[])
 		b = rand() % 256;
 		nr = rand() % MAX_SPARKLES + 1;
 		nr = nr < MIN_SPARKLES ? MIN_SPARKLES : nr;
-		gp.fg_r = r;
-		gp.fg_g = g;
-		gp.fg_b = b;
-		circlines(&gp, x, y, nr, WIDTH, HEIGHT);
+		gp->fg_r = r;
+		gp->fg_g = g;
+		gp->fg_b = b;
+		circlines(gp, x, y, nr, WIDTH, HEIGHT);
+		gp->fg_r = 0;
+		gp->fg_g = 0;
+		gp->fg_b = 0;
+		circlines(gp, x, y, nr, WIDTH, HEIGHT);
 	}
+}
 
-	if (gpix_pnm_write_to_file(&gp, "circles.pnm")) {
-		fprintf(stderr, "gpix_pnm_write_to_file error: %s\n", gpix_errstr(&gp));
+
+int main(int argc, char *argv[])
+{
+	GtkWidget *win;
+	struct gpix gp = GPIX_INIT, gp_1, gp_2, gp_3, gp_4;
+
+	g_thread_init(NULL);
+	gdk_threads_init();
+	
+	gtk_init(&argc, &argv);
+
+	gp.w = WIDTH;
+	gp.h = HEIGHT;
+	if (gpix_init(&gp)) {
+		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
+		return 1;
+	}
+	memcpy(&gp_1, &gp, sizeof(gp));
+	memcpy(&gp_2, &gp, sizeof(gp));
+	memcpy(&gp_3, &gp, sizeof(gp));
+	memcpy(&gp_4, &gp, sizeof(gp));
+
+	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	if (gpix_gtkwidget(&gp, &da)) {
+		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
 		return 1;
 	}
 
-	if (gpix_cairo_create_surface_from_gpix(&gp, &surf)) {
-		fprintf(stderr, "gpix-cairo error: %s\n", gpix_errstr(&gp));
-		return 1;
-	}
 
-	gui_init(surf);
+	g_object_set(win, 
+		"title", "Cg display", 
+		"resizable", FALSE,
+		"border-width", 5,
+		NULL);
+
+	gtk_container_add(GTK_CONTAINER(win), da);
+	g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+	gtk_widget_show_all(win);
+
+	g_thread_create((GThreadFunc) draw, &gp,     FALSE, NULL);
+	g_thread_create((GThreadFunc) draw, &gp_1, FALSE, NULL);
+	g_thread_create((GThreadFunc) draw, &gp_2, FALSE, NULL);
+	g_thread_create((GThreadFunc) draw, &gp_3, FALSE, NULL);
+	g_thread_create((GThreadFunc) draw, &gp_4, FALSE, NULL);
 
 	gtk_main();
 
-	cairo_surface_destroy(surf);
 	gpix_cleanup(&gp);
 	return 0;
 }

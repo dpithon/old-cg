@@ -25,6 +25,9 @@ extern const char *GPIX_ERRSTR[];
 /* gpix-pnm errors */
 #define GPIX_ERR_IO			 30
 
-#define GPIX_ERR_MAX			 GPIX_ERR_IO
+/* gpix-gtk errors */
+#define GPIX_ERR_GTK			 40
+
+#define GPIX_ERR_MAX			 GPIX_ERR_GTK
 
 #endif /* _GPIX_ERROR_H */

@@ -12,7 +12,8 @@ const char *GPIX_ERRSTR[] = {
 	/*    20 */	"failed to create cairo surface from gpix",
 	/*    21 */	"failed to initialize gpix from cairo surface",
 	/* 22-29 */	"", "", "", "", "", "", "", "",
-	/*    30 */	"i/o error"
+	/* 30-39 */	"i/o error", "", "", "", "", "", "", "", "", "",
+	/*    40 */	"Gtk error"
 };
 
 
