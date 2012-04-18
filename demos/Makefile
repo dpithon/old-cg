@@ -8,7 +8,7 @@ GTK_LDFLAGS=-pthread -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgio-2.0 -lpango
 
 CC=gcc
 
-TARGETS=gpixerror lines lines_gui
+TARGETS=gpixerror lines lines_gui gfract
 
 all: $(TARGETS)
 
@@ -17,12 +17,16 @@ gpixerror: gpixerror.o ../gpix/gpix-error.o
 
 lines: lines.o  ../gpix/gpix-core.o ../gpix/gpix-error.o \
 	 ../gpix/gpix-drawing.o ../gpix/gpix-pnm.o
-	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
+	$(CC) -o $@ $^ -lm
 
 lines_gui:  lines_gui.o ../gpix/gpix-core.o \
 	 ../gpix/gpix-error.o ../gpix/gpix-drawing.o \
 	 ../gpix/gpix-gtkwidget.o ../gpix/gpix-cairo.o
 	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
+
+gfract: gfract.o  ../gpix/gpix-core.o ../gpix/gpix-error.o \
+	 ../gpix/gpix-drawing.o ../gpix/gpix-pnm.o
+	$(CC) -o $@ $^ -lm
 
 gpixerror.o: gpixerror.c ../gpix/gpix-error.h
 lines.o: lines.c ../gpix/gpix.h ../gpix/gpix-core.h ../gpix/gpix-error.h \
