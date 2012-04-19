@@ -1,21 +1,21 @@
 #include <stdlib.h>
 #include <assert.h>
-#include "gpix-core.h"
-#include "gpix-error.h"
+#include "bpix-core.h"
+#include "bpix-error.h"
 
 
-int gpix_init(struct gpix *gp)
+int bpix_init(struct bpix *gp)
 {
 	assert(sizeof(int) == 4);
 
 	if (gp->data) {
-		gp->error = GPIX_ERR_ALREADY_INIT;
+		gp->error = BPIX_ERR_ALREADY_INIT;
 		return 1;
 	}
 
 	if (gp->w < 0 || gp->h < 0 || 
-	    gp->w > GPIX_MAX_W || gp->h > GPIX_MAX_H) {
-		gp->error = GPIX_ERR_PIXMAP_SIZE;
+	    gp->w > BPIX_MAX_W || gp->h > BPIX_MAX_H) {
+		gp->error = BPIX_ERR_PIXMAP_SIZE;
 		return 1;
 	}
 
@@ -25,7 +25,7 @@ int gpix_init(struct gpix *gp)
 
 	gp->data = malloc(gp->sz);
 	if (! gp->data) {
-		gp->error = GPIX_ERR_MALLOC;
+		gp->error = BPIX_ERR_MALLOC;
 		return 1;
 	}
 
@@ -34,16 +34,16 @@ int gpix_init(struct gpix *gp)
 
 
 /**
- * gpix_cleanup: release memory buffer and reset structure.
+ * bpix_cleanup: release memory buffer and reset structure.
  */
-int gpix_cleanup(struct gpix *gp)
+int bpix_cleanup(struct bpix *gp)
 {
 	if (gp->data) {
 		free(gp->data);
 		gp->data = 0;
 
-		gp->w = GPIX_DEF_W;
-		gp->h = GPIX_DEF_H;
+		gp->w = BPIX_DEF_W;
+		gp->h = BPIX_DEF_H;
 		gp->stride = gp->sz = gp->int_sz = 0;
 		gp->fg_r = gp->fg_g = gp->fg_b = 255;
 		gp->bg_r = gp->bg_g = gp->bg_b = 0;
@@ -51,12 +51,12 @@ int gpix_cleanup(struct gpix *gp)
 		return 0;
 	}
 
-	gp->error = GPIX_ERR_ALREADY_FREE;
+	gp->error = BPIX_ERR_ALREADY_FREE;
 	return 1;
 }
 
 
-void gpix_fill(struct gpix *gp)
+void bpix_fill(struct bpix *gp)
 {
 	int i, pix;
 
@@ -68,10 +68,10 @@ void gpix_fill(struct gpix *gp)
 }
 
 
-int gpix_set(struct gpix *gp, int x, int y, cval r, cval g, cval b)
+int bpix_set(struct bpix *gp, int x, int y, cval r, cval g, cval b)
 {
 	if (! gp->data) {
-		gp->error = GPIX_ERR_UNINITIALIZED;
+		gp->error = BPIX_ERR_UNINITIALIZED;
 		return 1;
 	}
 
@@ -85,15 +85,15 @@ int gpix_set(struct gpix *gp, int x, int y, cval r, cval g, cval b)
 		return 0;
 	}
 
-	gp->error = GPIX_ERR_OUTSIDE;
+	gp->error = BPIX_ERR_OUTSIDE;
 	return 1;
 }
 
 
-int gpix_get(struct gpix *gp, int x, int y, cval *r, cval *g, cval *b)
+int bpix_get(struct bpix *gp, int x, int y, cval *r, cval *g, cval *b)
 {
 	if (! gp->data) {
-		gp->error = GPIX_ERR_UNINITIALIZED;
+		gp->error = BPIX_ERR_UNINITIALIZED;
 		return 1;
 	}
 
@@ -106,6 +106,6 @@ int gpix_get(struct gpix *gp, int x, int y, cval *r, cval *g, cval *b)
 		return 0;
 	}
 
-	gp->error = GPIX_ERR_OUTSIDE;
+	gp->error = BPIX_ERR_OUTSIDE;
 	return 1;
 }

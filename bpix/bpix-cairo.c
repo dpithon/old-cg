@@ -1,8 +1,8 @@
 #include <cairo.h>
-#include "gpix-core.h"
-#include "gpix-error.h"
+#include "bpix-core.h"
+#include "bpix-error.h"
 
-int gpix_cairo_create_surface_from_gpix(struct gpix *gp, 
+int bpix_cairo_create_surface_from_bpix(struct bpix *gp, 
 					cairo_surface_t **surf)
 {
 
@@ -13,16 +13,16 @@ int gpix_cairo_create_surface_from_gpix(struct gpix *gp,
 	if (cairo_surface_status(*surf) == CAIRO_STATUS_SUCCESS) 
 		return 0;
 			
-	gp->error = GPIX_ERR_GPIX_TO_CAIRO_FAILURE;
+	gp->error = BPIX_ERR_BPIX_TO_CAIRO_FAILURE;
 	return 1;
 }
 
 
-int gpix_cairo_create_gpix_from_surface(cairo_surface_t *surf, 
-					struct gpix *gp)
+int bpix_cairo_create_bpix_from_surface(cairo_surface_t *surf, 
+					struct bpix *gp)
 {
 	if (gp->data) {
-		gp->error = GPIX_ERR_UNINITIALIZED;
+		gp->error = BPIX_ERR_UNINITIALIZED;
 		return 1;
 	}
 
@@ -36,6 +36,6 @@ int gpix_cairo_create_gpix_from_surface(cairo_surface_t *surf,
 		return 0;
 	}
 
-	gp->error = GPIX_ERR_CAIRO_TO_GPIX_FAILURE;
+	gp->error = BPIX_ERR_CAIRO_TO_BPIX_FAILURE;
 	return 1;
 }

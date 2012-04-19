@@ -6,8 +6,8 @@
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include "gpix/gpix.h"
-#include "gpix/gpix-gtkwidget.h"
+#include "bpix/bpix.h"
+#include "bpix/bpix-gtkwidget.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -27,7 +27,7 @@ int my_round(double v)
 }
 
 
-void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
+void circlines(struct bpix *gp, int xc, int yc, int n, int w, int h)
 {
 	int l0, l1, w1, w2, w3, w4;
 	double a;
@@ -50,7 +50,7 @@ void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 		int x1 = xc + my_round(l1 * cos(a));
 		int y1 = yc + my_round(l1 * sin(a));
 
-		gpix_line(gp, x0, y0, x1, y1);
+		bpix_line(gp, x0, y0, x1, y1);
 		g_usleep(5000UL);
 		gdk_threads_enter();
 		gtk_widget_queue_draw(da);
@@ -59,7 +59,7 @@ void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 }
 
 
-static void draw(struct gpix *gp)
+static void draw(struct bpix *gp)
 {
 	int x, y, r, g, b, nr;
 
@@ -86,7 +86,7 @@ static void draw(struct gpix *gp)
 int main(int argc, char *argv[])
 {
 	GtkWidget *win;
-	struct gpix gp = GPIX_INIT, gp_1, gp_2, gp_3, gp_4;
+	struct bpix gp = BPIX_INIT, gp_1, gp_2, gp_3, gp_4;
 
 	g_thread_init(NULL);
 	gdk_threads_init();
@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
 
 	gp.w = WIDTH;
 	gp.h = HEIGHT;
-	if (gpix_init(&gp)) {
-		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
+	if (bpix_init(&gp)) {
+		fprintf(stderr, "bpix_init error: %s\n", bpix_errstr(&gp));
 		return 1;
 	}
 	memcpy(&gp_1, &gp, sizeof(gp));
@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
 	memcpy(&gp_4, &gp, sizeof(gp));
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	if (gpix_gtkwidget_new(&gp, &da)) {
-		fprintf(stderr, "gpix_init error: %s\n", gpix_errstr(&gp));
+	if (bpix_gtkwidget_new(&gp, &da)) {
+		fprintf(stderr, "bpix_init error: %s\n", bpix_errstr(&gp));
 		return 1;
 	}
 
@@ -130,6 +130,6 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	gpix_cleanup(&gp);
+	bpix_cleanup(&gp);
 	return 0;
 }

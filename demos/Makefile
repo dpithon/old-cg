@@ -8,33 +8,37 @@ GTK_LDFLAGS=-pthread -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgio-2.0 -lpango
 
 CC=gcc
 
-TARGETS=gpixerror lines lines_gui gfract
+TARGETS=bpixerror lines lines_gui gfract gfract2
 
 all: $(TARGETS)
 
-gpixerror: gpixerror.o ../gpix/gpix-error.o
+bpixerror: bpixerror.o ../bpix/bpix-error.o
 	$(CC) -o $@ $^
 
-lines: lines.o  ../gpix/gpix-core.o ../gpix/gpix-error.o \
-	 ../gpix/gpix-drawing.o ../gpix/gpix-pnm.o
+lines: lines.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
+	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
 	$(CC) -o $@ $^ -lm
 
-lines_gui:  lines_gui.o ../gpix/gpix-core.o \
-	 ../gpix/gpix-error.o ../gpix/gpix-drawing.o \
-	 ../gpix/gpix-gtkwidget.o ../gpix/gpix-cairo.o
+lines_gui:  lines_gui.o ../bpix/bpix-core.o \
+	 ../bpix/bpix-error.o ../bpix/bpix-drawing.o \
+	 ../bpix/bpix-gtkwidget.o ../bpix/bpix-cairo.o
 	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
 
-gfract: gfract.o  ../gpix/gpix-core.o ../gpix/gpix-error.o \
-	 ../gpix/gpix-drawing.o ../gpix/gpix-pnm.o
+gfract: gfract.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
+	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
 	$(CC) -o $@ $^ -lm
 
-gpixerror.o: gpixerror.c ../gpix/gpix-error.h
-lines.o: lines.c ../gpix/gpix.h ../gpix/gpix-core.h ../gpix/gpix-error.h \
-	 ../gpix/gpix-drawing.h ../gpix/gpix-pnm.h
+gfract2: gfract2.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
+	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
+	$(CC) -o $@ $^ -lm
 
-lines_gui.o: lines_gui.c ../gpix/gpix.h ../gpix/gpix-core.h \
-	 ../gpix/gpix-error.h ../gpix/gpix-drawing.h ../gpix/gpix-pnm.h \
-	 ../gpix/gpix-gtkwidget.h ../gpix/gpix.h
+bpixerror.o: bpixerror.c ../bpix/bpix-error.h
+lines.o: lines.c ../bpix/bpix.h ../bpix/bpix-core.h ../bpix/bpix-error.h \
+	 ../bpix/bpix-drawing.h ../bpix/bpix-pnm.h
+
+lines_gui.o: lines_gui.c ../bpix/bpix.h ../bpix/bpix-core.h \
+	 ../bpix/bpix-error.h ../bpix/bpix-drawing.h ../bpix/bpix-pnm.h \
+	 ../bpix/bpix-gtkwidget.h ../bpix/bpix.h
 	$(CC) -c $< $(GTK_CFLAGS)
 
 clean:

@@ -1,8 +1,8 @@
 #include <gtk/gtk.h>
 #include <cairo.h>
-#include "gpix-core.h"
-#include "gpix-error.h"
-#include "gpix-cairo.h"
+#include "bpix-core.h"
+#include "bpix-error.h"
+#include "bpix-cairo.h"
 
 
 static gboolean refresh(GtkWidget *da __attribute__ ((unused)), 
@@ -21,16 +21,16 @@ static gboolean release(GtkWidget *da __attribute__ ((unused)), gpointer dat)
 }
 
 
-int gpix_gtkwidget_new(struct gpix *gp, GtkWidget **da)
+int bpix_gtkwidget_new(struct bpix *gp, GtkWidget **da)
 {
 	cairo_surface_t *surf;
 
-	if (gpix_cairo_create_surface_from_gpix(gp, &surf)) {
+	if (bpix_cairo_create_surface_from_bpix(gp, &surf)) {
 		return 1;
 	}
 
 	if (! (*da = gtk_drawing_area_new())) {
-		gp->error = GPIX_ERR_GTK;
+		gp->error = BPIX_ERR_GTK;
 		return 1;
 	}
 

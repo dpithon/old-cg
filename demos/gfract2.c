@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "gpix/gpix.h"
+#include "bpix/bpix.h"
 
 #define L  	 1
 #define ALPHA	90
-#define W 6400
-#define H 6400
+#define W 800
+#define H 800
 
 static char s1[40000000] = "FX";
 static char s2[40000000];
@@ -19,8 +19,8 @@ int main()
 {
 	int n = 21, i, j, vcos, vsin;
 	char *tmp;
-	int x =	3200, y=3200, xb, yb, alpha = 0;
-	struct gpix gp = GPIX_INIT;
+	int x =	400, y=400, xb, yb, alpha = 0;
+	struct bpix gp = BPIX_INIT;
 	int rulex_sz=strlen(ruleX);
 	int ruley_sz=strlen(ruleY);
 
@@ -57,7 +57,7 @@ int main()
 	gp.w = W;
 	gp.h = H;
 
-	gpix_init(&gp);
+	bpix_init(&gp);
 
 	while (*to) {
 		switch (*to) {
@@ -81,7 +81,7 @@ int main()
 			}
 			xb = x + L * vcos;
 			yb = y + L * vsin;
-			gpix_line(&gp, x, y, xb, yb);
+			bpix_line(&gp, x, y, xb, yb);
 			x = xb;
 			y = yb;
 		}
@@ -89,10 +89,10 @@ int main()
 		to++;
 	}
 	
-        if (gpix_pnm_write_to_file(&gp, "fract.pnm")) {
+        if (bpix_pnm_write_to_file(&gp, "fract.pnm")) {
                 return gp.error;
         }
 
-        gpix_cleanup(&gp);
+        bpix_cleanup(&gp);
         return 0;
 }

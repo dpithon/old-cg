@@ -1,8 +1,8 @@
 #include <assert.h>
-#include "gpix-core.h"
+#include "bpix-core.h"
 
 #define swap(a,b,tmp)	tmp = a; a = b; b = tmp
-void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
+void bpix_line(struct bpix *gp, int x0, int y0, int x1, int y1)
 {
 	int x, y, dx, dy, incE, incNE, d;
 
@@ -21,7 +21,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		incNE = 2 * (dy - dx);
 		d     = 2 * dy - dx;
 
-		gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+		bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		while (x < x1) {
 			++x;
 			if (d < 0) {
@@ -30,7 +30,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 				d += incNE;
 				++y;
 			}
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		}
 
 	} else if (dy < 0 && dx > -dy) { /* 8th octant */
@@ -39,7 +39,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		incNE = 2 * (dy - dx);
 		d     = 2 * dy - dx;
 
-		gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+		bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		while (x < x1) {
 			++x;
 			if (d < 0) {
@@ -48,7 +48,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 				d += incNE;
 				y --;
 			}
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		}
 
 	} else if (dy > 0 && dy > dx) { /* 2nd octant */
@@ -56,7 +56,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		incNE = 2 * (dx - dy);
 		d     = 2 * dx - dy;
 
-		gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+		bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		while (y < y1) {
 			++y;
 			if (d < 0) {
@@ -65,7 +65,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 				d += incNE;
 				x ++;
 			}
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		}
 
 	} else if (dy < 0 && -dy > dx) { /* 7th octant */
@@ -74,7 +74,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		incNE = 2 * (dx - dy);
 		d     = 2 * dx - dy;
 
-		gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+		bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		while (y > y1) {
 			--y;
 			if (d < 0) {
@@ -83,12 +83,12 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 				d += incNE;
 				x ++;
 			}
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		}
 
 	} else if (dy == 0) {
 		for (x = x0; x <= x1; x++)
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		#ifndef NDEBUG
 		/* x == x1 + 1. Adjust x for final asserts */
 		--x;
@@ -100,7 +100,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		}
 
 		for (y = y0; y <= y1; y++)
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 
 		#ifndef NDEBUG
 		/* y == y1 + 1. Adjust y for final asserts */
@@ -117,7 +117,7 @@ void gpix_line(struct gpix *gp, int x0, int y0, int x1, int y1)
 		}
 
 		for (x = x0, y = y0; x <= x1; x++, y += slope) {
-			gpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
+			bpix_set(gp, x, y, gp->fg_r, gp->fg_g, gp->fg_b);
 		}
 		#ifndef NDEBUG
 		/* Adjust x and y for final asserts */

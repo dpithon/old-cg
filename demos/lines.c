@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
-#include "gpix/gpix.h"
+#include "bpix/bpix.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -20,7 +20,7 @@ int my_round(double v)
 }
 
 
-void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
+void circlines(struct bpix *gp, int xc, int yc, int n, int w, int h)
 {
 	int l0, l1, w1, w2, w3, w4;
 	double a;
@@ -43,7 +43,7 @@ void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 		int x1 = xc + my_round(l1 * cos(a));
 		int y1 = yc + my_round(l1 * sin(a));
 
-		gpix_line(gp, x0, y0, x1, y1);
+		bpix_line(gp, x0, y0, x1, y1);
 	}
 }
 
@@ -51,12 +51,12 @@ void circlines(struct gpix *gp, int xc, int yc, int n, int w, int h)
 int main()
 {
 	int x, y, n, r, g, b, nr;
-	struct gpix gp = GPIX_INIT;
+	struct bpix gp = BPIX_INIT;
 
 	gp.w = WIDTH;
 	gp.h = HEIGHT;
 
-	if (gpix_init(&gp)) {
+	if (bpix_init(&gp)) {
 		return gp.error;
 	}
 
@@ -76,10 +76,10 @@ int main()
 		circlines(&gp, x, y, nr, WIDTH, HEIGHT);
 	}
 
-	if (gpix_pnm_write_to_file(&gp, "circles.pnm")) {
+	if (bpix_pnm_write_to_file(&gp, "circles.pnm")) {
 		return gp.error;
 	}
 
-	gpix_cleanup(&gp);
+	bpix_cleanup(&gp);
 	return 0;
 }
