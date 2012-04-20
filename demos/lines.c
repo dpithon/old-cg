@@ -20,7 +20,8 @@ int my_round(double v)
 }
 
 
-void circlines(struct bpix *gp, int xc, int yc, int n, int w, int h)
+void circlines(struct bpix *gp, struct gctx *gc, 
+		int xc, int yc, int n, int w, int h)
 {
 	int l0, l1, w1, w2, w3, w4;
 	double a;
@@ -43,7 +44,7 @@ void circlines(struct bpix *gp, int xc, int yc, int n, int w, int h)
 		int x1 = xc + my_round(l1 * cos(a));
 		int y1 = yc + my_round(l1 * sin(a));
 
-		bpix_line(gp, x0, y0, x1, y1);
+		bpix_line(gp, gc, x0, y0, x1, y1);
 	}
 }
 
@@ -51,15 +52,12 @@ void circlines(struct bpix *gp, int xc, int yc, int n, int w, int h)
 int main()
 {
 	int x, y, n, r, g, b, nr;
-	struct bpix gp = BPIX_INIT;
+	struct bpix gp;
+	struct gctx gc;
 
-	gp.w = WIDTH;
-	gp.h = HEIGHT;
-
-	if (bpix_init(&gp)) {
+	if (bpix_init(&gp, WIDTH, HEIGHT)) {
 		return gp.error;
 	}
-
 
 	srand(getpid());
 	for (n = 0; n < NR; n ++) {
@@ -70,10 +68,10 @@ int main()
 		b = rand() % 256;
 		nr = rand() % MAX_SPARKLES + 1;
 		nr = nr < MIN_SPARKLES ? MIN_SPARKLES : nr;
-		gp.fg_r = r;
-		gp.fg_g = g;
-		gp.fg_b = b;
-		circlines(&gp, x, y, nr, WIDTH, HEIGHT);
+		gc.fg_r = r;
+		gc.fg_g = g;
+		gc.fg_b = b;
+		circlines(&gp, &gc, x, y, nr, WIDTH, HEIGHT);
 	}
 
 	if (bpix_pnm_write_to_file(&gp, "circles.pnm")) {

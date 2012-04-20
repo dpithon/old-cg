@@ -3,6 +3,11 @@
 
 #include "bpix-core.h"
 
-void bpix_line(struct bpix*, int, int, int, int);
+struct gctx {
+	cval fg_r, fg_g, fg_b;
+	cval bg_r, bg_g, bg_b;
+};
+
+void bpix_line(struct bpix*, struct gctx*, int, int, int, int);
 
 #endif /* _BPIX_DRAWING_H */

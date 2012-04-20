@@ -19,7 +19,8 @@ int main()
 	int n = 8, i, j, vcos, vsin;
 	char *tmp;
 	int x = 10, y=10, xb, yb, alpha = 0;
-	struct bpix gp = BPIX_INIT;
+	struct bpix gp;
+	struct gctx gc = {255, 255, 255, 0, 0, 0};
 	int rule_sz=strlen(rule);
 
 	while (n-- > 0) {
@@ -48,10 +49,7 @@ int main()
 
 	to = from;
 
-	gp.w = W;
-	gp.h = H;
-
-	bpix_init(&gp);
+	bpix_init(&gp, W, H);
 
 	while (*to) {
 		switch (*to) {
@@ -75,7 +73,7 @@ int main()
 			}
 			xb = x + L * vcos;
 			yb = y + L * vsin;
-			bpix_line(&gp, x, y, xb, yb);
+			bpix_line(&gp, &gc, x, y, xb, yb);
 			x = xb;
 			y = yb;
 		}

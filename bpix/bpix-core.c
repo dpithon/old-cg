@@ -4,23 +4,24 @@
 #include "bpix-error.h"
 
 
-int bpix_init(struct bpix *gp)
+int bpix_init(struct bpix *gp, int w, int h)
 {
 	assert(sizeof(int) == 4);
 
-	if (gp->data) {
+	if (gp->init == 0x696E6974) { /* "init" in hexa */
 		gp->error = BPIX_ERR_ALREADY_INIT;
 		return 1;
 	}
 
-	if (gp->w < 0 || gp->h < 0 || 
-	    gp->w > BPIX_MAX_W || gp->h > BPIX_MAX_H) {
+	if (w < 0 || h < 0 || w > BPIX_MAX_W || h > BPIX_MAX_H) {
 		gp->error = BPIX_ERR_PIXMAP_SIZE;
 		return 1;
 	}
 
-	gp->stride = gp->w << 2;
-	gp->sz = gp->stride * gp->h;
+	gp->w = w;
+	gp->h = h;
+	gp->stride = w << 2;
+	gp->sz = gp->stride * h;
 	gp->int_sz = gp->sz >> 2;
 
 	gp->data = malloc(gp->sz);
@@ -28,6 +29,9 @@ int bpix_init(struct bpix *gp)
 		gp->error = BPIX_ERR_MALLOC;
 		return 1;
 	}
+
+	gp->init = 0x696E6974;
+	gp->error = 0;
 
 	return 0;
 }
@@ -38,39 +42,21 @@ int bpix_init(struct bpix *gp)
  */
 int bpix_cleanup(struct bpix *gp)
 {
-	if (gp->data) {
-		free(gp->data);
-		gp->data = 0;
-
-		gp->w = BPIX_DEF_W;
-		gp->h = BPIX_DEF_H;
-		gp->stride = gp->sz = gp->int_sz = 0;
-		gp->fg_r = gp->fg_g = gp->fg_b = 255;
-		gp->bg_r = gp->bg_g = gp->bg_b = 0;
-
-		return 0;
+	if (gp->init != 0x696E6974) {
+		gp->error = BPIX_ERR_UNINITIALIZED;
+		return 1;
 	}
 
-	gp->error = BPIX_ERR_ALREADY_FREE;
-	return 1;
-}
+	free(gp->data);
+	gp->init = 0;
 
-
-void bpix_fill(struct bpix *gp)
-{
-	int i, pix;
-
-	pix = (gp->bg_r << 16) + (gp->bg_g << 8) + gp->bg_b;
-
-	for (i = 0; i < gp->int_sz; i++) {
-		gp->data[i] = pix;
-	}
+	return 0;
 }
 
 
 int bpix_set(struct bpix *gp, int x, int y, cval r, cval g, cval b)
 {
-	if (! gp->data) {
+	if (gp->init != 0x696E6974) {
 		gp->error = BPIX_ERR_UNINITIALIZED;
 		return 1;
 	}
@@ -92,7 +78,7 @@ int bpix_set(struct bpix *gp, int x, int y, cval r, cval g, cval b)
 
 int bpix_get(struct bpix *gp, int x, int y, cval *r, cval *g, cval *b)
 {
-	if (! gp->data) {
+	if (gp->init != 0x696E6974) {
 		gp->error = BPIX_ERR_UNINITIALIZED;
 		return 1;
 	}

@@ -1,0 +1,56 @@
+Basic pixmap package (bpix)
+
+- bpix functions return 0 (success) or 1 (error).
+- first argument of _all_ bpix function is: struct bpix*
+- on error BPIX_ERROR(ptr) give error code
+
+typedef unsigned char cval; /* color component: from 0 to 255 */
+
+struct bpix {
+	int init;	/* magic value (0x696E6974 if struct is initialized) */
+	int w, h;	/* width and height of pixmap                        */
+	int stride;	/* row size in bytes, round to upper multiple of 4   */
+	int sz;		/* size in bytes 				     */
+	int int_sz;	/* size in word (4 bytes)			     */
+	cval *data;	/* pointer to pixmap buffer			     */
+	int error;	/* error value set by bpix function		     */
+};
+
+#define BPIX_MAX_W
+#define BPIX_MAX_H
+
+#define bpix_get_width(ptr)
+#define bpix_get_height(ptr)
+#define bpix_get_error(ptr)
+#define bpix_get_errstr(ptr)
+
+int bpix_init(struct bpix*);
+int bpix_cleanup(struct bpix*);
+int bpix_set(struct bpix*, int, int, cval, cval, cval);
+int bpix_get(struct bpix*, int, int, cval*, cval*, cval*);
+
+int bpix_pnm_write_to_file(struct bpix*, const char*);
+int bpix_pnm_read_from_file(struct bpix*, const char*);
+
+#define BPIX_ERR_NONE
+#define BPIX_ERR_ALREADY_INIT
+#define BPIX_ERR_PIXMAP_SIZE
+#define BPIX_ERR_MALLOC
+#define BPIX_ERR_ALREADY_FREE
+#define BPIX_ERR_UNINITIALIZED
+#define BPIX_ERR_OUTSIDE
+#define BPIX_ERR_BPIX_TO_CAIRO_FAILURE
+#define BPIX_ERR_CAIRO_TO_BPIX_FAILURE
+#define BPIX_ERR_IO
+#define BPIX_ERR_GTK
+
+struct gctx { /* graphic context */
+	cval fg_r, fg_g, fg_b;
+	cval bg_r, bg_g, bg_b;
+};
+
+void bpix_line(struct bpix*, struct gctx*, int, int, int, int);
+
+int bpix_cairo_create_surface_from_bpix(struct bpix*, cairo_surface_t**);
+int bpix_cairo_create_bpix_from_surface(struct bpix*, cairo_surface_t*);
+int bpix_gtkwidget_new(struct bpix*, GtkWidget**);

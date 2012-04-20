@@ -18,8 +18,8 @@ int bpix_cairo_create_surface_from_bpix(struct bpix *gp,
 }
 
 
-int bpix_cairo_create_bpix_from_surface(cairo_surface_t *surf, 
-					struct bpix *gp)
+int bpix_cairo_create_bpix_from_surface(struct bpix *gp,
+					cairo_surface_t *surf)
 {
 	if (gp->data) {
 		gp->error = BPIX_ERR_UNINITIALIZED;
