@@ -8,6 +8,5 @@
 #include "bpix-core.h"
 
 int bpix_pnm_write_to_file(struct bpix*, const char*);
-int bpix_pnm_read_from_file(struct bpix*, const char*);
 
 #endif /* _BPIX_PNM_H */

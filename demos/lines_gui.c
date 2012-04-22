@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 	if (bpix_init(&gp, WIDTH, HEIGHT)) {
-		fprintf(stderr, "bpix_init error: %s\n", bpix_errstr(&gp));
+		fprintf(stderr, "bpix_init error: %s\n", bpix_get_errstr(&gp));
 		return 1;
 	}
 	memcpy(&gp_1, &gp, sizeof(gp));
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	if (bpix_gtkwidget_new(&gp, &da)) {
-		fprintf(stderr, "bpix_init error: %s\n", bpix_errstr(&gp));
+		fprintf(stderr, "bpix_init error: %s\n", bpix_get_errstr(&gp));
 		return 1;
 	}
 

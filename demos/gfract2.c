@@ -17,7 +17,7 @@ static const char *ruleY = "FX-Y";
 
 int main()
 {
-	int n = 21, i, j, vcos, vsin;
+	int n = 21, i, j, vcos = 0, vsin = 0;
 	char *tmp;
 	int x =	400, y=400, xb, yb, alpha = 0;
 	struct bpix gp;
@@ -88,7 +88,7 @@ int main()
 	}
 	
         if (bpix_pnm_write_to_file(&gp, "fract.pnm")) {
-                return gp.error;
+                return gp.errno;
         }
 
         bpix_cleanup(&gp);

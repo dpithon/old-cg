@@ -9,5 +9,6 @@ struct gctx {
 };
 
 void bpix_line(struct bpix*, struct gctx*, int, int, int, int);
+void bpix_fill(struct bpix*, struct gctx*);
 
 #endif /* _BPIX_DRAWING_H */

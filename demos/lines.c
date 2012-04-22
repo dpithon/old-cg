@@ -56,7 +56,7 @@ int main()
 	struct gctx gc;
 
 	if (bpix_init(&gp, WIDTH, HEIGHT)) {
-		return gp.error;
+		return gp.errno;
 	}
 
 	srand(getpid());
@@ -75,7 +75,7 @@ int main()
 	}
 
 	if (bpix_pnm_write_to_file(&gp, "circles.pnm")) {
-		return gp.error;
+		return gp.errno;
 	}
 
 	bpix_cleanup(&gp);

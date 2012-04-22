@@ -131,3 +131,15 @@ void bpix_line(struct bpix *bp, struct gctx *gc,
 	assert(x == x1);
 	assert(y == y1);
 }
+
+
+void bpix_fill(struct bpix *bp, struct gctx *gc)
+{
+	int i;
+
+	for (i = 0; i < bp->sz; i++) {
+		bp->data[i]   = gc->bg_b;
+		bp->data[i+1] = gc->bg_g;
+		bp->data[i+2] = gc->bg_r;
+	}
+}

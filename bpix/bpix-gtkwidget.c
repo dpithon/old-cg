@@ -21,21 +21,22 @@ static gboolean release(GtkWidget *da __attribute__ ((unused)), gpointer dat)
 }
 
 
-int bpix_gtkwidget_new(struct bpix *gp, GtkWidget **da)
+int bpix_gtkwidget_new(struct bpix *bp, GtkWidget **da)
 {
 	cairo_surface_t *surf;
 
-	if (bpix_cairo_create_surface_from_bpix(gp, &surf)) {
+	if (bpix_cairo_create_surface_from_bpix(bp, &surf)) {
 		return 1;
 	}
 
 	if (! (*da = gtk_drawing_area_new())) {
-		gp->error = BPIX_ERR_GTK;
+		bp->errno = BPIX_ERR_GTK;
 		return 1;
 	}
 
-	g_object_set(*da, "width-request",  gp->w, 
-			  "height-request", gp->h, NULL);
+	g_object_set(*da, "width-request",  bp->w, 
+			  "height-request", bp->h, NULL);
+
 	g_signal_connect(*da, "destroy", G_CALLBACK(release), surf);
 	g_signal_connect(*da, "draw", G_CALLBACK(refresh), surf);
 

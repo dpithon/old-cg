@@ -16,7 +16,7 @@ static const char *rule = "F+F-F-F+F";
 
 int main()
 {
-	int n = 8, i, j, vcos, vsin;
+	int n = 8, i, j, vcos = 0, vsin = 0;
 	char *tmp;
 	int x = 10, y=10, xb, yb, alpha = 0;
 	struct bpix gp;
@@ -82,7 +82,7 @@ int main()
 	}
 	
         if (bpix_pnm_write_to_file(&gp, "fract.pnm")) {
-                return gp.error;
+                return gp.errno;
         }
 
         bpix_cleanup(&gp);

@@ -13,9 +13,8 @@ struct bpix {
 	int w, h;	/* width and height of pixmap                        */
 	int stride;	/* row size in bytes, round to upper multiple of 4   */
 	int sz;		/* size in bytes 				     */
-	int int_sz;	/* size in word (4 bytes)			     */
 	cval *data;	/* pointer to pixmap buffer			     */
-	int error;	/* error value set by bpix function		     */
+	int errno;	/* error value set by bpix function		     */
 };
 
 #define BPIX_MAX_W	8192

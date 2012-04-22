@@ -8,12 +8,16 @@ GTK_LDFLAGS=-pthread -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgio-2.0 -lpango
 
 CC=gcc
 
-TARGETS=bpixerror lines lines_gui gfract gfract2
+TARGETS=bpixerror lines lines_gui gfract gfract2 redbox gfract2_gui
 
 all: $(TARGETS)
 
 bpixerror: bpixerror.o ../bpix/bpix-error.o
 	$(CC) -o $@ $^
+
+redbox: redbox.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
+	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
+	$(CC) -o $@ $^ -lm
 
 lines: lines.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
 	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
@@ -22,6 +26,11 @@ lines: lines.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
 lines_gui:  lines_gui.o ../bpix/bpix-core.o \
 	 ../bpix/bpix-error.o ../bpix/bpix-drawing.o \
 	 ../bpix/bpix-gtkwidget.o ../bpix/bpix-cairo.o
+	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
+
+gfract2_gui:  gfract2_gui.o ../bpix/bpix-core.o \
+	 ../bpix/bpix-error.o ../bpix/bpix-drawing.o \
+	 ../bpix/bpix-gtkwidget.o ../bpix/bpix-cairo.o ../bpix/bpix-pnm.o
 	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
 
 gfract: gfract.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
@@ -41,6 +50,10 @@ lines_gui.o: lines_gui.c ../bpix/bpix.h ../bpix/bpix-core.h \
 	 ../bpix/bpix-gtkwidget.h ../bpix/bpix.h
 	$(CC) -c $< $(GTK_CFLAGS)
 
+gfract2_gui.o: gfract2_gui.c ../bpix/bpix.h ../bpix/bpix-core.h \
+	 ../bpix/bpix-error.h ../bpix/bpix-drawing.h ../bpix/bpix-pnm.h \
+	 ../bpix/bpix-gtkwidget.h ../bpix/bpix.h
+	$(CC) -c $< $(GTK_CFLAGS)
 clean:
 	rm -rf *.o *.gch
 
