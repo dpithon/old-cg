@@ -7,7 +7,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include "bpix/bpix.h"
-#include "bpix/bpix-gtkwidget.h"
+#include "bpix/bpix-gtk.h"
 
 #define WIDTH	500
 #define HEIGHT	500
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	memcpy(&gp_4, &gp, sizeof(gp));
 
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	if (bpix_gtkwidget_new(&gp, &da)) {
+	if (bpix_gtk_drawing_area_new(&gp, &da)) {
 		fprintf(stderr, "bpix_init error: %s\n", bpix_get_errstr(&gp));
 		return 1;
 	}

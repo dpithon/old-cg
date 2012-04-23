@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "bpix/bpix.h"
-#include "bpix/bpix-gtkwidget.h"
+#include "bpix/bpix-gtk.h"
 
 #define L  	  1
 #define ALPHA	 90
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 
 	/* let's create the gui */
 	win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	if (bpix_gtkwidget_new(&bp, &da)) {
+	if (bpix_gtk_drawing_area_new(&bp, &da)) {
 		fprintf(stderr, "bpix_init error: %s\n", bpix_get_errstr(&bp));
 		return 1;
 	}

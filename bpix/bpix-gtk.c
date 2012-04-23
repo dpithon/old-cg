@@ -21,7 +21,7 @@ static gboolean release(GtkWidget *da __attribute__ ((unused)), gpointer dat)
 }
 
 
-int bpix_gtkwidget_new(struct bpix *bp, GtkWidget **da)
+int bpix_gtk_drawing_area_new(struct bpix *bp, GtkWidget **da)
 {
 	cairo_surface_t *surf;
 

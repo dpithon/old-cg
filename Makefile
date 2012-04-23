@@ -1,4 +1,4 @@
-.PHONY: all clean purge
+.PHONY: all clean purge install
 
 all:
 	$(MAKE) -C bpix all
@@ -11,3 +11,6 @@ clean:
 purge: clean
 	$(MAKE) -C bpix purge
 	$(MAKE) -C demos purge
+
+install:
+	$(MAKE) -C bpix install

@@ -15,31 +15,23 @@ all: $(TARGETS)
 bpixerror: bpixerror.o ../bpix/bpix-error.o
 	$(CC) -o $@ $^
 
-redbox: redbox.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
-	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
-	$(CC) -o $@ $^ -lm
+redbox: redbox.o
+	$(CC) -o $@ $^ -lm -L../bpix -lbpix
 
-lines: lines.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
-	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
-	$(CC) -o $@ $^ -lm
+lines: lines.o
+	$(CC) -o $@ $^ -lm -L../bpix -lbpix
 
-lines_gui:  lines_gui.o ../bpix/bpix-core.o \
-	 ../bpix/bpix-error.o ../bpix/bpix-drawing.o \
-	 ../bpix/bpix-gtkwidget.o ../bpix/bpix-cairo.o
-	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
+lines_gui: lines_gui.o
+	$(CC) -o $@ $^ -L../bpix -lbpix $(GTK_LDFLAGS) -lm
 
-gfract2_gui:  gfract2_gui.o ../bpix/bpix-core.o \
-	 ../bpix/bpix-error.o ../bpix/bpix-drawing.o \
-	 ../bpix/bpix-gtkwidget.o ../bpix/bpix-cairo.o ../bpix/bpix-pnm.o
-	$(CC) -o $@ $^ $(GTK_LDFLAGS) -lm
+gfract2_gui: gfract2_gui.o
+	$(CC) -o $@ $^ -L../bpix -lbpix $(GTK_LDFLAGS) -lm
 
-gfract: gfract.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
-	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
-	$(CC) -o $@ $^ -lm
+gfract: gfract.o
+	$(CC) -o $@ $^ -lm -L../bpix -lbpix
 
-gfract2: gfract2.o  ../bpix/bpix-core.o ../bpix/bpix-error.o \
-	 ../bpix/bpix-drawing.o ../bpix/bpix-pnm.o
-	$(CC) -o $@ $^ -lm
+gfract2: gfract2.o
+	$(CC) -o $@ $^ -lm -L../bpix -lbpix
 
 bpixerror.o: bpixerror.c ../bpix/bpix-error.h
 lines.o: lines.c ../bpix/bpix.h ../bpix/bpix-core.h ../bpix/bpix-error.h \
@@ -47,12 +39,12 @@ lines.o: lines.c ../bpix/bpix.h ../bpix/bpix-core.h ../bpix/bpix-error.h \
 
 lines_gui.o: lines_gui.c ../bpix/bpix.h ../bpix/bpix-core.h \
 	 ../bpix/bpix-error.h ../bpix/bpix-drawing.h ../bpix/bpix-pnm.h \
-	 ../bpix/bpix-gtkwidget.h ../bpix/bpix.h
+	 ../bpix/bpix-gtk.h ../bpix/bpix.h
 	$(CC) -c $< $(GTK_CFLAGS)
 
 gfract2_gui.o: gfract2_gui.c ../bpix/bpix.h ../bpix/bpix-core.h \
 	 ../bpix/bpix-error.h ../bpix/bpix-drawing.h ../bpix/bpix-pnm.h \
-	 ../bpix/bpix-gtkwidget.h ../bpix/bpix.h
+	 ../bpix/bpix-gtk.h ../bpix/bpix.h
 	$(CC) -c $< $(GTK_CFLAGS)
 clean:
 	rm -rf *.o *.gch
