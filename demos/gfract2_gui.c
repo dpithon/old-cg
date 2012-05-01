@@ -104,7 +104,7 @@ static void draw(struct bpix *bp, char *to)
 			}
 			xb = x + L * vcos;
 			yb = y + L * vsin;
-			bpix_line(bp, &gc, x, y, xb, yb);
+			bpix_draw_linei(bp, &gc, x, y, xb, yb);
 			x = xb;
 			y = yb;
 		}

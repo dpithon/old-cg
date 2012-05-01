@@ -1,10 +1,9 @@
 .PHONY: all clean purge install
 
-CFLAGS=-Wall -Wextra -std=c89 -pedantic -g0 -O3
+CFLAGS=-Wall -Wextra -std=c99 -pedantic -g0 -O3 -pipe
 
-CAIRO_CFLAGS=$(CFLAGS) -pthread -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12  
-
-GTK_CFLAGS=$(CFLAGS) -pthread -DGSEAL_ENABLE -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/gtk-3.0  
+CAIRO_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags cairo)
+GTK_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-3.0)
 
 OBJECTS=bpix-cairo.o bpix-core.o bpix-drawing.o bpix-error.o bpix-gtk.o bpix-pnm.o
 
@@ -28,7 +27,7 @@ bpix-cairo.o: bpix-cairo.c bpix-core.h bpix-error.h
 	$(CC) -c $^ $(CAIRO_CFLAGS)
 
 bpix-gtk.o: bpix-gtk.c bpix-core.h bpix-error.h bpix-cairo.h
-	$(CC) -c $^ $(GTK_CFLAGS)
+	$(CC) -c $< $(GTK_CFLAGS)
 
 clean:
 	rm -rf $(OBJECTS) libbpix.a *.gch

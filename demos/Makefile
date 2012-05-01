@@ -1,10 +1,8 @@
 .PHONY: all clean purge
 
-CFLAGS=-Wall -Wextra -std=c89 -pedantic -g0 -O3 -I..
-
-GTK_CFLAGS=$(CFLAGS) -pthread -DGSEAL_ENABLE -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/gtk-3.0  
-
-GTK_LDFLAGS=-pthread -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
+CFLAGS=-Wall -Wextra -std=c99 -pedantic -g0 -O3 -pipe -I..
+GTK_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-3.0)
+GTK_LDFLAGS=$(shell pkg-config --libs gtk+-3.0)
 
 CC=gcc
 

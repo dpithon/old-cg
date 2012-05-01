@@ -79,7 +79,7 @@ int main()
 			}
 			xb = x + L * vcos;
 			yb = y + L * vsin;
-			bpix_line(&gp, &gc, x, y, xb, yb);
+			bpix_draw_linei(&gp, &gc, x, y, xb, yb);
 			x = xb;
 			y = yb;
 		}

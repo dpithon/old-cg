@@ -8,7 +8,8 @@ struct gctx {
 	cval bg_r, bg_g, bg_b;
 };
 
-void bpix_line(struct bpix*, struct gctx*, int, int, int, int);
+void bpix_draw_linei(struct bpix*, struct gctx*, int, int, int, int);
+void bpix_draw_linef(struct bpix*, struct gctx*, float, float, float, float);
 void bpix_fill(struct bpix*, struct gctx*);
 
 #endif /* _BPIX_DRAWING_H */

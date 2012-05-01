@@ -51,7 +51,7 @@ void circlines(struct bpix *gp, struct gctx *gc,
 		int x1 = xc + my_round(l1 * cos(a));
 		int y1 = yc + my_round(l1 * sin(a));
 
-		bpix_line(gp, gc, x0, y0, x1, y1);
+		bpix_draw_linei(gp, gc, x0, y0, x1, y1);
 		g_usleep(5000UL);
 		gdk_threads_enter();
 		gtk_widget_queue_draw(da);
