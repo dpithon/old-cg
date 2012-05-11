@@ -3,7 +3,7 @@
 
 void pretty_printv(const char *s, struct hcoord  *u)
 {
-	printf("%s %3.2f %3.2f %3.2f %3.2f\n", s, u->x, u->y, u->z, u->w);
+	printf("%s %6.2f %6.2f %6.2f %6.2f\n", s, u->x, u->y, u->z, u->w);
 }
 
 void pretty_printm(union matrix *m)
@@ -12,32 +12,33 @@ void pretty_printm(union matrix *m)
 	pretty_printv("", &(m->rows.r2));
 	pretty_printv("", &(m->rows.r3));
 	pretty_printv("", &(m->rows.r4));
+	printf("\n");
 }
 
 
+#define VecI(m)	(&(m).rows.r1)
+#define VecJ(m)	(&(m).rows.r2)
+#define VecK(m)	(&(m).rows.r3)
+
 int main()
 {
-	struct hcoord i = VECTOR_I;
-	struct hcoord j = VECTOR_J;
-	struct hcoord k = VECTOR_K;
-	struct hcoord ij, jk, ki;
-	struct hcoord ji, kj, ik;
+	struct hcoord up = {0.F, 1.F, 2.F, 0.F };
+	union matrix id, tm, m = { .rows = { 
+		.r1 = {6.F, 2.5F, 3.F, 0.F },
+		.r4 = {0.F, 0.F, 0.F, 1.F } 
+	} };
 
-	union matrix m = { .rows = { VECTOR_I, VECTOR_J, VECTOR_K, POINT_O } };
-
-	pretty_printv("i: ", &i);
-	pretty_printv("j: ", &j);
-	pretty_printv("k: ", &k);
-
-	vector_cross(&ij, &i, &j);
-	vector_cross(&ji, &j, &i);
-	vector_cross(&jk, &j, &k);
-	vector_cross(&kj, &k, &j);
-	vector_cross(&ik, &i, &k);
-	vector_cross(&ki, &k, &i);
-
+	vector_unitize(VecI(m));
+	m.rows.r2 = m.rows.r1;
+	vector_scale(VecJ(m), -1.F * vector_dot(VecI(m), &up));
+	vector_unitize(vector_add(VecJ(m), &up));
+	vector_cross(VecK(m), VecI(m), VecJ(m));
+	
 	pretty_printm(&m);
-	m.rows.r1 = k;
-	pretty_printm(&m);
+
+	pretty_printm(matrix_transpose(&tm, &m));
+	pretty_printm(matrix_mul(&id, &tm, &m));
+	pretty_printm(matrix_mul(&id, &m, &tm));
+
 	return 0;
 }

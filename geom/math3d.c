@@ -17,6 +17,16 @@ float vector_len2(const struct hcoord *v)
 }
 
 
+struct hcoord *vector_scale(struct hcoord *v, float k)
+{
+	v->x *= k;
+	v->y *= k;
+	v->z *= k;
+
+	return v;
+}
+
+
 float vector_dot(const struct hcoord *u, const struct hcoord *v)
 {
 	return dot(u, v);
@@ -30,7 +40,7 @@ struct hcoord *vector_cross(struct hcoord *w,
 	w->x = u->y * v->z  -  u->z * v->y;
 	w->y = u->z * v->x  -  u->x * v->z;
 	w->z = u->x * v->y  -  u->y * v->x;
-	w->w = 1.F;
+	w->w = 0.F;
 
 	return w;
 }
@@ -142,4 +152,16 @@ struct hcoord *matrix_apply(struct hcoord *v, const union matrix *m)
 	v->w = ROW_MUL(m, 3, w);
 
 	return v;
+}
+
+
+union matrix *matrix_transpose(union matrix *r, const union matrix *m)
+{
+	int row, col;
+
+	FOR_EACH_CELL(row, col) {
+		CELL(r, row, col) = CELL(m, col, row);
+	}
+
+	return r;
 }

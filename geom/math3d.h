@@ -24,6 +24,7 @@ union matrix { /* matrix 4x4 */
 
 extern float vector_len(const struct hcoord*);
 extern float vector_len2(const struct hcoord*);
+extern struct hcoord *vector_scale(struct hcoord*, float);
 extern float vector_dot(const struct hcoord*, const struct hcoord*);
 extern struct hcoord *vector_cross(struct hcoord*, 
 				   const struct hcoord*, 
@@ -43,5 +44,6 @@ extern union matrix *matrix_mul(union matrix*,
 				 const union matrix*,
 				 const union matrix*);
 extern struct hcoord *matrix_apply(struct hcoord*, const union matrix*);
+extern union matrix *matrix_transpose(union matrix*, const union matrix*);
 
 #endif /* _MATH3D_H */
