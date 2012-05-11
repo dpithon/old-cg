@@ -49,7 +49,7 @@ struct hcoord *vector_unit(struct hcoord *w, const struct hcoord *u)
 }
 
 
-struct hcoord *vector_unit_self(struct hcoord *u)
+struct hcoord *vector_unitize(struct hcoord *u)
 {
 	float l = (float) sqrt((double) dot(u, u));
 

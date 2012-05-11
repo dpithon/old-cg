@@ -6,7 +6,7 @@ struct hcoord {
 };
 
 
-union matrix {
+union matrix { /* matrix 4x4 */
 	struct rows {
 		struct hcoord r1, r2, r3, r4;
 	} rows;
@@ -20,8 +20,7 @@ union matrix {
 #define POINT_I   { 1.F, 0.F, 0.F, 1.F }
 #define POINT_J   { 0.F, 1.F, 0.F, 1.F }
 #define POINT_K   { 0.F, 0.F, 1.F, 1.F }
-#define MATRIX_ID { .rows = { VECTOR_I, VECTOR_J, VECTOR_K, {0.F, 0.F, 0.F, 1.F} } }
-
+#define MATRIX_ID { .rows = { VECTOR_I, VECTOR_J, VECTOR_K, POINT_O } }
 
 extern float vector_len(const struct hcoord*);
 extern float vector_len2(const struct hcoord*);
@@ -30,7 +29,7 @@ extern struct hcoord *vector_cross(struct hcoord*,
 				   const struct hcoord*, 
 				   const struct hcoord*);
 extern struct hcoord *vector_unit(struct hcoord*, const struct hcoord*);
-extern struct hcoord *vector_unit_self(struct hcoord*);
+extern struct hcoord *vector_unitize(struct hcoord*);
 extern struct hcoord *vector_sum(struct hcoord*, 
 				 const struct hcoord*,
 				 const struct hcoord*);
