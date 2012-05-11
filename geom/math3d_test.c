@@ -23,7 +23,7 @@ void pretty_printm(union matrix *m)
 int main()
 {
 	struct hcoord up = {0.F, 1.F, 2.F, 0.F };
-	union matrix id, tm, m = { .rows = { 
+	union matrix tm, m = { .rows = { 
 		.r1 = {6.F, 2.5F, 3.F, 0.F },
 		.r4 = {0.F, 0.F, 0.F, 1.F } 
 	} };
@@ -34,11 +34,7 @@ int main()
 	vector_unitize(vector_add(VecJ(m), &up));
 	vector_cross(VecK(m), VecI(m), VecJ(m));
 	
-	pretty_printm(&m);
-
-	pretty_printm(matrix_transpose(&tm, &m));
-	pretty_printm(matrix_mul(&id, &tm, &m));
-	pretty_printm(matrix_mul(&id, &m, &tm));
+	matrix_transpose(&tm, &m);
 
 	return 0;
 }
