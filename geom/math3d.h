@@ -1,27 +1,34 @@
 #ifndef _MATH3D_H
 #define _MATH3D_H
 
+/*
+ * Homogeneous coordinates
+ *  w == 0 for vectors
+ *  w != 0 for points
+ */
 struct hcoord {
 	float x, y, z, w;
 };
 
 
-union matrix { /* matrix 4x4 */
+/* 4x4 matrix */
+union matrix {
 	struct rows {
 		struct hcoord r1, r2, r3, r4;
 	} rows;
 	float cell[4][4];
 };
 
-#define VECTOR_I  { 1.F, 0.F, 0.F, 0.F }
-#define VECTOR_J  { 0.F, 1.F, 0.F, 0.F }
-#define VECTOR_K  { 0.F, 0.F, 1.F, 0.F }
-#define POINT_O   { 0.F, 0.F, 0.F, 1.F }
-#define POINT_I   { 1.F, 0.F, 0.F, 1.F }
-#define POINT_J   { 0.F, 1.F, 0.F, 1.F }
-#define POINT_K   { 0.F, 0.F, 1.F, 1.F }
+/* Initalizer values */
+#define VEC_I  { 1.F, 0.F, 0.F, 0.F }
+#define VEC_J  { 0.F, 1.F, 0.F, 0.F }
+#define VEC_K  { 0.F, 0.F, 1.F, 0.F }
+#define PNT_O  { 0.F, 0.F, 0.F, 1.F }
+#define PNT_I  { 1.F, 0.F, 0.F, 1.F }
+#define PNT_J  { 0.F, 1.F, 0.F, 1.F }
+#define PNT_K  { 0.F, 0.F, 1.F, 1.F }
 
-#define MATRIX_INIT_ID { .rows = {\
+#define MAT_ID { .rows = {\
 	{ 1.F, 0.F, 0.F, 0.F },\
 	{ 0.F, 1.F, 0.F, 0.F },\
 	{ 0.F, 0.F, 1.F, 0.F },\
@@ -30,36 +37,54 @@ union matrix { /* matrix 4x4 */
 extern float Epsilon;
 extern int nearly_equals(float, float);
 
-extern float vector_len(const struct hcoord*);
-extern float vector_len2(const struct hcoord*);
-extern struct hcoord *vector_scale(struct hcoord*, float);
-extern float vector_dot(const struct hcoord*, const struct hcoord*);
-extern struct hcoord *vector_cross(struct hcoord*, 
-				   const struct hcoord*, 
-				   const struct hcoord*);
-extern struct hcoord *vector_unit(struct hcoord*, const struct hcoord*);
-extern struct hcoord *vector_unitize(struct hcoord*);
-extern struct hcoord *vector_sum(struct hcoord*, 
-				 const struct hcoord*,
-				 const struct hcoord*);
-extern struct hcoord *vector_diff(struct hcoord*, 
-				  const struct hcoord*, 
-				  const struct hcoord*);
-extern struct hcoord *vector_add(struct hcoord*, const struct hcoord*);
-extern struct hcoord *vector_sub(struct hcoord*, const struct hcoord*);
+/* vector observer functions */
+extern float vec_len(const struct hcoord*);
+extern int   vec_is_null(const struct hcoord*);
+extern int   vec_is_unit(const struct hcoord*);
+extern int   vec_is_ortho(const struct hcoord*, const struct hcoord*);
 
-extern int vector_is_null(const struct hcoord*);
-extern int vector_is_unit(const struct hcoord*);
-extern int vectors_are_ortho(const struct hcoord*, const struct hcoord*);
+/* basic vector operations */
+extern struct hcoord *vec_scale(
+		struct hcoord*, 
+		const struct hcoord*, 
+		float);
+extern struct hcoord *vec_unit(
+		struct hcoord*, 
+		const struct hcoord*);
+extern struct hcoord *vec_add(
+		struct hcoord*, 
+		const struct hcoord*,
+		const struct hcoord*);
+extern struct hcoord *vec_sub(
+		struct hcoord*, 
+		const struct hcoord*, 
+		const struct hcoord*);
+extern struct hcoord *vec_cross(
+		struct hcoord*, 
+		const struct hcoord*, 
+		const struct hcoord*);
+extern float vec_dot(
+		const struct hcoord*, 
+		const struct hcoord*);
 
-extern union matrix *matrix_mul(union matrix*,
-				 const union matrix*,
-				 const union matrix*);
-extern struct hcoord *matrix_apply(struct hcoord*, 
-				   const union matrix*,
-				   const struct hcoord*);
-extern union matrix *matrix_transpose(union matrix*, const union matrix*);
+/* in-place vector operations */
+extern struct hcoord *vec_scale_self(struct hcoord*, float);
+extern struct hcoord *vec_unit_self(struct hcoord*);
+extern struct hcoord *vec_add_self(struct hcoord*, const struct hcoord*);
+extern struct hcoord *vec_sub_self(struct hcoord*, const struct hcoord*);
 
-extern union matrix *matrix_translation(union matrix*, float, float, float);
+/* matrix operations */
+extern union matrix *mat_x_mat(
+		union matrix*,
+		const union matrix*,
+		const union matrix*);
+extern struct hcoord *mat_x_vec(
+		struct hcoord*, 
+		const union matrix*,
+		const struct hcoord*);
+extern union matrix *mat_transpose(
+		union matrix*, 
+		const union matrix*);
+
 
 #endif /* _MATH3D_H */

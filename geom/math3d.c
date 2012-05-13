@@ -25,19 +25,13 @@ int nearly_equals(float a, float b)
 }
 
 
-float vector_len(const struct hcoord *v)
+float vec_len(const struct hcoord *v)
 {
 	return (float) sqrt((double) dot(v, v));
 }
 
 
-float vector_len2(const struct hcoord *v)
-{
-	return dot(v, v);
-}
-
-
-struct hcoord *vector_scale(struct hcoord *v, float k)
+struct hcoord *vec_scale_self(struct hcoord *v, float k)
 {
 	v->x *= k;
 	v->y *= k;
@@ -47,13 +41,13 @@ struct hcoord *vector_scale(struct hcoord *v, float k)
 }
 
 
-float vector_dot(const struct hcoord *u, const struct hcoord *v)
+float vec_dot(const struct hcoord *u, const struct hcoord *v)
 {
 	return dot(u, v);
 }
 
 
-struct hcoord *vector_cross(struct hcoord *w, 
+struct hcoord *vec_cross(struct hcoord *w, 
 			    const struct hcoord *u,
 			    const struct hcoord *v)
 {
@@ -66,7 +60,7 @@ struct hcoord *vector_cross(struct hcoord *w,
 }
 
 
-struct hcoord *vector_unit(struct hcoord *w, const struct hcoord *u)
+struct hcoord *vec_unit(struct hcoord *w, const struct hcoord *u)
 {
 	float l = (float) sqrt((double) dot(u, u));
 
@@ -79,7 +73,7 @@ struct hcoord *vector_unit(struct hcoord *w, const struct hcoord *u)
 }
 
 
-struct hcoord *vector_unitize(struct hcoord *u)
+struct hcoord *vec_unit_self(struct hcoord *u)
 {
 	float l = (float) sqrt((double) dot(u, u));
 
@@ -91,7 +85,7 @@ struct hcoord *vector_unitize(struct hcoord *u)
 }
 
 
-struct hcoord *vector_sum(struct hcoord *w,
+struct hcoord *vec_add(struct hcoord *w,
 			  const struct hcoord *u,
 			  const struct hcoord *v)
 {
@@ -104,7 +98,7 @@ struct hcoord *vector_sum(struct hcoord *w,
 }
 
 
-struct hcoord *vector_diff(struct hcoord *w,
+struct hcoord *vec_sub(struct hcoord *w,
 			   const struct hcoord *u,
 			   const struct hcoord *v)
 {
@@ -117,7 +111,7 @@ struct hcoord *vector_diff(struct hcoord *w,
 }
 
 
-struct hcoord *vector_add(struct hcoord *u, const struct hcoord *v)
+struct hcoord *vec_add_self(struct hcoord *u, const struct hcoord *v)
 {
 	u->x += v->x;
 	u->y += v->y;
@@ -127,7 +121,7 @@ struct hcoord *vector_add(struct hcoord *u, const struct hcoord *v)
 }
 
 
-struct hcoord *vector_sub(struct hcoord *u, const struct hcoord *v)
+struct hcoord *vec_sub_self(struct hcoord *u, const struct hcoord *v)
 {
 	u->x -= v->x;
 	u->y -= v->y;
@@ -137,28 +131,28 @@ struct hcoord *vector_sub(struct hcoord *u, const struct hcoord *v)
 }
 
 
-int vector_is_null(const struct hcoord *v)
+int vec_is_null(const struct hcoord *v)
 {
-	return nearly_equals( vector_len(v), 0.F );
+	return nearly_equals( vec_len(v), 0.F );
 }
 
 
-int vector_is_unit(const struct hcoord *v)
+int vec_is_unit(const struct hcoord *v)
 {
-	return nearly_equals( vector_len(v), 1.F );
+	return nearly_equals( vec_len(v), 1.F );
 }
 
 
-int vectors_are_ortho(const struct hcoord *u, const struct hcoord *v)
+int vec_is_ortho(const struct hcoord *u, const struct hcoord *v)
 {
-	return nearly_equals( vector_dot(u, v), 0.F );
+	return nearly_equals( vec_dot(u, v), 0.F );
 }
 
 
 #define FOR_EACH_CELL(i,j) for ((i) = 0; (i) < 4; (i)++) \
 				for ((j) = 0; (j) < 4; (j)++)
 #define CELL(m,r,c)	((m)->cell[r][c])
-union matrix *matrix_mul(union matrix *m,
+union matrix *mat_x_mat(union matrix *m,
 			 const union matrix *a, 
 			 const union matrix *b)
 {
@@ -180,7 +174,7 @@ union matrix *matrix_mul(union matrix *m,
 			 CELL(m, r, 1) * ((v)->y) +\
 			 CELL(m, r, 2) * ((v)->z) +\
 			 CELL(m, r, 3) * ((v)->w)
-struct hcoord *matrix_apply(struct hcoord *u, 
+struct hcoord *mat_x_vec(struct hcoord *u, 
 			    const union matrix *m, 
 			    const struct hcoord *v)
 {
@@ -193,7 +187,7 @@ struct hcoord *matrix_apply(struct hcoord *u,
 }
 
 
-union matrix *matrix_transpose(union matrix *r, const union matrix *m)
+union matrix *mat_transpose(union matrix *r, const union matrix *m)
 {
 	int row, col;
 
@@ -202,30 +196,4 @@ union matrix *matrix_transpose(union matrix *r, const union matrix *m)
 	}
 
 	return r;
-}
-
-
-union matrix *matrix_translation(union matrix *m, float x, float y, float z)
-{
-	m->cell[0][0] = 1.F;
-	m->cell[0][1] = 0.F;
-	m->cell[0][2] = 0.F;
-	m->cell[0][3] = x;
-
-	m->cell[1][0] = 0.F;
-	m->cell[1][1] = 1.F;
-	m->cell[1][2] = 0.F;
-	m->cell[1][3] = y;
-
-	m->cell[2][0] = 0.F;
-	m->cell[2][1] = 0.F;
-	m->cell[2][2] = 1.F;
-	m->cell[2][3] = z;
-
-	m->cell[3][0] = 0.F;
-	m->cell[3][1] = 0.F;
-	m->cell[3][2] = 0.F;
-	m->cell[3][3] = 1.F;
-
-	return m;
 }
