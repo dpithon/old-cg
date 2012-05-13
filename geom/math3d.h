@@ -20,7 +20,15 @@ union matrix { /* matrix 4x4 */
 #define POINT_I   { 1.F, 0.F, 0.F, 1.F }
 #define POINT_J   { 0.F, 1.F, 0.F, 1.F }
 #define POINT_K   { 0.F, 0.F, 1.F, 1.F }
-#define MATRIX_ID { .rows = { VECTOR_I, VECTOR_J, VECTOR_K, POINT_O } }
+
+#define MATRIX_INIT_ID { .rows = {\
+	{ 1.F, 0.F, 0.F, 0.F },\
+	{ 0.F, 1.F, 0.F, 0.F },\
+	{ 0.F, 0.F, 1.F, 0.F },\
+	{ 0.F, 0.F, 0.F, 1.F } } }
+
+extern float Epsilon;
+extern int nearly_equals(float, float);
 
 extern float vector_len(const struct hcoord*);
 extern float vector_len2(const struct hcoord*);
@@ -45,5 +53,11 @@ extern union matrix *matrix_mul(union matrix*,
 				 const union matrix*);
 extern struct hcoord *matrix_apply(struct hcoord*, const union matrix*);
 extern union matrix *matrix_transpose(union matrix*, const union matrix*);
+
+#define assert_vector_not_null(v) assert(\
+	! nearly_equals( vector_len(v), 0.F ) )
+
+#define assert_vector_is_unit(v)  assert(\
+	nearly_equals( vector_len(v), 1.F ) )
 
 #endif /* _MATH3D_H */

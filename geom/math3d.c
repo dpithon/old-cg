@@ -3,6 +3,26 @@
 
 
 #define dot(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
+#define EPSILON 0.0001
+
+
+float Epsilon = EPSILON;
+
+int nearly_equals(float a, float b)
+{
+	float absA = fabsf(a);
+        float absB = fabsf(b);
+        float diff = fabsf(a - b);
+
+        if (a == b) { // shortcut, handles infinities
+            return 1;
+        } else if (a * b == 0) { // a or b or both are zero
+            // relative error is not meaningful here
+            return diff < (Epsilon * Epsilon);
+        } else { // use relative error
+            return diff / (absA + absB) < Epsilon;
+        }
+}
 
 
 float vector_len(const struct hcoord *v)
