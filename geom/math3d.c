@@ -3,7 +3,7 @@
 
 
 #define dot(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
-#define EPSILON 0.0001
+#define EPSILON 0.001
 
 
 float Epsilon = EPSILON;
@@ -137,6 +137,24 @@ struct hcoord *vector_sub(struct hcoord *u, const struct hcoord *v)
 }
 
 
+int vector_is_null(const struct hcoord *v)
+{
+	return nearly_equals( vector_len(v), 0.F );
+}
+
+
+int vector_is_unit(const struct hcoord *v)
+{
+	return nearly_equals( vector_len(v), 1.F );
+}
+
+
+int vectors_are_ortho(const struct hcoord *u, const struct hcoord *v)
+{
+	return nearly_equals( vector_dot(u, v), 0.F );
+}
+
+
 #define FOR_EACH_CELL(i,j) for ((i) = 0; (i) < 4; (i)++) \
 				for ((j) = 0; (j) < 4; (j)++)
 #define CELL(m,r,c)	((m)->cell[r][c])
@@ -158,20 +176,20 @@ union matrix *matrix_mul(union matrix *m,
 }
 
 
-#define ROW_MUL(m, r, w) CELL(m, r, 0) * ((w).x) +\
-			 CELL(m, r, 1) * ((w).y) +\
-			 CELL(m, r, 2) * ((w).z) +\
-			 CELL(m, r, 3) * ((w).w)
-struct hcoord *matrix_apply(struct hcoord *v, const union matrix *m)
+#define ROW_MUL(m, r, v) CELL(m, r, 0) * ((v)->x) +\
+			 CELL(m, r, 1) * ((v)->y) +\
+			 CELL(m, r, 2) * ((v)->z) +\
+			 CELL(m, r, 3) * ((v)->w)
+struct hcoord *matrix_apply(struct hcoord *u, 
+			    const union matrix *m, 
+			    const struct hcoord *v)
 {
-	struct hcoord w = *v;
+	u->x = ROW_MUL(m, 0, v);
+	u->y = ROW_MUL(m, 1, v);
+	u->z = ROW_MUL(m, 2, v);
+	u->w = ROW_MUL(m, 3, v);
 
-	v->x = ROW_MUL(m, 0, w);
-	v->y = ROW_MUL(m, 1, w);
-	v->z = ROW_MUL(m, 2, w);
-	v->w = ROW_MUL(m, 3, w);
-
-	return v;
+	return u;
 }
 
 
@@ -184,4 +202,30 @@ union matrix *matrix_transpose(union matrix *r, const union matrix *m)
 	}
 
 	return r;
+}
+
+
+union matrix *matrix_translation(union matrix *m, float x, float y, float z)
+{
+	m->cell[0][0] = 1.F;
+	m->cell[0][1] = 0.F;
+	m->cell[0][2] = 0.F;
+	m->cell[0][3] = x;
+
+	m->cell[1][0] = 0.F;
+	m->cell[1][1] = 1.F;
+	m->cell[1][2] = 0.F;
+	m->cell[1][3] = y;
+
+	m->cell[2][0] = 0.F;
+	m->cell[2][1] = 0.F;
+	m->cell[2][2] = 1.F;
+	m->cell[2][3] = z;
+
+	m->cell[3][0] = 0.F;
+	m->cell[3][1] = 0.F;
+	m->cell[3][2] = 0.F;
+	m->cell[3][3] = 1.F;
+
+	return m;
 }

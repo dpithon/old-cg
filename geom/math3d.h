@@ -48,16 +48,18 @@ extern struct hcoord *vector_diff(struct hcoord*,
 extern struct hcoord *vector_add(struct hcoord*, const struct hcoord*);
 extern struct hcoord *vector_sub(struct hcoord*, const struct hcoord*);
 
+extern int vector_is_null(const struct hcoord*);
+extern int vector_is_unit(const struct hcoord*);
+extern int vectors_are_ortho(const struct hcoord*, const struct hcoord*);
+
 extern union matrix *matrix_mul(union matrix*,
 				 const union matrix*,
 				 const union matrix*);
-extern struct hcoord *matrix_apply(struct hcoord*, const union matrix*);
+extern struct hcoord *matrix_apply(struct hcoord*, 
+				   const union matrix*,
+				   const struct hcoord*);
 extern union matrix *matrix_transpose(union matrix*, const union matrix*);
 
-#define assert_vector_not_null(v) assert(\
-	! nearly_equals( vector_len(v), 0.F ) )
-
-#define assert_vector_is_unit(v)  assert(\
-	nearly_equals( vector_len(v), 1.F ) )
+extern union matrix *matrix_translation(union matrix*, float, float, float);
 
 #endif /* _MATH3D_H */

@@ -17,28 +17,70 @@ void pretty_printm(union matrix *m)
 }
 
 
+/* macros returning pointers to matrix vectors */
 #define MTX_I(m)	&((m)->rows.r1)
 #define MTX_J(m)	&((m)->rows.r2)
-#define MatrixK(m)	&((m)->rows.r3)
+#define MTX_K(m)	&((m)->rows.r3)
 
 int main()
 {
-	struct hcoord up = {0.F, 1.F, 0.F, 0.F };
-	union matrix tm, m = { .rows = { 
+	struct hcoord up = {0.5F, 1.F, 0.8F, 0.F };
+	union matrix t_rot, rot = { .rows = { 
 		.r1 = {6.F, 2.5F, 3.F, 0.F },
 		.r4 = {0.F, 0.F, 0.F, 1.F } 
 	} };
+	union matrix trans;
+	union matrix to_world, to_local;
 
-	assert_vector_not_null( MTX_I(&m) );
-	assert_vector_is_unit( &up );
+	assert(! vector_is_null(MTX_I(&rot)));
+	vector_unitize(&up);
 
-	vector_unitize( MTX_I(&m) );
-	MTX_J(m) = MTX_I(m);
-	vector_scale( &MTX_J(m), -1.F * vector_dot(&MTX_I(m), &up) );
-	vector_unitize(vector_add(&MTX_J(m), &up));
-	vector_cross(&MatrixK(m), &MTX_I(m), &MTX_J(m));
+	/* compute I */
+	vector_unitize(MTX_I(&rot));
+
+	/* compute J := Up - (I.Up).I */
+	rot.rows.r2 = rot.rows.r1; /* J := I */
+	vector_scale( MTX_J(&rot), -1.F * vector_dot(MTX_I(&rot), &up) );
+	vector_unitize(vector_add(MTX_J(&rot), &up));
+
+	/* compute K := I x J */
+	vector_cross(MTX_K(&rot), MTX_I(&rot), MTX_J(&rot));
 	
-	matrix_transpose(&tm, &m);
+	/* Checking */
+	assert(vector_is_unit(MTX_I(&rot)));
+	assert(vector_is_unit(MTX_J(&rot)));
+	assert(vector_is_unit(MTX_K(&rot)));
+	assert(vectors_are_ortho(MTX_I(&rot), MTX_J(&rot)));
+	assert(vectors_are_ortho(MTX_I(&rot), MTX_K(&rot)));
+	assert(vectors_are_ortho(MTX_J(&rot), MTX_K(&rot)));
 
+	/* M1 := Translate(v) . Rot */
+	matrix_translation(&trans, 5.F, 6.F, -3.F);
+	matrix_mul(&to_world, &trans, &rot);
+
+	/* M2 := Inverse(M1)
+	 *    := Inverse(Translate(v) . Rot)
+	 *    := Inverse(Rot) . Inverse(Translate(v))
+	 *    := Tranpose(Rot) . Translate(-v)
+	 */
+	matrix_translation(&trans, -5.F, -6.F, 3.F);
+	matrix_transpose(&t_rot, &rot);
+	matrix_mul(&to_local, &t_rot, &trans);
+
+	pretty_printm(&to_local);
+	pretty_printm(&to_world);
+	pretty_printm(matrix_mul(&trans, &to_local, &to_world));
+
+
+	/* samples ... */
+	struct hcoord p1_in_world, p1_in_local = { 1.3F, 2.5F, -0.87F, 1.F };
+	matrix_apply(&p1_in_world, &to_world, &p1_in_local);
+
+	pretty_printv("p1 in world: ", &p1_in_world);
+	pretty_printv("p1 in local: ", &p1_in_local);
+
+	matrix_apply(&p1_in_local, &to_local, &p1_in_world);
+	pretty_printv("p1 in world: ", &p1_in_world);
+	pretty_printv("p1 in local: ", &p1_in_local);
 	return 0;
 }
