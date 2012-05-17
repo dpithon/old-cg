@@ -5,3 +5,6 @@ math3d API checking
  Second argument: operand1
  Second argument: operand2
  ...
+
+mat_mulv_self
+mat_mulm_self

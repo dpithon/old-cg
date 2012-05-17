@@ -27,7 +27,6 @@ union matrix {
 #define PNT_I  { 1.F, 0.F, 0.F, 1.F }
 #define PNT_J  { 0.F, 1.F, 0.F, 1.F }
 #define PNT_K  { 0.F, 0.F, 1.F, 1.F }
-
 #define MAT_ID { .rows = {\
 	{ 1.F, 0.F, 0.F, 0.F },\
 	{ 0.F, 1.F, 0.F, 0.F },\
@@ -36,6 +35,10 @@ union matrix {
 
 extern float Epsilon;
 extern int nearly_equals(float, float);
+
+struct hcoord *vec_from_point(struct hcoord*,
+			      struct hcoord*,
+			      struct hcoord*);
 
 /* vector observer functions */
 extern float vec_len(const struct hcoord*);
@@ -74,11 +77,11 @@ extern struct hcoord *vec_add_self(struct hcoord*, const struct hcoord*);
 extern struct hcoord *vec_sub_self(struct hcoord*, const struct hcoord*);
 
 /* matrix operations */
-extern union matrix *mat_x_mat(
+extern union matrix *mat_mulm(
 		union matrix*,
 		const union matrix*,
 		const union matrix*);
-extern struct hcoord *mat_x_vec(
+extern struct hcoord *mat_mulv(
 		struct hcoord*, 
 		const union matrix*,
 		const struct hcoord*);

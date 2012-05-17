@@ -18,70 +18,87 @@ void pretty_printm(union matrix *m)
 }
 
 
+/* View transformation */
+struct vt {
+	struct hcoord vrp;	/* view reference point */
+	struct hcoord lap;	/* "look at" point      */
+	struct hcoord up;
+
+	/* View transformation matrices */
+	union matrix to_global; /* local coordinates to global ones */
+	union matrix to_local;  /* global coordinates to local ones */
+};
+
 /* macros returning pointers to matrix vectors */
 #define MTX_I(m)	&((m)->rows.r1)
 #define MTX_J(m)	&((m)->rows.r2)
 #define MTX_K(m)	&((m)->rows.r3)
 
-int main()
+/*
+ * Compute view transformation matrices.
+ * vt.vrp, vt.lap must be initialized.
+ * vt.up must be a unit vector
+ */
+void compute_vt(struct vt *vt)
 {
-	struct hcoord up = {0.5F, 1.F, 0.8F, 0.F };
-	union matrix t_rot, rot = { .rows = { 
-		.r1 = {6.F, 2.5F, 3.F, 0.F },
-		.r4 = {0.F, 0.F, 0.F, 1.F } 
-	} };
-	union matrix trans;
-	union matrix to_world, to_local;
+	union matrix m1, m2, tsl;
 
-	assert(! vec_is_null(MTX_I(&rot)));
-	vec_unit_self(&up);
+	/* Compute view coordinate system in matrix m1 */
+	/* I := unit_vector(vrp, lap) */
+	vec_from_point(MTX_I(&m1), &vt->vrp, &vt->lap);
+	vec_unit_self(MTX_I(&m1));
 
-	/* compute I */
-	vec_unit_self(MTX_I(&rot));
+	/* J := unit_vector(Up - (I.Up).I) */
+	m1.rows.r2 = m1.rows.r1;
+	vec_scale_self(MTX_J(&m1), -1.F * vec_dot(MTX_I(&m1), &vt->up) );
+	vec_unit_self(vec_add_self(MTX_J(&m1), &vt->up));
 
-	/* compute J := Up - (I.Up).I */
-	rot.rows.r2 = rot.rows.r1; /* J := I */
-	vec_scale_self( MTX_J(&rot), -1.F * vec_dot(MTX_I(&rot), &up) );
-	vec_unit_self(vec_add_self(MTX_J(&rot), &up));
+	/* K := I x J */
+	vec_cross(MTX_K(&m1), MTX_I(&m1), MTX_J(&m1));
 
-	/* compute K := I x J */
-	vec_cross(MTX_K(&rot), MTX_I(&rot), MTX_J(&rot));
-	
-	/* Checking */
-	assert(vec_is_unit(MTX_I(&rot)));
-	assert(vec_is_unit(MTX_J(&rot)));
-	assert(vec_is_unit(MTX_K(&rot)));
-	assert(vec_is_ortho(MTX_I(&rot), MTX_J(&rot)));
-	assert(vec_is_ortho(MTX_I(&rot), MTX_K(&rot)));
-	assert(vec_is_ortho(MTX_J(&rot), MTX_K(&rot)));
+	/* complete matrix */
+	m1.cell[3][0] = m1.cell[3][1] = m1.cell[3][2] = 0.F;
+	m1.cell[3][3] = 1.F;
 
-	/* M1 := Translate(v) . Rot */
-	translation(&trans, 5.F, 6.F, -3.F);
-	mat_x_mat(&to_world, &trans, &rot);
+	/* T1 := Translate(v) . Rot */
+	translation(&tsl, vt->vrp.x, vt->vrp.y, vt->vrp.z);
+	mat_mulm(&vt->to_global, &tsl, &m1);
 
-	/* M2 := Inverse(M1)
+	/* T2 := Inverse(T1)
 	 *    := Inverse(Translate(v) . Rot)
 	 *    := Inverse(Rot) . Inverse(Translate(v))
 	 *    := Tranpose(Rot) . Translate(-v)
 	 */
-	translation(&trans, -5.F, -6.F, 3.F);
-	mat_transpose(&t_rot, &rot);
-	mat_x_mat(&to_local, &t_rot, &trans);
+	mat_transpose(&m2, &m1);
+	translation(&tsl, -vt->vrp.x, -vt->vrp.y, -vt->vrp.z);
+	mat_mulm(&vt->to_local, &m2, &tsl);
+}
 
-	pretty_printm(&to_local);
-	pretty_printm(&to_world);
-	pretty_printm(mat_x_mat(&trans, &to_local, &to_world));
+
+int main()
+{
+	union matrix tmp;
+	struct vt vt = { 
+		.vrp = { 4.F, 3.F, 2.F, 1.F },
+		.lap = { 8.F, 5.F, 4.F, 1.F },
+		.up  = VEC_J
+	};
+
+	compute_vt(&vt);
+
+	pretty_printm(&vt.to_global);
+	pretty_printm(&vt.to_local);
+	pretty_printm(mat_mulm(&tmp, &vt.to_local, &vt.to_global));
 
 
 	/* samples ... */
-	struct hcoord p1_in_world, p1_in_local = { 1.3F, 2.5F, -0.87F, 1.F };
-	mat_x_vec(&p1_in_world, &to_world, &p1_in_local);
+	struct hcoord pntg, pnt = { 1.F, 1.F, 1.F, 1.F };
 
-	pretty_printv("p1 in world: ", &p1_in_world);
-	pretty_printv("p1 in local: ", &p1_in_local);
+	pretty_printv("p in local cs  : ", &pnt);
+	mat_mulv(&pntg, &vt.to_global, &pnt);
+	pretty_printv("p in global cs : ", &pntg);
+	mat_mulv(&pnt, &vt.to_local, &pntg);
+	pretty_printv("p in local cs  : ", &pnt);
 
-	mat_x_vec(&p1_in_local, &to_local, &p1_in_world);
-	pretty_printv("p1 in world: ", &p1_in_world);
-	pretty_printv("p1 in local: ", &p1_in_local);
 	return 0;
 }

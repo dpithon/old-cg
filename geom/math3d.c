@@ -31,6 +31,19 @@ float vec_len(const struct hcoord *v)
 }
 
 
+struct hcoord *vec_from_point(struct hcoord *u,
+			      struct hcoord *a,
+			      struct hcoord *b)
+{
+	u->x = b->x - a->x;
+	u->y = b->y - a->y;
+	u->z = b->z - a->z;
+	u->w = 0.F;
+
+	return u;
+}
+
+
 struct hcoord *vec_scale_self(struct hcoord *v, float k)
 {
 	v->x *= k;
@@ -92,7 +105,7 @@ struct hcoord *vec_add(struct hcoord *w,
 	w->x = u->x + v->x;
 	w->y = u->y + v->y;
 	w->z = u->z + v->z;
-	w->w = 1.F;
+	w->w = 0.F;
 
 	return w;
 }
@@ -105,7 +118,7 @@ struct hcoord *vec_sub(struct hcoord *w,
 	w->x = u->x - v->x;
 	w->y = u->y - v->y;
 	w->z = u->z - v->z;
-	w->w = 1.F;
+	w->w = 0.F;
 
 	return w;
 }
@@ -152,7 +165,7 @@ int vec_is_ortho(const struct hcoord *u, const struct hcoord *v)
 #define FOR_EACH_CELL(i,j) for ((i) = 0; (i) < 4; (i)++) \
 				for ((j) = 0; (j) < 4; (j)++)
 #define CELL(m,r,c)	((m)->cell[r][c])
-union matrix *mat_x_mat(union matrix *m,
+union matrix *mat_mulm(union matrix *m,
 			 const union matrix *a, 
 			 const union matrix *b)
 {
@@ -174,7 +187,7 @@ union matrix *mat_x_mat(union matrix *m,
 			 CELL(m, r, 1) * ((v)->y) +\
 			 CELL(m, r, 2) * ((v)->z) +\
 			 CELL(m, r, 3) * ((v)->w)
-struct hcoord *mat_x_vec(struct hcoord *u, 
+struct hcoord *mat_mulv(struct hcoord *u, 
 			    const union matrix *m, 
 			    const struct hcoord *v)
 {
