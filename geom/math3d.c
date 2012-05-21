@@ -1,4 +1,5 @@
 #include <math.h>
+#include <assert.h>
 #include "math3d.h" 
 
 
@@ -18,10 +19,23 @@ int nearly_equals(float a, float b)
             return 1;
         } else if (a * b == 0) { // a or b or both are zero
             // relative error is not meaningful here
-            return diff < (Epsilon * Epsilon);
+            return diff < Epsilon;
         } else { // use relative error
             return diff / (absA + absB) < Epsilon;
         }
+}
+
+
+struct hcoord *homogeneize(struct hcoord *c)
+{
+	assert(! nearly_equals(c->w, 0.F));
+
+	c->x /= c->w;
+	c->y /= c->w;
+	c->z /= c->w;
+	c->w = 1.F;
+
+	return c;
 }
 
 

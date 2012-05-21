@@ -36,6 +36,8 @@ union matrix {
 extern float Epsilon;
 extern int nearly_equals(float, float);
 
+struct hcoord *homogeneize(struct hcoord*);
+
 struct hcoord *vec_from_point(struct hcoord*,
 			      struct hcoord*,
 			      struct hcoord*);
