@@ -1,6 +1,6 @@
 .PHONY: all clean purge install
 
-CFLAGS=-Wall -Wextra -std=c99 -pedantic -g0 -O3 -pipe
+CFLAGS=-Wall -Wextra -std=c99 -pedantic -g3 -O0 -pipe
 
 OBJECTS=math3d.o transformation.o
 
@@ -18,7 +18,7 @@ libgeom.a: $(OBJECTS)
 math3d.o: math3d.c math3d.h
 
 clean:
-	rm -rf $(OBJECTS) libbpix.a *.gch
+	rm -rf *.o *.gch
 
 purge: clean
-
+	rm -rf lib*a

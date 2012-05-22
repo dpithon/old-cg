@@ -1,0 +1,20 @@
+# Model operations
+
+## Implicitly used data
+
+* one Matrix Stack
+
+## Stack operators
+
+* model\_push()     : Duplicate matrix top
+* model\_pop()      : Drop matrix top
+
+## Transformation
+
+* model\_load\_id()          : Push Identity matrix on stack
+* model\_translate(tx,ty,tz) : Apply translation to top matrix 
+* model\_scale(sx,sy,sz)     : Apply scaling to top matrix
+* model\_rotate\_x(def)      : Apply rotation about X axis
+* model\_rotate\_y(def)      : Apply rotation about X axis
+* model\_rotate\_z(def)      : Apply rotation about X axis
+* model\_multiply(matrix)    : Apply given matrix to top matrix

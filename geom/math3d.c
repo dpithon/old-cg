@@ -1,5 +1,8 @@
 #include <math.h>
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "math3d.h" 
 
 
@@ -223,4 +226,246 @@ union matrix *mat_transpose(union matrix *r, const union matrix *m)
 	}
 
 	return r;
+}
+
+#define STACK_SZ	50
+#define STACK_MAX	(STACK_SZ - 1)
+static union matrix stack[STACK_SZ];
+static union matrix transf, bufmtx;
+static int stcki = -1;
+#ifndef M_PI
+#define M_PI 3.14159265358979323846F
+#endif /* M_PI */
+
+static void stack_error(void)
+{
+	fprintf(stderr, "stack overflow\n");
+	exit(EXIT_FAILURE);
+}
+
+
+void model_push(void)
+{
+	int n;
+
+	if (stcki < STACK_MAX) {
+		n = stcki + 1;
+		memcpy(&stack[n], &stack[stcki], sizeof(union matrix));
+		stcki = n;
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_pop(void)
+{
+	if (stcki > -1) {
+		stcki --;
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_load_id(void)
+{
+	int row, col;
+	if (stcki < STACK_MAX) {
+		stcki ++;
+		FOR_EACH_CELL(row, col) {
+			CELL(&stack[stcki], row, col) = row == col ? 1.F : 0.F;
+		}
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_translate(float tx, float ty, float tz)
+{
+	if (stcki > -1) {
+		transf.cell[0][0] = 1.F;
+		transf.cell[0][1] = 0.F;
+		transf.cell[0][2] = 0.F;
+		transf.cell[0][3] = tx;
+
+		transf.cell[1][0] = 0.F;
+		transf.cell[1][1] = 1.F;
+		transf.cell[1][2] = 0.F;
+		transf.cell[1][3] = ty;
+
+		transf.cell[2][0] = 0.F;
+		transf.cell[2][1] = 0.F;
+		transf.cell[2][2] = 1.F;
+		transf.cell[2][3] = tz;
+
+		transf.cell[3][0] = 0.F;
+		transf.cell[3][1] = 0.F;
+		transf.cell[3][2] = 0.F;
+		transf.cell[3][3] = 1.F;
+
+		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_scale(float sx, float sy, float sz)
+{
+	if (stcki > -1) {
+		transf.cell[0][0] = sx;
+		transf.cell[0][1] = 0.F;
+		transf.cell[0][2] = 0.F;
+		transf.cell[0][3] = 0.F;
+
+		transf.cell[1][0] = 0.F;
+		transf.cell[1][1] = sy;
+		transf.cell[1][2] = 0.F;
+		transf.cell[1][3] = 0.F;
+
+		transf.cell[2][0] = 0.F;
+		transf.cell[2][1] = 0.F;
+		transf.cell[2][2] = sz;
+		transf.cell[2][3] = 0.F;
+
+		transf.cell[3][0] = 0.F;
+		transf.cell[3][1] = 0.F;
+		transf.cell[3][2] = 0.F;
+		transf.cell[3][3] = 1.F;
+
+		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_rotate_x(float deg)
+{
+	if (stcki > -1) {
+
+		float rad = M_PI * deg / 180.F;
+		float sin = sinf(rad);
+		float cos = cosf(rad);
+
+		transf.cell[0][0] = 1.F;
+		transf.cell[0][1] = 0.F;
+		transf.cell[0][2] = 0.F;
+		transf.cell[0][3] = 0.F;
+
+		transf.cell[1][0] = 0.F;
+		transf.cell[1][1] = cos;
+		transf.cell[1][2] = -sin;
+		transf.cell[1][3] = 0.F;
+
+		transf.cell[2][0] = 0.F;
+		transf.cell[2][1] = sin;
+		transf.cell[2][2] = cos;
+		transf.cell[2][3] = 0.F;
+
+		transf.cell[3][0] = 0.F;
+		transf.cell[3][1] = 0.F;
+		transf.cell[3][2] = 0.F;
+		transf.cell[3][3] = 1.F;
+
+		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_rotate_y(float deg)
+{
+	if (stcki > -1) {
+
+		float rad = M_PI * deg / 180.F;
+		float sin = sinf(rad);
+		float cos = cosf(rad);
+
+		transf.cell[0][0] = cos;
+		transf.cell[0][1] = 0.F;
+		transf.cell[0][2] = sin;
+		transf.cell[0][3] = 0.F;
+
+		transf.cell[1][0] = 0.F;
+		transf.cell[1][1] = 1.F;
+		transf.cell[1][2] = 0.F;
+		transf.cell[1][3] = 0.F;
+
+		transf.cell[2][0] = -sin;
+		transf.cell[2][1] = 0.F;
+		transf.cell[2][2] = cos;
+		transf.cell[2][3] = 0.F;
+
+		transf.cell[3][0] = 0.F;
+		transf.cell[3][1] = 0.F;
+		transf.cell[3][2] = 0.F;
+		transf.cell[3][3] = 1.F;
+
+		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_rotate_z(float deg)
+{
+	if (stcki > -1) {
+		float rad = M_PI * deg / 180.F;
+		float sin = sinf(rad);
+		float cos = cosf(rad);
+
+		transf.cell[0][0] = cos;
+		transf.cell[0][1] = -sin;
+		transf.cell[0][2] = 0.F;
+		transf.cell[0][3] = 0.F;
+
+		transf.cell[1][0] = sin;
+		transf.cell[1][1] = cos;
+		transf.cell[1][2] = 0.F;
+		transf.cell[1][3] = 0.F;
+
+		transf.cell[2][0] = 0.F;
+		transf.cell[2][1] = 0.F;
+		transf.cell[2][2] = 1.F;
+		transf.cell[2][3] = 0.F;
+
+		transf.cell[3][0] = 0.F;
+		transf.cell[3][1] = 0.F;
+		transf.cell[3][2] = 0.F;
+		transf.cell[3][3] = 1.F;
+
+		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_multiply(const union matrix *m)
+{
+	if (stcki > -1) {
+		mat_mulm(&bufmtx, &stack[stcki], m);
+		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
+	} else {
+		stack_error();
+	}
+}
+
+
+void model_vertex(struct hcoord* c)
+{
+	static struct hcoord tmp;
+
+	mat_mulv(&tmp, &stack[stcki], c);
+	memcpy(c, &tmp, sizeof tmp);
 }

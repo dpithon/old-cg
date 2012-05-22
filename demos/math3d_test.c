@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "geom/math3d.h"
+#include "geom/modelops.h"
 #include "geom/transformation.h"
 #include "bpix/bpix.h"
 
@@ -104,8 +105,8 @@ struct hcoord point[] = {
 	{  0,  0, 30, 1 },
 
 	{  0,  0,  0, 1},
-	{  100,  0,  0, 1},
-	{  0,  100,  0, 1},
+	{  10,  0,  0, 1},
+	{  0,  200,  0, 1},
 	{  0,  0,  100, 1},
 
 	{  0,  0,  0, 0 }
@@ -157,7 +158,7 @@ int main()
 	struct vt vt = {
 		.vrp = {   60,  60, 60, 1 },
 		.lap = {   0,   0,   0, 1 },
-		.up  = {   0,  -1,   0, 0 }
+		.up  = {   0,   -1,   0, 0 }
 	};
 	union matrix m, persp = { .rows = {
 		{1, 0, 0, 0},
@@ -174,7 +175,20 @@ int main()
 
 	mat_mulm(&m, &persp, &vt.to_global);
 
+	model_load_id();
+	model_push();
+	model_scale(2, 2, 2);
+	/*
+	model_translate(0, 0, 0);
+	model_rotate_x(-90);
+	model_rotate_y(-90);
+		*/
+
 	for (i = 0; point[i].w != 0; i++) {
+		if (i == 10) {
+			model_pop();
+		}
+		model_vertex(&point[i]);
 		mat_mulv(&p2d, &m, &point[i]);
 		point[i] = p2d;
 		homogeneize(&point[i]);
