@@ -78,7 +78,6 @@ void compute_vt(struct vt *vt)
 	/* T1 := Translate(v) . Rot */
 	translation(&tsl, -vt->vrp.x, -vt->vrp.y, -vt->vrp.z);
 	mat_mulm(&vt->to_global, &m1, &tsl);
-	pretty_printm(&vt->to_global);
 
 	/* T2 := Inverse(T1)
 	 *    := Inverse(Translate(v) . Rot)
@@ -105,7 +104,7 @@ struct hcoord point[] = {
 	{  0,  0, 30, 1 },
 
 	{  0,  0,  0, 1},
-	{  10,  0,  0, 1},
+	{  -100,  0,  0, 1},
 	{  0,  200,  0, 1},
 	{  0,  0,  100, 1},
 
@@ -156,9 +155,9 @@ int main()
 {
 	int i = 0;
 	struct vt vt = {
-		.vrp = {   60,  60, 60, 1 },
-		.lap = {   0,   0,   0, 1 },
-		.up  = {   0,   -1,   0, 0 }
+		.vrp = {   30,  30, 90, 1 },
+		.lap = {   30,  30,   0, 1 },
+		.up  = {   0,  -1,   0, 0 }
 	};
 	union matrix m, persp = { .rows = {
 		{1, 0, 0, 0},
@@ -177,12 +176,10 @@ int main()
 
 	model_load_id();
 	model_push();
-	model_scale(2, 2, 2);
-	/*
-	model_translate(0, 0, 0);
-	model_rotate_x(-90);
+	model_scale(1.5,1.5,1);
+	model_rotate_z(90);
 	model_rotate_y(-90);
-		*/
+	model_translate(0, 30, 0);
 
 	for (i = 0; point[i].w != 0; i++) {
 		if (i == 10) {

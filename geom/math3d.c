@@ -305,7 +305,7 @@ void model_translate(float tx, float ty, float tz)
 		transf.cell[3][2] = 0.F;
 		transf.cell[3][3] = 1.F;
 
-		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		mat_mulm(&bufmtx, &transf, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
@@ -336,12 +336,34 @@ void model_scale(float sx, float sy, float sz)
 		transf.cell[3][2] = 0.F;
 		transf.cell[3][3] = 1.F;
 
-		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		mat_mulm(&bufmtx, &transf, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
 	}
 }
+
+#ifndef NDEBUG
+/* TODO move print functions elsewhere */
+static void printv(struct hcoord  *u)
+{
+	printf("%6.2f %6.2f %6.2f %6.2f", u->x, u->y, u->z, u->w);
+}
+
+static void pretty_printv(const char *s, struct hcoord  *u)
+{
+	fprintf(stderr,"%s%6.2f %6.2f %6.2f %6.2f\n", s, u->x, u->y, u->z, u->w);
+}
+
+static void pretty_printm(union matrix *m)
+{
+	pretty_printv("", &(m->rows.r1));
+	pretty_printv("", &(m->rows.r2));
+	pretty_printv("", &(m->rows.r3));
+	pretty_printv("", &(m->rows.r4));
+	printf("\n");
+}
+#endif
 
 
 void model_rotate_x(float deg)
@@ -372,7 +394,7 @@ void model_rotate_x(float deg)
 		transf.cell[3][2] = 0.F;
 		transf.cell[3][3] = 1.F;
 
-		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		mat_mulm(&bufmtx, &transf, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
@@ -408,7 +430,7 @@ void model_rotate_y(float deg)
 		transf.cell[3][2] = 0.F;
 		transf.cell[3][3] = 1.F;
 
-		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		mat_mulm(&bufmtx, &transf, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
@@ -443,7 +465,7 @@ void model_rotate_z(float deg)
 		transf.cell[3][2] = 0.F;
 		transf.cell[3][3] = 1.F;
 
-		mat_mulm(&bufmtx, &stack[stcki], &transf);
+		mat_mulm(&bufmtx, &transf, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
@@ -454,7 +476,7 @@ void model_rotate_z(float deg)
 void model_multiply(const union matrix *m)
 {
 	if (stcki > -1) {
-		mat_mulm(&bufmtx, &stack[stcki], m);
+		mat_mulm(&bufmtx, m, &stack[stcki]);
 		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
 	} else {
 		stack_error();
