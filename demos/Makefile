@@ -1,12 +1,12 @@
 .PHONY: all clean purge
 
-CFLAGS=-Wall -Wextra -std=c99 -pedantic -g0 -O3 -pipe -I..
+CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe -I/usr/local/include -I..
 GTK_CFLAGS=$(CFLAGS) $(shell pkg-config --cflags gtk+-3.0)
 GTK_LDFLAGS=$(shell pkg-config --libs gtk+-3.0)
 
 CC=gcc
 
-TARGETS=bpixerror lines lines_gui gfract gfract2 redbox gfract2_gui math3d_test
+TARGETS=bpixerror lines lines_gui gfract gfract2 redbox gfract2_gui
 
 all: $(TARGETS)
 
@@ -30,9 +30,6 @@ gfract: gfract.o
 
 gfract2: gfract2.o
 	$(CC) -o $@ $^ -L../bpix -lbpix -lm
-
-math3d_test: math3d_test.o
-	$(CC) -o $@ $^ -L../bpix -lbpix -L../geom -lgeom -lm
 
 bpixerror.o: bpixerror.c ../bpix/bpix-error.h
 lines.o: lines.c ../bpix/bpix.h ../bpix/bpix-core.h ../bpix/bpix-error.h \

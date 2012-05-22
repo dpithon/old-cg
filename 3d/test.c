@@ -1,8 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
-#include "geom/math3d.h"
-#include "geom/modelops.h"
-#include "geom/transformation.h"
+#include "math3d.h"
+#include "modelops.h"
+#include "transformation.h"
 #include "bpix/bpix.h"
 
 void printv(struct hcoord  *u)

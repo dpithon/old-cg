@@ -10,12 +10,13 @@ OBJECTS=bpix-cairo.o bpix-core.o bpix-drawing.o bpix-error.o bpix-gtk.o bpix-pnm
 all: libbpix.a
 
 install: all
-	mkdir /usr/include/bpix
-	install libbpix.a /usr/lib/
-	install *.h /usr/include/bpix/
+	mkdir -p /usr/local/include/bpix
+	install libbpix.a /usr/local/lib/
+	install *.h /usr/local/include/bpix/
 
 
 libbpix.a: $(OBJECTS)
+	rm -f $@
 	ar -cvq $@ $^
 
 bpix-pnm.o: bpix-pnm.c bpix-pnm.h bpix-core.h bpix-error.h

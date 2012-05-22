@@ -1,10 +1,11 @@
 .PHONY: all clean purge install
 
-CFLAGS=-Wall -Wextra -std=c99 -pedantic -g3 -O0 -pipe
+CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe
 
 OBJECTS=math3d.o transformation.o
+TARGETS=libgeom.a test
 
-all: libgeom.a
+all: $(TARGETS)
 
 install: all
 	mkdir /usr/include/geom
@@ -13,12 +14,17 @@ install: all
 
 
 libgeom.a: $(OBJECTS)
+	rm -f $@
 	ar -cvq $@ $^
 
+test: test.o
+	$(CC) -o $@ $^ -L/usr/local/lib -L. -lbpix -lgeom -lm
+
 math3d.o: math3d.c math3d.h
+test.o: test.c
 
 clean:
 	rm -rf *.o *.gch
 
 purge: clean
-	rm -rf lib*a
+	rm -rf $(TARGETS) *.pnm
