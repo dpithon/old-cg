@@ -1,8 +1,14 @@
 #ifndef _MODELOPS_H
 #define _MODELOPS_H
 
-union matrix;
-struct hcoord;
+#include "math3d.h"
+
+struct edge {
+	struct hcoord start, end;
+};
+
+extern struct edge edges[];
+extern int edge_max;
 
 extern void model_push(void);
 extern void model_pop(void);
@@ -14,6 +20,6 @@ extern void model_rotate_y(float);
 extern void model_rotate_z(float);
 extern void model_multiply(const union matrix*);
 
-extern void model_vertex(struct hcoord*);
+extern void model_edge(const struct hcoord*, const struct hcoord*);
 
 #endif /* _MODELOPS_H */

@@ -18,3 +18,7 @@
 * model\_rotate\_y(def)      : Apply rotation about X axis
 * model\_rotate\_z(def)      : Apply rotation about X axis
 * model\_multiply(matrix)    : Apply given matrix to top matrix
+
+## Modeling
+
+* model\_edge(x1,y1,z1, x2,y2,z2) : Add an edge

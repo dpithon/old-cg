@@ -491,3 +491,14 @@ void model_vertex(struct hcoord* c)
 	mat_mulv(&tmp, &stack[stcki], c);
 	memcpy(c, &tmp, sizeof tmp);
 }
+
+
+#define EDGE_SZ	500
+int edge_max = -1;
+struct edge edges[EDGE_SZ];
+
+void model_edge(const struct hcoord *s, const struct hcoord *e)
+{
+	
+	
+}
