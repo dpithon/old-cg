@@ -2,23 +2,27 @@
 
 ## Implicitly used data
 
-* one Matrix Stack
+* one model matrix stack (initialized with top element == Id matrix)
+* one projection matrix stack (initialized with top element == Id matrix)
 
 ## Stack operators
 
-* model\_push()     : Duplicate matrix top
-* model\_pop()      : Drop matrix top
+* mstack\_select(STACK)		: Select current Matrix
+				  default is Model
+* mstack\_dup()      		: Duplicate matrix top
+* mstack\_pop()      		: Drop matrix top
 
 ## Transformation
 
-* model\_load\_id()          : Push Identity matrix on stack
-* model\_translate(tx,ty,tz) : Apply translation to top matrix 
-* model\_scale(sx,sy,sz)     : Apply scaling to top matrix
-* model\_rotate\_x(def)      : Apply rotation about X axis
-* model\_rotate\_y(def)      : Apply rotation about X axis
-* model\_rotate\_z(def)      : Apply rotation about X axis
-* model\_multiply(matrix)    : Apply given matrix to top matrix
+* mstack\_push\_id()          : Push Identity matrix on stack
+* mstack\_translate(tx,ty,tz) : Apply translation to top matrix 
+* mstack\_scale(sx,sy,sz)     : Apply scaling to top matrix
+* mstack\_rotate\_x(deg)      : Apply rotation about X axis
+* mstack\_rotate\_y(deg)      : Apply rotation about X axis
+* mstack\_rotate\_z(deg)      : Apply rotation about X axis
+* mstack\_multiply(matrix)    : Apply given matrix to top matrix
 
 ## Modeling
 
-* model\_edge(x1,y1,z1, x2,y2,z2) : Add an edge
+* model_triangle(p1, p2, p3) : Transform given triangle within current context
+* model_quad(p1, p2, p3, p4) : Transform given quad within current context

@@ -1,18 +1,226 @@
 #include <math.h>
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "math3d.h" 
-
 
 #define dot(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define EPSILON 0.001
 
+static float Epsilon = EPSILON;
+static int nearly_equals(float a, float b);
 
-float Epsilon = EPSILON;
 
-int nearly_equals(float a, float b)
+coord_st *v_create(coord_st *v, const coord_st *p, const coord_st *q)
+{
+	assert(p->w == 1.F); /* p, q are points */
+	assert(q->w == 1.F);
+
+	v->x = q->x - p->x;
+	v->y = q->y - p->y;
+	v->z = q->z - p->z;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+float v_len(const coord_st *v)
+{
+	assert(v->w == 0.F); /* v is a vector */
+
+	return (float) sqrt((double) dot(v, v));
+}
+
+
+int v_is_zero(const coord_st *v)
+{
+	assert(v->w == 0.F); /* v is a vector */
+
+	return nearly_equals( v_len(v), 0.F );
+}
+
+
+int v_is_unit(const coord_st *v)
+{
+	assert(v->w == 0.F); /* v is a vector */
+
+	return nearly_equals( v_len(v), 1.F );
+}
+
+
+int v_is_ortho(const coord_st *u, const coord_st *v)
+{
+	assert(u->w == 0.F); /* u, w are vectors */
+	assert(v->w == 0.F);
+
+	return nearly_equals( v_dot(u, v), 0.F );
+}
+
+
+coord_st *v_scale(coord_st *v, coord_st *u, float k)
+{
+	assert(u->w == 0.F); /* u is a vector */
+
+	v->x = u->x * k;
+	v->y = u->y * k;
+	v->z = u->z * k;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_st *v_unit(coord_st *v, coord_st *u)
+{
+	assert(u->w == 0.F); /* u is a vector */
+
+	float l = sqrtf(dot(u, u));
+
+	v->x = u->x / l;
+	v->y = u->y / l;
+	v->z = u->z / l;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_st *v_add(coord_st *v, coord_st *u, coord_st *w)
+{
+	assert(u->w == 0.F); /* u, w are vectors */
+	assert(w->w == 0.F);
+
+	v->x = u->x + w->x;
+	v->y = u->y + w->y;
+	v->z = u->z + w->z;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_st *v_sub(coord_st *v, coord_st *u, coord_st *w)
+{
+	assert(u->w == 0.F); /* u, w are vectors */
+	assert(w->w == 0.F);
+
+	v->x = u->x - w->x;
+	v->y = u->y - w->y;
+	v->z = u->z - w->z;
+	v->w = 0.F;
+
+	return w;
+}
+
+
+coord_st *v_cross(coord_st *v, const coord_st *u, const coord_st *w)
+{
+	assert(u->w == 0.F); /* u, w are vectors */
+	assert(w->w == 0.F);
+
+	v->x = u->y * w->z  -  u->z * w->y;
+	v->y = u->z * w->x  -  u->x * w->z;
+	v->z = u->x * w->y  -  u->y * w->x;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+float v_dot(const coord_st *v, const coord_st *u)
+{
+	assert(u->w == 0.F); /* u, w are vectors */
+	assert(v->w == 0.F);
+
+	return dot(u, v);
+}
+
+
+coord_st *p_homogeneize(coord_st *p, coord_st *q)
+{
+	assert(q->w != 0.F); /* q is a point */
+
+	p->x /= q->w;
+	p->y /= q->w;
+	p->z /= q->w;
+	p->w = 1.F;
+
+	return p;
+}
+
+
+#define E(m, r, c)	((m)->cell[r][c])
+matrix_st *m_mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
+{
+	int i, j, k;
+	matrix_st tmp, *old = 0;
+
+	if (m == m1 || m == m2) {
+		old = m;
+		m  = &tmp;
+	}
+
+	for ((i) = 0; (i) < 4; (i)++) {
+		for ((j) = 0; (j) < 4; (j)++) {
+			E(m, i, j) = 0.F;
+			for (k = 0; k < 4; k++) {
+				E(m, i, j) += E(m1, i, k) * E(m2, k, j);
+			}
+		}
+	}
+
+	if (old) {
+		m = old;
+		memcpy(m, &tmp, sizeof tmp);
+	}
+
+	return m;
+}
+
+
+#define ROW_MUL(m, r, v) E(m, r, 0) * ((v)->x) +\
+			 E(m, r, 1) * ((v)->y) +\
+			 E(m, r, 2) * ((v)->z) +\
+			 E(m, r, 3) * ((v)->w)
+coord_st *m_mulc(coord_st *v, const matrix_st *m, coord_st *u)
+{
+	coord_st tmp;
+
+	if (u == v) {
+		memcpy(&tmp, u, sizeof tmp);
+		u = &tmp;
+	}
+
+	v->x = ROW_MUL(m, 0, u);
+	v->y = ROW_MUL(m, 1, u);
+	v->z = ROW_MUL(m, 2, u);
+	v->w = ROW_MUL(m, 3, u);
+
+	return v;
+}
+
+
+matrix_st *m_transpose(matrix_st *m, matrix_st *n)
+{
+	int i, j;
+	matrix_st tmp;
+
+	if (n == m) {
+		memcpy(&tmp, n, sizeof tmp);
+		n = &tmp;
+	}
+
+	for ((i) = 0; (i) < 4; (i)++) {
+		for ((j) = 0; (j) < 4; (j)++) {
+			E(m, i, j) = E(n, j, i);
+		}
+	}
+
+	return m;
+}
+
+
+static int nearly_equals(float a, float b)
 {
 	float absA = fabsf(a);
         float absB = fabsf(b);
@@ -26,468 +234,4 @@ int nearly_equals(float a, float b)
         } else { // use relative error
             return diff / (absA + absB) < Epsilon;
         }
-}
-
-
-struct hcoord *homogeneize(struct hcoord *c)
-{
-	assert(! nearly_equals(c->w, 0.F));
-
-	c->x /= c->w;
-	c->y /= c->w;
-	c->z /= c->w;
-	c->w = 1.F;
-
-	return c;
-}
-
-
-float vec_len(const struct hcoord *v)
-{
-	return (float) sqrt((double) dot(v, v));
-}
-
-
-struct hcoord *vec_from_point(struct hcoord *u,
-			      struct hcoord *a,
-			      struct hcoord *b)
-{
-	u->x = b->x - a->x;
-	u->y = b->y - a->y;
-	u->z = b->z - a->z;
-	u->w = 0.F;
-
-	return u;
-}
-
-
-struct hcoord *vec_scale_self(struct hcoord *v, float k)
-{
-	v->x *= k;
-	v->y *= k;
-	v->z *= k;
-
-	return v;
-}
-
-
-float vec_dot(const struct hcoord *u, const struct hcoord *v)
-{
-	return dot(u, v);
-}
-
-
-struct hcoord *vec_cross(struct hcoord *w, 
-			    const struct hcoord *u,
-			    const struct hcoord *v)
-{
-	w->x = u->y * v->z  -  u->z * v->y;
-	w->y = u->z * v->x  -  u->x * v->z;
-	w->z = u->x * v->y  -  u->y * v->x;
-	w->w = 0.F;
-
-	return w;
-}
-
-
-struct hcoord *vec_unit(struct hcoord *w, const struct hcoord *u)
-{
-	float l = (float) sqrt((double) dot(u, u));
-
-	w->x = u->x / l;
-	w->y = u->y / l;
-	w->z = u->z / l;
-	w->w = u->w;
-
-	return w;
-}
-
-
-struct hcoord *vec_unit_self(struct hcoord *u)
-{
-	float l = (float) sqrt((double) dot(u, u));
-
-	u->x = u->x / l;
-	u->y = u->y / l;
-	u->z = u->z / l;
-
-	return u;
-}
-
-
-struct hcoord *vec_add(struct hcoord *w,
-			  const struct hcoord *u,
-			  const struct hcoord *v)
-{
-	w->x = u->x + v->x;
-	w->y = u->y + v->y;
-	w->z = u->z + v->z;
-	w->w = 0.F;
-
-	return w;
-}
-
-
-struct hcoord *vec_sub(struct hcoord *w,
-			   const struct hcoord *u,
-			   const struct hcoord *v)
-{
-	w->x = u->x - v->x;
-	w->y = u->y - v->y;
-	w->z = u->z - v->z;
-	w->w = 0.F;
-
-	return w;
-}
-
-
-struct hcoord *vec_add_self(struct hcoord *u, const struct hcoord *v)
-{
-	u->x += v->x;
-	u->y += v->y;
-	u->z += v->z;
-
-	return u;
-}
-
-
-struct hcoord *vec_sub_self(struct hcoord *u, const struct hcoord *v)
-{
-	u->x -= v->x;
-	u->y -= v->y;
-	u->z -= v->z;
-
-	return u;
-}
-
-
-int vec_is_null(const struct hcoord *v)
-{
-	return nearly_equals( vec_len(v), 0.F );
-}
-
-
-int vec_is_unit(const struct hcoord *v)
-{
-	return nearly_equals( vec_len(v), 1.F );
-}
-
-
-int vec_is_ortho(const struct hcoord *u, const struct hcoord *v)
-{
-	return nearly_equals( vec_dot(u, v), 0.F );
-}
-
-
-#define FOR_EACH_CELL(i,j) for ((i) = 0; (i) < 4; (i)++) \
-				for ((j) = 0; (j) < 4; (j)++)
-#define CELL(m,r,c)	((m)->cell[r][c])
-union matrix *mat_mulm(union matrix *m,
-			 const union matrix *a, 
-			 const union matrix *b)
-{
-	int row, col, k;
-
-	FOR_EACH_CELL(row, col) {
-		CELL(m, row, col) = 0.F;
-		for (k = 0; k < 4; k++) {
-			CELL(m, row, col) += 
-				CELL(a, row, k) * CELL(b, k, col);
-		}
-	}
-
-	return m;
-}
-
-
-#define ROW_MUL(m, r, v) CELL(m, r, 0) * ((v)->x) +\
-			 CELL(m, r, 1) * ((v)->y) +\
-			 CELL(m, r, 2) * ((v)->z) +\
-			 CELL(m, r, 3) * ((v)->w)
-struct hcoord *mat_mulv(struct hcoord *u, 
-			    const union matrix *m, 
-			    const struct hcoord *v)
-{
-	u->x = ROW_MUL(m, 0, v);
-	u->y = ROW_MUL(m, 1, v);
-	u->z = ROW_MUL(m, 2, v);
-	u->w = ROW_MUL(m, 3, v);
-
-	return u;
-}
-
-
-union matrix *mat_transpose(union matrix *r, const union matrix *m)
-{
-	int row, col;
-
-	FOR_EACH_CELL(row, col) {
-		CELL(r, row, col) = CELL(m, col, row);
-	}
-
-	return r;
-}
-
-#define STACK_SZ	50
-#define STACK_MAX	(STACK_SZ - 1)
-static union matrix stack[STACK_SZ];
-static union matrix transf, bufmtx;
-static int stcki = -1;
-#ifndef M_PI
-#define M_PI 3.14159265358979323846F
-#endif /* M_PI */
-
-static void stack_error(void)
-{
-	fprintf(stderr, "stack overflow\n");
-	exit(EXIT_FAILURE);
-}
-
-
-void model_push(void)
-{
-	int n;
-
-	if (stcki < STACK_MAX) {
-		n = stcki + 1;
-		memcpy(&stack[n], &stack[stcki], sizeof(union matrix));
-		stcki = n;
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_pop(void)
-{
-	if (stcki > -1) {
-		stcki --;
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_load_id(void)
-{
-	int row, col;
-	if (stcki < STACK_MAX) {
-		stcki ++;
-		FOR_EACH_CELL(row, col) {
-			CELL(&stack[stcki], row, col) = row == col ? 1.F : 0.F;
-		}
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_translate(float tx, float ty, float tz)
-{
-	if (stcki > -1) {
-		transf.cell[0][0] = 1.F;
-		transf.cell[0][1] = 0.F;
-		transf.cell[0][2] = 0.F;
-		transf.cell[0][3] = tx;
-
-		transf.cell[1][0] = 0.F;
-		transf.cell[1][1] = 1.F;
-		transf.cell[1][2] = 0.F;
-		transf.cell[1][3] = ty;
-
-		transf.cell[2][0] = 0.F;
-		transf.cell[2][1] = 0.F;
-		transf.cell[2][2] = 1.F;
-		transf.cell[2][3] = tz;
-
-		transf.cell[3][0] = 0.F;
-		transf.cell[3][1] = 0.F;
-		transf.cell[3][2] = 0.F;
-		transf.cell[3][3] = 1.F;
-
-		mat_mulm(&bufmtx, &transf, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_scale(float sx, float sy, float sz)
-{
-	if (stcki > -1) {
-		transf.cell[0][0] = sx;
-		transf.cell[0][1] = 0.F;
-		transf.cell[0][2] = 0.F;
-		transf.cell[0][3] = 0.F;
-
-		transf.cell[1][0] = 0.F;
-		transf.cell[1][1] = sy;
-		transf.cell[1][2] = 0.F;
-		transf.cell[1][3] = 0.F;
-
-		transf.cell[2][0] = 0.F;
-		transf.cell[2][1] = 0.F;
-		transf.cell[2][2] = sz;
-		transf.cell[2][3] = 0.F;
-
-		transf.cell[3][0] = 0.F;
-		transf.cell[3][1] = 0.F;
-		transf.cell[3][2] = 0.F;
-		transf.cell[3][3] = 1.F;
-
-		mat_mulm(&bufmtx, &transf, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-#ifndef NDEBUG
-/* TODO move print functions elsewhere */
-static void printv(struct hcoord  *u)
-{
-	printf("%6.2f %6.2f %6.2f %6.2f", u->x, u->y, u->z, u->w);
-}
-
-static void pretty_printv(const char *s, struct hcoord  *u)
-{
-	fprintf(stderr,"%s%6.2f %6.2f %6.2f %6.2f\n", s, u->x, u->y, u->z, u->w);
-}
-
-static void pretty_printm(union matrix *m)
-{
-	pretty_printv("", &(m->rows.r1));
-	pretty_printv("", &(m->rows.r2));
-	pretty_printv("", &(m->rows.r3));
-	pretty_printv("", &(m->rows.r4));
-	printf("\n");
-}
-#endif
-
-
-void model_rotate_x(float deg)
-{
-	if (stcki > -1) {
-
-		float rad = M_PI * deg / 180.F;
-		float sin = sinf(rad);
-		float cos = cosf(rad);
-
-		transf.cell[0][0] = 1.F;
-		transf.cell[0][1] = 0.F;
-		transf.cell[0][2] = 0.F;
-		transf.cell[0][3] = 0.F;
-
-		transf.cell[1][0] = 0.F;
-		transf.cell[1][1] = cos;
-		transf.cell[1][2] = -sin;
-		transf.cell[1][3] = 0.F;
-
-		transf.cell[2][0] = 0.F;
-		transf.cell[2][1] = sin;
-		transf.cell[2][2] = cos;
-		transf.cell[2][3] = 0.F;
-
-		transf.cell[3][0] = 0.F;
-		transf.cell[3][1] = 0.F;
-		transf.cell[3][2] = 0.F;
-		transf.cell[3][3] = 1.F;
-
-		mat_mulm(&bufmtx, &transf, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_rotate_y(float deg)
-{
-	if (stcki > -1) {
-
-		float rad = M_PI * deg / 180.F;
-		float sin = sinf(rad);
-		float cos = cosf(rad);
-
-		transf.cell[0][0] = cos;
-		transf.cell[0][1] = 0.F;
-		transf.cell[0][2] = sin;
-		transf.cell[0][3] = 0.F;
-
-		transf.cell[1][0] = 0.F;
-		transf.cell[1][1] = 1.F;
-		transf.cell[1][2] = 0.F;
-		transf.cell[1][3] = 0.F;
-
-		transf.cell[2][0] = -sin;
-		transf.cell[2][1] = 0.F;
-		transf.cell[2][2] = cos;
-		transf.cell[2][3] = 0.F;
-
-		transf.cell[3][0] = 0.F;
-		transf.cell[3][1] = 0.F;
-		transf.cell[3][2] = 0.F;
-		transf.cell[3][3] = 1.F;
-
-		mat_mulm(&bufmtx, &transf, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_rotate_z(float deg)
-{
-	if (stcki > -1) {
-		float rad = M_PI * deg / 180.F;
-		float sin = sinf(rad);
-		float cos = cosf(rad);
-
-		transf.cell[0][0] = cos;
-		transf.cell[0][1] = -sin;
-		transf.cell[0][2] = 0.F;
-		transf.cell[0][3] = 0.F;
-
-		transf.cell[1][0] = sin;
-		transf.cell[1][1] = cos;
-		transf.cell[1][2] = 0.F;
-		transf.cell[1][3] = 0.F;
-
-		transf.cell[2][0] = 0.F;
-		transf.cell[2][1] = 0.F;
-		transf.cell[2][2] = 1.F;
-		transf.cell[2][3] = 0.F;
-
-		transf.cell[3][0] = 0.F;
-		transf.cell[3][1] = 0.F;
-		transf.cell[3][2] = 0.F;
-		transf.cell[3][3] = 1.F;
-
-		mat_mulm(&bufmtx, &transf, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_multiply(const union matrix *m)
-{
-	if (stcki > -1) {
-		mat_mulm(&bufmtx, m, &stack[stcki]);
-		memcpy(&stack[stcki], &bufmtx, sizeof bufmtx);
-	} else {
-		stack_error();
-	}
-}
-
-
-void model_vertex(struct hcoord* c)
-{
-	static struct hcoord tmp;
-
-	mat_mulv(&tmp, &stack[stcki], c);
-	memcpy(c, &tmp, sizeof tmp);
 }

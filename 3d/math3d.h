@@ -1,95 +1,43 @@
 #ifndef _MATH3D_H
 #define _MATH3D_H
 
-/*
- * Homogeneous coordinates
- *  w == 0 for vectors
- *  w != 0 for points
- */
-struct hcoord {
+/* Homogeneous coordinates (w == 0: vector, w != 0: point) */
+typedef struct coord {
 	float x, y, z, w;
-};
+} coord_st;
 
-
-/* 4x4 matrix */
-union matrix {
-	struct rows {
-		struct hcoord r1, r2, r3, r4;
-	} rows;
+/* Matrix 4x4 */
+typedef struct matrix {
 	float cell[4][4];
-};
+} matrix_st ;
 
 /* Initalizer values */
-#define VEC_I  { 1.F, 0.F, 0.F, 0.F }
-#define VEC_J  { 0.F, 1.F, 0.F, 0.F }
-#define VEC_K  { 0.F, 0.F, 1.F, 0.F }
-#define PNT_O  { 0.F, 0.F, 0.F, 1.F }
-#define PNT_I  { 1.F, 0.F, 0.F, 1.F }
-#define PNT_J  { 0.F, 1.F, 0.F, 1.F }
-#define PNT_K  { 0.F, 0.F, 1.F, 1.F }
-#define MAT_ID { .rows = {\
-	{ 1.F, 0.F, 0.F, 0.F },\
-	{ 0.F, 1.F, 0.F, 0.F },\
-	{ 0.F, 0.F, 1.F, 0.F },\
-	{ 0.F, 0.F, 0.F, 1.F } } }
+#define VEC_I    { 1.F, 0.F, 0.F, 0.F }
+#define VEC_J    { 0.F, 1.F, 0.F, 0.F }
+#define VEC_K    { 0.F, 0.F, 1.F, 0.F }
+#define PNT_O    { 0.F, 0.F, 0.F, 1.F }
+#define PNT_I    { 1.F, 0.F, 0.F, 1.F }
+#define PNT_J    { 0.F, 1.F, 0.F, 1.F }
+#define PNT_K    { 0.F, 0.F, 1.F, 1.F }
+#define MAT_ID { { 1.F, 0.F, 0.F, 0.F },\
+		 { 0.F, 1.F, 0.F, 0.F },\
+		 { 0.F, 0.F, 1.F, 0.F },\
+		 { 0.F, 0.F, 0.F, 1.F } }
 
-extern float Epsilon;
-extern int nearly_equals(float, float);
-
-struct hcoord *homogeneize(struct hcoord*);
-
-struct hcoord *vec_from_point(struct hcoord*,
-			      struct hcoord*,
-			      struct hcoord*);
-
-/* vector observer functions */
-extern float vec_len(const struct hcoord*);
-extern int   vec_is_null(const struct hcoord*);
-extern int   vec_is_unit(const struct hcoord*);
-extern int   vec_is_ortho(const struct hcoord*, const struct hcoord*);
-
-/* basic vector operations */
-extern struct hcoord *vec_scale(
-		struct hcoord*, 
-		const struct hcoord*, 
-		float);
-extern struct hcoord *vec_unit(
-		struct hcoord*, 
-		const struct hcoord*);
-extern struct hcoord *vec_add(
-		struct hcoord*, 
-		const struct hcoord*,
-		const struct hcoord*);
-extern struct hcoord *vec_sub(
-		struct hcoord*, 
-		const struct hcoord*, 
-		const struct hcoord*);
-extern struct hcoord *vec_cross(
-		struct hcoord*, 
-		const struct hcoord*, 
-		const struct hcoord*);
-extern float vec_dot(
-		const struct hcoord*, 
-		const struct hcoord*);
-
-/* in-place vector operations */
-extern struct hcoord *vec_scale_self(struct hcoord*, float);
-extern struct hcoord *vec_unit_self(struct hcoord*);
-extern struct hcoord *vec_add_self(struct hcoord*, const struct hcoord*);
-extern struct hcoord *vec_sub_self(struct hcoord*, const struct hcoord*);
-
-/* matrix operations */
-extern union matrix *mat_mulm(
-		union matrix*,
-		const union matrix*,
-		const union matrix*);
-extern struct hcoord *mat_mulv(
-		struct hcoord*, 
-		const union matrix*,
-		const struct hcoord*);
-extern union matrix *mat_transpose(
-		union matrix*, 
-		const union matrix*);
-
+extern int        v_is_zero(const coord_st*);
+extern int        v_is_unit(const coord_st*);
+extern int        v_is_ortho(const coord_st*, const coord_st*);
+extern float      v_len(const coord_st*);
+extern float      v_dot(const coord_st*, const coord_st*); 
+extern coord_st  *v_create(coord_st*, const coord_st*, const coord_st*);
+extern coord_st  *v_scale(coord_st*, coord_st*, float);
+extern coord_st  *v_unit(coord_st*, coord_st*);
+extern coord_st  *v_add(coord_st*, coord_st*, coord_st*);
+extern coord_st  *v_sub(coord_st*, coord_st*, coord_st*);
+extern coord_st  *v_cross(coord_st*, const coord_st*, const coord_st*);
+extern coord_st  *p_homogeneize(coord_st*, coord_st*);
+extern coord_st  *m_mulc(coord_st*, const matrix_st*, coord_st*);
+extern matrix_st *m_mulm(matrix_st*, matrix_st*, matrix_st*);
+extern matrix_st *m_transpose(matrix_st*, matrix_st*);
 
 #endif /* _MATH3D_H */
