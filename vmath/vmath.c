@@ -1,7 +1,7 @@
 #include <math.h>
-#include <assert.h>
 #include <string.h>
-#include "math3d.h" 
+#include <assert.h>
+#include "vmath.h" 
 
 #define dot(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define EPSILON 0.001
@@ -9,6 +9,11 @@
 static float Epsilon = EPSILON;
 static int nearly_equals(float a, float b);
 
+const matrix_st matrix_id = MAT_ID;
+const coord_st  vector_i  = VEC_I;
+const coord_st  vector_j  = VEC_J;
+const coord_st  vector_k  = VEC_K;
+const coord_st  point_o   = PNT_O;
 
 coord_st *v_create(coord_st *v, const coord_st *p, const coord_st *q)
 {
