@@ -1,5 +1,5 @@
-#ifndef _MATH3D_H
-#define _MATH3D_H
+#ifndef _VMATH_H
+#define _VMATH_H
 
 /* Homogeneous coordinates (w == 0: vector, w != 0: point) */
 typedef struct coord {
@@ -46,4 +46,4 @@ extern const coord_st  vector_j;
 extern const coord_st  vector_k;
 extern const coord_st  point_o;
 
-#endif /* _MATH3D_H */
+#endif /* _VMATH_H */
