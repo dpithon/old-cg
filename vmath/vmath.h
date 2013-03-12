@@ -1,6 +1,8 @@
 #ifndef _VMATH_H
 #define _VMATH_H
 
+#include <stdbool.h>
+
 /* Homogeneous coordinates (w == 0: vector, w != 0: point) */
 typedef struct coord {
 	float x, y, z, w;
@@ -24,9 +26,10 @@ typedef struct matrix {
 			     { 0.F, 0.F, 1.F, 0.F },\
 			     { 0.F, 0.F, 0.F, 1.F } } }
 
-extern int        v_is_zero(const coord_st*);
-extern int        v_is_unit(const coord_st*);
-extern int        v_is_ortho(const coord_st*, const coord_st*);
+extern bool       v_is_zero(const coord_st*);
+extern bool       v_is_unit(const coord_st*);
+extern bool       v_is_ortho(const coord_st*, const coord_st*);
+
 extern float      v_len(const coord_st*);
 extern float      v_dot(const coord_st*, const coord_st*); 
 extern coord_st  *v_create(coord_st*, const coord_st*, const coord_st*);

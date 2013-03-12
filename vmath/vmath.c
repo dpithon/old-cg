@@ -7,7 +7,7 @@
 #define EPSILON 0.001
 
 static float Epsilon = EPSILON;
-static int nearly_equals(float a, float b);
+static bool nearly_equals(float a, float b);
 
 const matrix_st matrix_id = MAT_ID;
 const coord_st  vector_i  = VEC_I;
@@ -37,7 +37,7 @@ float v_len(const coord_st *v)
 }
 
 
-int v_is_zero(const coord_st *v)
+bool v_is_zero(const coord_st *v)
 {
 	assert(v->w == 0.F); /* v is a vector */
 
@@ -45,7 +45,7 @@ int v_is_zero(const coord_st *v)
 }
 
 
-int v_is_unit(const coord_st *v)
+bool v_is_unit(const coord_st *v)
 {
 	assert(v->w == 0.F); /* v is a vector */
 
@@ -53,7 +53,7 @@ int v_is_unit(const coord_st *v)
 }
 
 
-int v_is_ortho(const coord_st *u, const coord_st *v)
+bool v_is_ortho(const coord_st *u, const coord_st *v)
 {
 	assert(u->w == 0.F); /* u, w are vectors */
 	assert(v->w == 0.F);
@@ -225,14 +225,14 @@ matrix_st *m_transpose(matrix_st *m, matrix_st *n)
 }
 
 
-static int nearly_equals(float a, float b)
+static bool nearly_equals(float a, float b)
 {
 	float absA = fabsf(a);
         float absB = fabsf(b);
         float diff = fabsf(a - b);
 
         if (a == b) { // shortcut, handles infinities
-            return 1;
+            return true;
         } else if (a * b == 0) { // a or b or both are zero
             // relative error is not meaningful here
             return diff < Epsilon;
