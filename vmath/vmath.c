@@ -17,8 +17,8 @@ const coord_st  point_o   = PNT_O;
 
 coord_st *v_create(coord_st *v, const coord_st *p, const coord_st *q)
 {
-	assert(p->w == 1.F); /* p, q are points */
-	assert(q->w == 1.F);
+	assert(c_is_point(p));
+	assert(c_is_point(q));
 
 	v->x = q->x - p->x;
 	v->y = q->y - p->y;
@@ -31,15 +31,27 @@ coord_st *v_create(coord_st *v, const coord_st *p, const coord_st *q)
 
 float v_len(const coord_st *v)
 {
-	assert(v->w == 0.F); /* v is a vector */
+	assert(c_is_vector(v));
 
 	return (float) sqrt((double) dot(v, v));
 }
 
 
+bool c_is_point(const coord_st *c)
+{
+	return c->w == 1.F; 
+}
+
+
+bool c_is_vector(const coord_st *c)
+{
+	return c->w == 0.F; 
+}
+
+
 bool v_is_zero(const coord_st *v)
 {
-	assert(v->w == 0.F); /* v is a vector */
+	assert(c_is_vector(v));
 
 	return nearly_equals( v_len(v), 0.F );
 }
@@ -47,7 +59,7 @@ bool v_is_zero(const coord_st *v)
 
 bool v_is_unit(const coord_st *v)
 {
-	assert(v->w == 0.F); /* v is a vector */
+	assert(c_is_vector(v));
 
 	return nearly_equals( v_len(v), 1.F );
 }
@@ -55,8 +67,8 @@ bool v_is_unit(const coord_st *v)
 
 bool v_is_ortho(const coord_st *u, const coord_st *v)
 {
-	assert(u->w == 0.F); /* u, w are vectors */
-	assert(v->w == 0.F);
+	assert(c_is_vector(u)); /* u, w are vectors */
+	assert(c_is_vector(v));
 
 	return nearly_equals( v_dot(u, v), 0.F );
 }
@@ -64,7 +76,7 @@ bool v_is_ortho(const coord_st *u, const coord_st *v)
 
 coord_st *v_scale(coord_st *v, coord_st *u, float k)
 {
-	assert(u->w == 0.F); /* u is a vector */
+	assert(c_is_vector(u));
 
 	v->x = u->x * k;
 	v->y = u->y * k;
@@ -77,7 +89,7 @@ coord_st *v_scale(coord_st *v, coord_st *u, float k)
 
 coord_st *v_unit(coord_st *v, coord_st *u)
 {
-	assert(u->w == 0.F); /* u is a vector */
+	assert(c_is_vector(u));
 
 	float l = sqrtf(dot(u, u));
 
@@ -92,8 +104,8 @@ coord_st *v_unit(coord_st *v, coord_st *u)
 
 coord_st *v_add(coord_st *v, coord_st *u, coord_st *w)
 {
-	assert(u->w == 0.F); /* u, w are vectors */
-	assert(w->w == 0.F);
+	assert(c_is_vector(u));
+	assert(c_is_vector(w));
 
 	v->x = u->x + w->x;
 	v->y = u->y + w->y;
@@ -106,8 +118,8 @@ coord_st *v_add(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *v_sub(coord_st *v, coord_st *u, coord_st *w)
 {
-	assert(u->w == 0.F); /* u, w are vectors */
-	assert(w->w == 0.F);
+	assert(c_is_vector(u));
+	assert(c_is_vector(w));
 
 	v->x = u->x - w->x;
 	v->y = u->y - w->y;
@@ -120,8 +132,8 @@ coord_st *v_sub(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *v_cross(coord_st *v, const coord_st *u, const coord_st *w)
 {
-	assert(u->w == 0.F); /* u, w are vectors */
-	assert(w->w == 0.F);
+	assert(c_is_vector(u));
+	assert(c_is_vector(w));
 
 	v->x = u->y * w->z  -  u->z * w->y;
 	v->y = u->z * w->x  -  u->x * w->z;
@@ -134,8 +146,8 @@ coord_st *v_cross(coord_st *v, const coord_st *u, const coord_st *w)
 
 float v_dot(const coord_st *v, const coord_st *u)
 {
-	assert(u->w == 0.F); /* u, w are vectors */
-	assert(v->w == 0.F);
+	assert(c_is_vector(u));
+	assert(c_is_vector(v));
 
 	return dot(u, v);
 }
@@ -143,7 +155,7 @@ float v_dot(const coord_st *v, const coord_st *u)
 
 coord_st *p_homogeneize(coord_st *p, coord_st *q)
 {
-	assert(q->w != 0.F); /* q is a point */
+	assert(c_is_point(q));
 
 	p->x /= q->w;
 	p->y /= q->w;

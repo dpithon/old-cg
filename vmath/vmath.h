@@ -26,6 +26,8 @@ typedef struct matrix {
 			     { 0.F, 0.F, 1.F, 0.F },\
 			     { 0.F, 0.F, 0.F, 1.F } } }
 
+extern bool       c_is_point(const coord_st*);
+extern bool       c_is_vector(const coord_st*);
 extern bool       v_is_zero(const coord_st*);
 extern bool       v_is_unit(const coord_st*);
 extern bool       v_is_ortho(const coord_st*, const coord_st*);
