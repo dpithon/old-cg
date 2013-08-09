@@ -2,16 +2,15 @@
 
 CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe
 CC=gcc
+LD=gcc
 
-OBJECTS=vmath.o
-
-unit/vmath: unit/vmath.o vmath_nodbg.o
-	$(CC) -o $@ $^ -lm
+pptst: pptst.o vmath.o pprint.o
+	$(LD) -o $@ -lm $^
 
 vmath.o: vmath.c vmath.h
+pprint.o: pprint.c pprint.h
+pptst.o: pptst.c
 
-vmath_nodbg.o: vmath.c vmath.h
-	$(CC) -o $@ $(CFLAGS) -DNDEBUG -c $<
 
 clean:
 	rm -rf *.o *.gch unit/*.o
