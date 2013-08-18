@@ -78,4 +78,21 @@ extern const coord_st  vector_k;
 extern const coord_st  point_o;
 extern mstack_st mstack;
 
+#ifdef COUNTERS
+typedef struct counters {
+	unsigned long sto;
+	unsigned long cmp;
+	unsigned long add;
+	unsigned long mul;
+	unsigned long abs;
+	unsigned long sqr;
+	unsigned long trg;
+	unsigned long idx;
+	unsigned long neg;
+} counters_st;
+
+void reset_counters(void);
+void get_counters(counters_st*);
+#endif /* COUNTERS */
+
 #endif /* _VMATH_H */

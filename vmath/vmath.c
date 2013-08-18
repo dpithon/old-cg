@@ -6,6 +6,33 @@
 #define DOT(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define EPSILON 0.001
 
+#ifdef COUNTERS
+static counters_st cnt;
+
+#define STO(v)	cnt.sto += (v)
+#define CMP(v)	cnt.cmp += (v)
+#define ADD(v)	cnt.add += (v)
+#define MUL(v)	cnt.mul += (v)
+#define ABS(v)	cnt.abs += (v)
+#define SQR(v)	cnt.sqr += (v)
+#define TRG(v)	cnt.trg += (v)
+#define IDX(v)	cnt.idx += (v)
+#define NEG(v)	cnt.neg += (v)
+
+#else  /* COUNTERS */
+
+#define STO(v)
+#define CMP(v)
+#define ADD(v)
+#define MUL(v)
+#define ABS(v)
+#define SQR(v)
+#define TRG(v)
+#define IDX(v)
+#define NEG(v)
+
+#endif /* COUNTERS */
+
 static float Epsilon = EPSILON;
 static bool nearly_equals(float a, float b);
 
@@ -22,12 +49,16 @@ mstack_st mstack = {
 
 bool is_point(const coord_st *c) 
 {
+	CMP(1);
+
 	return c->w == 1.F; 
 }
 
 
 bool is_vector(const coord_st *c)
 {
+	CMP(1);
+
 	return c->w == 0.F; 
 }
 
@@ -50,6 +81,8 @@ bool is_unit(const coord_st *v)
 
 bool is_ortho(const coord_st *u, const coord_st *v)
 {
+	ADD(2); MUL(3);
+
 	assert(is_vector(u)); /* u, w are vectors */
 	assert(is_vector(v));
 
@@ -59,6 +92,8 @@ bool is_ortho(const coord_st *u, const coord_st *v)
 
 float len(const coord_st *v)
 {
+	SQR(1); ADD(2); MUL(3);
+
 	assert(is_vector(v));
 
 	return sqrtf(DOT(v, v));
@@ -67,6 +102,8 @@ float len(const coord_st *v)
 
 float dot(const coord_st *v, const coord_st *u)
 {
+	ADD(2); MUL(3);
+
 	assert(is_vector(u));
 	assert(is_vector(v));
 
@@ -76,6 +113,8 @@ float dot(const coord_st *v, const coord_st *u)
 
 coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
 {
+	ADD(3); STO(4);
+
 	assert(is_point(p));
 	assert(is_point(q));
 
@@ -90,6 +129,8 @@ coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
 
 coord_st *scale(coord_st *v, coord_st *u, float k)
 {
+	STO(4); MUL(3);
+
 	assert(is_vector(u));
 
 	v->x = u->x * k;
@@ -103,6 +144,8 @@ coord_st *scale(coord_st *v, coord_st *u, float k)
 
 coord_st *unit(coord_st *v, coord_st *u)
 {
+	STO(5); SQR(1); MUL(6); ADD(2);
+
 	assert(is_vector(u));
 	assert(! is_zero(u));
 
@@ -119,6 +162,8 @@ coord_st *unit(coord_st *v, coord_st *u)
 
 coord_st *add(coord_st *v, coord_st *u, coord_st *w)
 {
+	STO(4); ADD(3);
+
 	assert(is_vector(u));
 	assert(is_vector(w));
 
@@ -133,6 +178,8 @@ coord_st *add(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
 {
+	STO(4); ADD(3);
+
 	assert(is_vector(u));
 	assert(is_vector(w));
 
@@ -147,6 +194,8 @@ coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
 {
+	STO(4); MUL(6); ADD(3);
+
 	assert(is_vector(u));
 	assert(is_vector(w));
 
@@ -161,6 +210,8 @@ coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
 
 coord_st *homogeneize(coord_st *p, coord_st *q)
 {
+	STO(1); MUL(3);
+
 	assert(is_point(q));
 
 	p->x /= q->w;
@@ -179,6 +230,8 @@ coord_st *homogeneize(coord_st *p, coord_st *q)
 			 E(m, r, 3) * ((v)->w)
 coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
 {
+	CMP(1); IDX(16); MUL(16); ADD(12); STO((u == v) ? 9 : 4);
+
 	coord_st tmp;
 
 	if (u == v) {
@@ -193,10 +246,14 @@ coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
 
 	return v;
 }
-
+ 
 
 matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 {
+	ADD(148); MUL(64); IDX(208);
+	CMP((m == m1) ? 107 : 108);
+	STO((m == m1) || (m == m2) ? 35 : 16);
+
 	int i, j, k;
 	matrix_st tmp, *old = 0;
 
@@ -225,6 +282,8 @@ matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 
 matrix_st *transpose(matrix_st *m, matrix_st *n)
 {
+	CMP(26); STO(n == m ? 38 : 21); ADD(20); IDX(32);
+	
 	int i, j;
 	matrix_st tmp;
 
@@ -245,6 +304,8 @@ matrix_st *transpose(matrix_st *m, matrix_st *n)
 
 matrix_st *rotationx(matrix_st *m, float a)
 {
+	TRG(2); STO(18); NEG(1); IDX(16);
+
 	float ca = cosf(a);
 	float sa = sinf(a);
 
@@ -274,6 +335,8 @@ matrix_st *rotationx(matrix_st *m, float a)
 
 matrix_st *rotationy(matrix_st *m, float a)
 {
+	TRG(2); STO(18); NEG(1); IDX(16);
+
 	float ca = cosf(a);
 	float sa = sinf(a);
 
@@ -303,6 +366,8 @@ matrix_st *rotationy(matrix_st *m, float a)
 
 matrix_st *rotationz(matrix_st *m, float a)
 {
+	TRG(2); STO(18); NEG(1); IDX(16);
+
 	float ca = cosf(a);
 	float sa = sinf(a);
 
@@ -332,6 +397,8 @@ matrix_st *rotationz(matrix_st *m, float a)
 
 matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 {
+	TRG(2); STO(27); MUL(21); ADD(18); IDX(16);
+
 	float c = cosf(a);
 	float s = sinf(a);
 	float x = v->x;
@@ -372,6 +439,8 @@ matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 
 matrix_st *translation(matrix_st *m, coord_st *v)
 {
+	IDX(16); STO(16);
+
 	E(m, 0, 0) = 1.F;
         E(m, 0, 1) = 0.F;
         E(m, 0, 2) = 0.F;
@@ -398,6 +467,8 @@ matrix_st *translation(matrix_st *m, coord_st *v)
 
 void stack_init_r(mstack_st *s)
 {
+	STO(17);
+
 	s->i = 0;
 	memcpy(&(s->m[0]), &matrix_id, sizeof matrix_id);
 }
@@ -405,6 +476,8 @@ void stack_init_r(mstack_st *s)
 
 bool stack_push_r(mstack_st *s, const matrix_st *m) 
 {
+	ADD(3); CMP(1);
+
 	if (s->i + 1 == MAX_STACK_SIZE) {
 		return 1;
 	}
@@ -418,6 +491,9 @@ bool stack_push_r(mstack_st *s, const matrix_st *m)
 
 bool stack_pop_r(mstack_st *s)
 {
+	CMP(1); 
+	ADD(s->i ? 1 : 0);
+
 	if (s->i) {
 		-- s->i;
 		return 0;
@@ -452,19 +528,54 @@ const matrix_st *stack_peek(void)
 }
 
 
+void reset_counters(void)
+{
+	memset(&cnt, 0, sizeof cnt);
+}
+
+
+void get_counters(counters_st *dst)
+{
+	memcpy(dst, &cnt, sizeof cnt); 
+}
+
 
 static bool nearly_equals(float a, float b)
 {
+#ifdef COUNTERS
+	cnt.sto += 3;
+	cnt.add += 1;
+	cnt.abs += 3;
+#endif /* COUNTERS */
+
 	float absA = fabsf(a);
         float absB = fabsf(b);
         float diff = fabsf(a - b);
 
         if (a == b) { // shortcut, handles infinities
-            return true;
+#		ifdef COUNTERS
+		cnt.cmp +=1;
+#		endif /* COUNTERS */
+
+		return true;
+
         } else if (a * b == 0) { // a or b or both are zero
-            // relative error is not meaningful here
-            return diff < Epsilon;
+#		ifdef COUNTERS
+		cnt.cmp += 3;
+		cnt.mul += 1;
+#		endif /* COUNTERS */
+
+		// relative error is not meaningful here
+		return diff < Epsilon;
+
         } else { // use relative error
+#		ifdef COUNTERS
+		cnt.mul += 1;
+		cnt.add += 1;
+		cnt.cmp += 3;
+#		endif /* COUNTERS */
+
             return diff / (absA + absB) < Epsilon;
         }
 }
+

@@ -37,3 +37,22 @@ void prints(const char *fmt, mstack_st *s)
 
 	printf("-------------------------------------\n");
 }
+
+
+void pcounters(void)
+{
+	counters_st cnt;
+	unsigned long *ul = (unsigned long*) &cnt;
+	int i;
+	const char *cstr[] = {
+		"sto", "cmp", "add", "mul",
+		"abs", "sqr", "trg", "idx",
+		"neg", NULL
+	};
+
+	get_counters(&cnt);
+	for (i = 0; cstr[i]; i++) {
+		printf("%s: %ld\n", cstr[i], ul[i]);
+	}
+	printf("----------\n");
+}
