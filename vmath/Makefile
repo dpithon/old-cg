@@ -1,19 +1,24 @@
-.PHONY: all clean purge install
+.PHONY: all clean purge test
 
-CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe
+OPTS=-DCOUNTERS
+CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe -O0 -g2 $(OPTS)
 CC=gcc
 LD=gcc
+OBJS=core.o io.o mstack.o
 
-pptst: pptst.o vmath.o pprint.o
-	$(LD) -o $@ -lm $^
+all: $(OBJS)
 
-vmath.o: vmath.c vmath.h
-pprint.o: pprint.c pprint.h
-pptst.o: pptst.c
-
+test: all
+	$(MAKE) -C test
 
 clean:
 	rm -rf *.o *.gch unit/*.o
+	$(MAKE) -C test clean
 
 purge: clean
-	rm -rf $(TARGETS) *.pnm
+	$(MAKE) -C test purge
+
+core.o: core.c core.h
+io.o: io.c io.h
+mstack.o: mstack.c mstack.h
+

@@ -1,36 +1,15 @@
-#include <math.h>
-#include <string.h>
 #include <assert.h>
-#include "vmath.h" 
+#include <string.h>
+#include <math.h>
+
+#include "core.h" 
+#include "core_private.h" 
 
 #define DOT(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define EPSILON 0.001
 
 #ifdef COUNTERS
-static counters_st cnt;
-
-#define STO(v)	cnt.sto += (v)
-#define CMP(v)	cnt.cmp += (v)
-#define ADD(v)	cnt.add += (v)
-#define MUL(v)	cnt.mul += (v)
-#define ABS(v)	cnt.abs += (v)
-#define SQR(v)	cnt.sqr += (v)
-#define TRG(v)	cnt.trg += (v)
-#define IDX(v)	cnt.idx += (v)
-#define NEG(v)	cnt.neg += (v)
-
-#else  /* COUNTERS */
-
-#define STO(v)
-#define CMP(v)
-#define ADD(v)
-#define MUL(v)
-#define ABS(v)
-#define SQR(v)
-#define TRG(v)
-#define IDX(v)
-#define NEG(v)
-
+counters_st cnt;
 #endif /* COUNTERS */
 
 static float Epsilon = EPSILON;
@@ -41,11 +20,6 @@ const coord_st  vector_i  = VEC_I;
 const coord_st  vector_j  = VEC_J;
 const coord_st  vector_k  = VEC_K;
 const coord_st  point_o   = PNT_O;
-
-mstack_st mstack = {
-	.i = 0,
-	.m = { MAT_ID }
-};
 
 bool is_point(const coord_st *c) 
 {
@@ -465,69 +439,7 @@ matrix_st *translation(matrix_st *m, coord_st *v)
 }
 
 
-void stack_init_r(mstack_st *s)
-{
-	STO(17);
-
-	s->i = 0;
-	memcpy(&(s->m[0]), &matrix_id, sizeof matrix_id);
-}
-
-
-bool stack_push_r(mstack_st *s, const matrix_st *m) 
-{
-	ADD(3); CMP(1);
-
-	if (s->i + 1 == MAX_STACK_SIZE) {
-		return 1;
-	}
-
-	mulm(&(s->m[s->i + 1]), &(s->m[s->i]), (matrix_st*) m);
-	++ s->i;
-
-	return 0;
-}
-
-
-bool stack_pop_r(mstack_st *s)
-{
-	CMP(1); 
-	ADD(s->i ? 1 : 0);
-
-	if (s->i) {
-		-- s->i;
-		return 0;
-	}
-
-	return 1;
-}
-
-
-const matrix_st *stack_peek_r(mstack_st *s)
-{
-	return (const matrix_st*) &(s->m[s->i]);
-}
-
-
-
-bool stack_push(const matrix_st *s)
-{
-	return stack_push_r(&mstack, s);
-}
-
-
-bool stack_pop(void)
-{
-	return stack_pop_r(&mstack);
-}
-
-
-const matrix_st *stack_peek(void)
-{
-	return stack_peek_r(&mstack);
-}
-
-
+#ifdef COUNTERS
 void reset_counters(void)
 {
 	memset(&cnt, 0, sizeof cnt);
@@ -538,6 +450,7 @@ void get_counters(counters_st *dst)
 {
 	memcpy(dst, &cnt, sizeof cnt); 
 }
+#endif /* COUNTERS */
 
 
 static bool nearly_equals(float a, float b)

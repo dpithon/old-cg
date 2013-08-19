@@ -1,6 +1,6 @@
 /*
  * Test de rotation autour d'un axe quelconque
- * $ rotation x y z theta_deg
+ * $ rotation x y z theta_deg px py pz
  */
 
 #include <assert.h>
@@ -9,8 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "vmath.h"
-#include "pprint.h"
+#include "../core.h"
+#include "../mstack.h"
+#include "../io.h"
 
 #define PI 3.141592654f
 
@@ -60,10 +61,10 @@ int main(int argc, char *argv[])
 	coord_st u;
 	matrix_st rot1, rot2;
 
-	coord_st t, rt1, rt2;
+	coord_st p, rt1, rt2;
 
 	if (argc < 8) {
-		fprintf(stderr, "%s  x y z theta_deg tx ty tz\n", argv[0]);
+		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
 		return 1;
 	}
 
@@ -73,10 +74,10 @@ int main(int argc, char *argv[])
 	u.w   = 0.f;
 	theta = atof(argv[4]) * PI / 180.f;
 	unit(&u, &u);
-	t.x   = atof(argv[5]);
-	t.y   = atof(argv[6]);
-	t.z   = atof(argv[7]);
-	t.w   = 1.f;
+	p.x   = atof(argv[5]);
+	p.y   = atof(argv[6]);
+	p.z   = atof(argv[7]);
+	p.w   = 1.f;
 	
 	if (build_rotation(&rot1, &u, theta)) {
 		return 2;
@@ -85,9 +86,9 @@ int main(int argc, char *argv[])
 	rotation(&rot2, &u, theta);
 
 	reset_counters();
-	mulc(&rt1, &rot1, &t);
+	mulc(&rt1, &rot1, &p);
 	pcounters();
-	mulc(&rt2, &rot2, &t);
+	mulc(&rt2, &rot2, &p);
 /*
 	printc("point t   : %s\n", &t); 
 	printc("point rt1 : %s\n", &rt1); 

@@ -1,5 +1,5 @@
-#ifndef _VMATH_H
-#define _VMATH_H
+#ifndef _VMATH_CORE_H
+#define _VMATH_CORE_H
 
 #include <stdbool.h>
 
@@ -12,13 +12,6 @@ typedef struct coord {
 typedef struct matrix {
 	float cell[4][4];
 } matrix_st;
-
-/* Matrix stack */
-#define MAX_STACK_SIZE	16
-typedef struct mstack {
-	matrix_st m[MAX_STACK_SIZE];
-	int i;
-} mstack_st;
 
 
 /* Initalizer values */
@@ -62,21 +55,11 @@ extern matrix_st *rotation(matrix_st*, const coord_st*, float);
 extern matrix_st *scaling(matrix_st*, float, float, float);
 extern matrix_st *translation(matrix_st*, coord_st*);
 
-extern void stack_init_r(mstack_st*);
-extern bool stack_push_r(mstack_st*, const matrix_st*);
-extern bool stack_pop_r(mstack_st*);
-extern const matrix_st *stack_peek_r(mstack_st*);
-
-extern bool stack_push(const matrix_st*);
-extern bool stack_pop(void);
-extern const matrix_st *stack_peek(void);
-
 extern const matrix_st matrix_id;
 extern const coord_st  vector_i;
 extern const coord_st  vector_j;
 extern const coord_st  vector_k;
 extern const coord_st  point_o;
-extern mstack_st mstack;
 
 #ifdef COUNTERS
 typedef struct counters {
@@ -95,4 +78,4 @@ void reset_counters(void);
 void get_counters(counters_st*);
 #endif /* COUNTERS */
 
-#endif /* _VMATH_H */
+#endif /* _VMATH_CORE_H */

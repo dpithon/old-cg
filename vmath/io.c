@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include "vmath.h"
-#include "pprint.h"
+#include "core.h"
+#include "mstack.h"
+#include "io.h"
 
 void printc(const char *fmt, coord_st *c)
 {
@@ -39,6 +40,7 @@ void prints(const char *fmt, mstack_st *s)
 }
 
 
+#ifdef COUNTERS
 void pcounters(void)
 {
 	counters_st cnt;
@@ -56,3 +58,4 @@ void pcounters(void)
 	}
 	printf("----------\n");
 }
+#endif /* COUNTERS */
