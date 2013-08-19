@@ -5,15 +5,15 @@
 #include "core.h" 
 #include "core_private.h" 
 
-#define DOT(u,v) ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
-#define EPSILON 0.001
+#define DOT(u,v) 	 ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
+#define E(m, r, c)	 ((m)->cell[r][c])
+#define ROW_MUL(m, r, v) E(m, r, 0) * ((v)->x) +\
+			 E(m, r, 1) * ((v)->y) +\
+			 E(m, r, 2) * ((v)->z) +\
+			 E(m, r, 3) * ((v)->w)
 
-#ifdef COUNTERS
-counters_st cnt;
-#endif /* COUNTERS */
 
-static float Epsilon = EPSILON;
-static bool nearly_equals(float a, float b);
+static bool float_equals(float a, float b);
 
 const matrix_st matrix_id = MAT_ID;
 const coord_st  vector_i  = VEC_I;
@@ -21,8 +21,25 @@ const coord_st  vector_j  = VEC_J;
 const coord_st  vector_k  = VEC_K;
 const coord_st  point_o   = PNT_O;
 
+#ifdef COUNTERS
+
+static counter_st cnt;
+const char *const counter_name[] = {
+	"sto", "cmp", "add", "mul", "abs",
+	"sqr", "trg", "idx", "neg", "is_pnt",
+	"is_vec", "is_0", "is_1", "is_ort", "fn_len",
+	"fn_dot", "fn_vec", "fn_scl", "fn_1", "fn_add",
+	"fn_sub", "fn_x", "fn_hmg", "fn_mxc", "fn_mxm",
+	"fn_t", "fn_rtx", "fn_rty", "fn_rtz", "fn_rot",
+	"fn_tsl", "fn_feq", 0
+};
+
+#endif /* COUNTERS */
+
+
 bool is_point(const coord_st *c) 
 {
+	IS_PNT(1);
 	CMP(1);
 
 	return c->w == 1.F; 
@@ -31,6 +48,7 @@ bool is_point(const coord_st *c)
 
 bool is_vector(const coord_st *c)
 {
+	IS_VEC(1);
 	CMP(1);
 
 	return c->w == 0.F; 
@@ -39,33 +57,39 @@ bool is_vector(const coord_st *c)
 
 bool is_zero(const coord_st *v)
 {
+	IS_0(1);
+
 	assert(is_vector(v));
 
-	return nearly_equals( len(v), 0.F );
+	return float_equals( len(v), 0.F );
 }
 
 
 bool is_unit(const coord_st *v)
 {
+	IS_1(1);
+
 	assert(is_vector(v));
 
-	return nearly_equals( len(v), 1.F );
+	return float_equals( len(v), 1.F );
 }
 
 
 bool is_ortho(const coord_st *u, const coord_st *v)
 {
+	IS_ORT(1); 
 	ADD(2); MUL(3);
 
 	assert(is_vector(u)); /* u, w are vectors */
 	assert(is_vector(v));
 
-	return nearly_equals( DOT(u, v), 0.F );
+	return float_equals( DOT(u, v), 0.F );
 }
 
 
 float len(const coord_st *v)
 {
+	FN_LEN(1); 
 	SQR(1); ADD(2); MUL(3);
 
 	assert(is_vector(v));
@@ -76,6 +100,7 @@ float len(const coord_st *v)
 
 float dot(const coord_st *v, const coord_st *u)
 {
+	FN_DOT(1); 
 	ADD(2); MUL(3);
 
 	assert(is_vector(u));
@@ -87,6 +112,7 @@ float dot(const coord_st *v, const coord_st *u)
 
 coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
 {
+	FN_VEC(1); 
 	ADD(3); STO(4);
 
 	assert(is_point(p));
@@ -103,6 +129,7 @@ coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
 
 coord_st *scale(coord_st *v, coord_st *u, float k)
 {
+	FN_SCL(1); 
 	STO(4); MUL(3);
 
 	assert(is_vector(u));
@@ -118,6 +145,7 @@ coord_st *scale(coord_st *v, coord_st *u, float k)
 
 coord_st *unit(coord_st *v, coord_st *u)
 {
+	FN_1(1); 
 	STO(5); SQR(1); MUL(6); ADD(2);
 
 	assert(is_vector(u));
@@ -136,6 +164,7 @@ coord_st *unit(coord_st *v, coord_st *u)
 
 coord_st *add(coord_st *v, coord_st *u, coord_st *w)
 {
+	FN_ADD(1); 
 	STO(4); ADD(3);
 
 	assert(is_vector(u));
@@ -152,6 +181,7 @@ coord_st *add(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
 {
+	FN_SUB(1); 
 	STO(4); ADD(3);
 
 	assert(is_vector(u));
@@ -168,6 +198,7 @@ coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
 
 coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
 {
+	FN_X(1); 
 	STO(4); MUL(6); ADD(3);
 
 	assert(is_vector(u));
@@ -184,6 +215,7 @@ coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
 
 coord_st *homogeneize(coord_st *p, coord_st *q)
 {
+	FN_HMG(1); 
 	STO(1); MUL(3);
 
 	assert(is_point(q));
@@ -197,13 +229,9 @@ coord_st *homogeneize(coord_st *p, coord_st *q)
 }
 
 
-#define E(m, r, c)	((m)->cell[r][c])
-#define ROW_MUL(m, r, v) E(m, r, 0) * ((v)->x) +\
-			 E(m, r, 1) * ((v)->y) +\
-			 E(m, r, 2) * ((v)->z) +\
-			 E(m, r, 3) * ((v)->w)
 coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
 {
+	FN_MXC(1);
 	CMP(1); IDX(16); MUL(16); ADD(12); STO((u == v) ? 9 : 4);
 
 	coord_st tmp;
@@ -224,6 +252,7 @@ coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
 
 matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 {
+	FN_MXM(1);
 	ADD(148); MUL(64); IDX(208);
 	CMP((m == m1) ? 107 : 108);
 	STO((m == m1) || (m == m2) ? 35 : 16);
@@ -256,6 +285,7 @@ matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 
 matrix_st *transpose(matrix_st *m, matrix_st *n)
 {
+	FN_T(1);
 	CMP(26); STO(n == m ? 38 : 21); ADD(20); IDX(32);
 	
 	int i, j;
@@ -278,6 +308,7 @@ matrix_st *transpose(matrix_st *m, matrix_st *n)
 
 matrix_st *rotationx(matrix_st *m, float a)
 {
+	FN_RTX(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
 
 	float ca = cosf(a);
@@ -309,6 +340,7 @@ matrix_st *rotationx(matrix_st *m, float a)
 
 matrix_st *rotationy(matrix_st *m, float a)
 {
+	FN_RTY(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
 
 	float ca = cosf(a);
@@ -340,6 +372,7 @@ matrix_st *rotationy(matrix_st *m, float a)
 
 matrix_st *rotationz(matrix_st *m, float a)
 {
+	FN_RTZ(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
 
 	float ca = cosf(a);
@@ -371,7 +404,10 @@ matrix_st *rotationz(matrix_st *m, float a)
 
 matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 {
+	FN_ROT(1);
 	TRG(2); STO(27); MUL(21); ADD(18); IDX(16);
+
+	assert(is_unit(v));
 
 	float c = cosf(a);
 	float s = sinf(a);
@@ -384,8 +420,6 @@ matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 	float x2 = v->x * v->x;
 	float y2 = v->y * v->y;
 	float z2 = v->z * v->z;
-
-	assert(is_unit(v));
 
 	E(m, 0, 0) = x2 + (1 - x2) * c;
 	E(m, 0, 1) = xy * (1 - c) - s * z;
@@ -413,6 +447,7 @@ matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 
 matrix_st *translation(matrix_st *m, coord_st *v)
 {
+	FN_TSL(1);
 	IDX(16); STO(16);
 
 	E(m, 0, 0) = 1.F;
@@ -446,49 +481,37 @@ void reset_counters(void)
 }
 
 
-void get_counters(counters_st *dst)
+void copy_counters(counter_st *dst)
 {
 	memcpy(dst, &cnt, sizeof cnt); 
 }
 #endif /* COUNTERS */
 
 
-static bool nearly_equals(float a, float b)
+#define EPSILON 0.001
+static bool float_equals(float a, float b)
 {
-#ifdef COUNTERS
-	cnt.sto += 3;
-	cnt.add += 1;
-	cnt.abs += 3;
-#endif /* COUNTERS */
+	FN_FEQ(1);
+	STO(3); ADD(1); ABS(3);
 
 	float absA = fabsf(a);
         float absB = fabsf(b);
         float diff = fabsf(a - b);
 
         if (a == b) { // shortcut, handles infinities
-#		ifdef COUNTERS
-		cnt.cmp +=1;
-#		endif /* COUNTERS */
+		CMP(1);
 
 		return true;
 
         } else if (a * b == 0) { // a or b or both are zero
-#		ifdef COUNTERS
-		cnt.cmp += 3;
-		cnt.mul += 1;
-#		endif /* COUNTERS */
+		CMP(2); MUL(1);
 
 		// relative error is not meaningful here
-		return diff < Epsilon;
+		return diff < EPSILON;
 
         } else { // use relative error
-#		ifdef COUNTERS
-		cnt.mul += 1;
-		cnt.add += 1;
-		cnt.cmp += 3;
-#		endif /* COUNTERS */
+		CMP(3); MUL(1); ADD(1);
 
-            return diff / (absA + absB) < Epsilon;
+            return diff / (absA + absB) < EPSILON;
         }
 }
-

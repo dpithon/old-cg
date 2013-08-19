@@ -60,13 +60,15 @@ int main(int argc, char *argv[])
 	float theta;
 	coord_st u;
 	matrix_st rot1, rot2;
-
 	coord_st p, rt1, rt2;
+	counter_st cnt;
 
 	if (argc < 8) {
 		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
 		return 1;
 	}
+
+	reset_counters();
 
 	u.x   = atof(argv[1]);
 	u.y   = atof(argv[2]);
@@ -85,10 +87,11 @@ int main(int argc, char *argv[])
 
 	rotation(&rot2, &u, theta);
 
-	reset_counters();
 	mulc(&rt1, &rot1, &p);
-	pcounters();
 	mulc(&rt2, &rot2, &p);
+
+	copy_counters(&cnt);
+	print_counters(&cnt);
 /*
 	printc("point t   : %s\n", &t); 
 	printc("point rt1 : %s\n", &rt1); 

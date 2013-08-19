@@ -1,20 +1,23 @@
 #ifndef _VMATH_CORE_H
 #define _VMATH_CORE_H
 
-#include <stdbool.h>
+#ifndef bool
+#define bool int
+#define true  1
+#define false 0
+#endif /* bool */
 
-/* Homogeneous coordinates (w == 0: vector, w != 0: point) */
+/*** Homogeneous coordinates (w == 0: vector, w != 0: point) */
 typedef struct coord {
 	float x, y, z, w;
 } coord_st;
 
-/* Matrix (4x4) */
+/*** Matrix (4x4) */
 typedef struct matrix {
 	float cell[4][4];
 } matrix_st;
 
-
-/* Initalizer values */
+/*** Initalizer values */
 #define VEC_I    { 1.F, 0.F, 0.F, 0.F }
 #define VEC_J    { 0.F, 1.F, 0.F, 0.F }
 #define VEC_K    { 0.F, 0.F, 1.F, 0.F }
@@ -22,13 +25,7 @@ typedef struct matrix {
 #define PNT_I    { 1.F, 0.F, 0.F, 1.F }
 #define PNT_J    { 0.F, 1.F, 0.F, 1.F }
 #define PNT_K    { 0.F, 0.F, 1.F, 1.F }
-#define MAT_ID   { .cell = { { 1.F, 0.F, 0.F, 0.F },\
-			     { 0.F, 1.F, 0.F, 0.F },\
-			     { 0.F, 0.F, 1.F, 0.F },\
-			     { 0.F, 0.F, 0.F, 1.F } } }
-
-#define self_scale(v, a) scale((v), (v), (a))
-#define self_unit(v)	 unit((v), (v))
+#define MAT_ID   { .cell = { VEC_I, VEC_J, VEC_K, PNT_O } }
 
 extern bool       is_point(const coord_st*);
 extern bool       is_vector(const coord_st*);
@@ -62,7 +59,7 @@ extern const coord_st  vector_k;
 extern const coord_st  point_o;
 
 #ifdef COUNTERS
-typedef struct counters {
+typedef struct counter {
 	unsigned long sto;
 	unsigned long cmp;
 	unsigned long add;
@@ -72,10 +69,37 @@ typedef struct counters {
 	unsigned long trg;
 	unsigned long idx;
 	unsigned long neg;
-} counters_st;
+
+	unsigned long is_pnt;
+	unsigned long is_vec;
+	unsigned long is_0;
+	unsigned long is_1;
+	unsigned long is_ort;
+	unsigned long fn_len;
+	unsigned long fn_dot;
+	unsigned long fn_vec;
+	unsigned long fn_scl;
+	unsigned long fn_1;
+	unsigned long fn_add;
+	unsigned long fn_sub;
+	unsigned long fn_x;
+	unsigned long fn_hmg;
+	unsigned long fn_mxc;
+	unsigned long fn_mxm;
+	unsigned long fn_t;
+	unsigned long fn_rtx;
+	unsigned long fn_rty;
+	unsigned long fn_rtz;
+	unsigned long fn_rot;
+	unsigned long fn_tsl;
+	unsigned long fn_feq;
+} counter_st;
+
+extern const char *const counter_name[];
 
 void reset_counters(void);
-void get_counters(counters_st*);
+void copy_counters(counter_st*);
+
 #endif /* COUNTERS */
 
 #endif /* _VMATH_CORE_H */

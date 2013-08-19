@@ -21,4 +21,3 @@ purge: clean
 core.o: core.c core.h
 io.o: io.c io.h
 mstack.o: mstack.c mstack.h
-

@@ -41,21 +41,12 @@ void prints(const char *fmt, mstack_st *s)
 
 
 #ifdef COUNTERS
-void pcounters(void)
+void print_counters(counter_st *cnt)
 {
-	counters_st cnt;
-	unsigned long *ul = (unsigned long*) &cnt;
-	int i;
-	const char *cstr[] = {
-		"sto", "cmp", "add", "mul",
-		"abs", "sqr", "trg", "idx",
-		"neg", NULL
-	};
+	unsigned long *ul = (unsigned long*) cnt;
 
-	get_counters(&cnt);
-	for (i = 0; cstr[i]; i++) {
-		printf("%s: %ld\n", cstr[i], ul[i]);
+	for (int i = 0; counter_name[i]; i++) {
+		printf("%6ld ..... %s\n", ul[i], counter_name[i]);
 	}
-	printf("----------\n");
 }
 #endif /* COUNTERS */

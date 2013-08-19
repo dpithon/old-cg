@@ -1,6 +1,5 @@
 #include <string.h>
 #include "core.h"
-#include "core_private.h" 
 #include "mstack.h"
 
 
@@ -12,8 +11,6 @@ mstack_st mstack = {
 
 void stack_init_r(mstack_st *s)
 {
-	STO(17);
-
 	s->i = 0;
 	memcpy(&(s->m[0]), &matrix_id, sizeof matrix_id);
 }
@@ -21,8 +18,6 @@ void stack_init_r(mstack_st *s)
 
 bool stack_push_r(mstack_st *s, const matrix_st *m) 
 {
-	ADD(3); CMP(1);
-
 	if (s->i + 1 == MAX_STACK_SIZE) {
 		return 1;
 	}
@@ -36,9 +31,6 @@ bool stack_push_r(mstack_st *s, const matrix_st *m)
 
 bool stack_pop_r(mstack_st *s)
 {
-	CMP(1); 
-	ADD(s->i ? 1 : 0);
-
 	if (s->i) {
 		-- s->i;
 		return 0;

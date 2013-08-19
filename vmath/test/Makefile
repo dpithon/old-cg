@@ -10,7 +10,6 @@ TARGETS=rotation
 all: $(TARGETS)
 
 rotation: rotation.o
-	$(MAKE) -C ..
 	$(LD) $(OBJS) -lm -o $@
 
 clean:
