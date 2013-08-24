@@ -8,16 +8,16 @@ OBJS=core.o io.o mstack.o
 
 all: $(OBJS)
 
-test: all
-	$(MAKE) -C test
+test: testing.o $(OBJS)
+	$(LD) $^ -lm -o testing
 
 clean:
 	rm -rf *.o *.gch unit/*.o
-	$(MAKE) -C test clean
 
 purge: clean
-	$(MAKE) -C test purge
+	rm -f testing
 
 core.o: core.c core.h
 io.o: io.c io.h
 mstack.o: mstack.c mstack.h
+testing.o: testing.c

@@ -1,6 +1,6 @@
-/*
- * Test de rotation autour d'un axe quelconque
- * $ rotation x y z theta_deg px py pz
+/**
+ ** Test de rotation autour d'un axe quelconque
+ ** $ rotation x y z theta_deg px py pz
  */
 
 #include <assert.h>
@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core.h"
-#include "../mstack.h"
-#include "../io.h"
+#include "core.h"
+#include "mstack.h"
+#include "io.h"
 
 #define PI 3.141592654f
 
@@ -19,6 +19,9 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 {
 	float v;
 	matrix_st m1, tm1, m2, tm2, m3;
+	int idx = 0;
+	#define SZ 2000
+	char buf[SZ];
 
 	assert( is_unit(u) );
 
@@ -43,6 +46,7 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 	rotationz(&m3, theta);
 
 	/* stack_save() */
+	
 	stack_push(&tm1);
 	stack_push(&tm2);
 	stack_push(&m3);
@@ -50,6 +54,14 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 	stack_push(&m1);
 	memcpy(rot, stack_peek(), sizeof(matrix_st));
 	/* stack_restore() */
+
+	dump_matrix(buf, SZ, &idx, &tm1);
+	buf[idx++] = 'X';
+	buf[idx++] = '\n';
+	dump_stack(buf, SZ, &idx, &mstack);
+	buf[idx] = 0;
+	
+	printf("%s", buf);
 
 	return 0;
 }
@@ -61,14 +73,11 @@ int main(int argc, char *argv[])
 	coord_st u;
 	matrix_st rot1, rot2;
 	coord_st p, rt1, rt2;
-	counter_st cnt;
 
 	if (argc < 8) {
 		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
 		return 1;
 	}
-
-	reset_counters();
 
 	u.x   = atof(argv[1]);
 	u.y   = atof(argv[2]);
@@ -90,8 +99,8 @@ int main(int argc, char *argv[])
 	mulc(&rt1, &rot1, &p);
 	mulc(&rt2, &rot2, &p);
 
-	copy_counters(&cnt);
-	print_counters(&cnt);
+
+
 /*
 	printc("point t   : %s\n", &t); 
 	printc("point rt1 : %s\n", &rt1); 
