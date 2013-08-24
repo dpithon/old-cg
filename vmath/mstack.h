@@ -17,6 +17,4 @@ extern bool stack_push(const matrix_st*);
 extern bool stack_pop(void);
 extern const matrix_st *stack_peek(void);
 
-extern mstack_st mstack;
-
 #endif /* _MSTACK_H */
