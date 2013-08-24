@@ -1,0 +1,5 @@
+- document dump/restore coord,matrix,stack to/from hex file.
+- dump/restore counters
+- rename 'counters' to 'stats' or something
+- new design/names for printc, printm, prints ...
+
