@@ -58,7 +58,7 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 
 	dump_stack(buf, SZ, &idx, 0);
 	idx = 0;
-	if (load_stack(buf, SZ, &idx, &stck)) {
+	if (load_stack(&stck, buf, SZ, &idx)) {
 		printf("error\n");
 		return 1;
 	}

@@ -147,7 +147,7 @@ int dump_stack(char *buf, int sz, int *of, const mstack_st *s)
 }
 
 
-int load_coord(const char *buf, int sz, int *of, coord_st *c)
+int load_coord(coord_st *c, const char *buf, int sz, int *of)
 {
 	float *f = (float*) c;
 
@@ -162,10 +162,10 @@ int load_coord(const char *buf, int sz, int *of, coord_st *c)
 }
 
 
-int load_matrix(const char *buf, int sz, int *of, matrix_st *m)
+int load_matrix(matrix_st *m, const char *buf, int sz, int *of)
 {
 	for (int i = 0; i < 4;  i++) {
-		if (load_coord(buf, sz, of, (coord_st*) &(m->cell[i]))) {
+		if (load_coord((coord_st*) &(m->cell[i]), buf, sz, of)) {
 			return 1;
 		}
 	}
@@ -174,7 +174,7 @@ int load_matrix(const char *buf, int sz, int *of, matrix_st *m)
 }
 
 
-int load_stack(const char *buf, int sz, int *of, mstack_st *s)
+int load_stack(mstack_st* s, const char *buf, int sz, int *of)
 {
 	if (! s) {
 		s = (mstack_st*) &mstack;
@@ -183,7 +183,7 @@ int load_stack(const char *buf, int sz, int *of, mstack_st *s)
 	load_mm(buf, sz, of, &(s->i), sizeof s->i);
 	(*of) ++;
 	for (int i = s->i; i >= 0; i--) {
-		if (load_matrix(buf, sz, of, &(s->m[i]))) {
+		if (load_matrix(&(s->m[i]), buf, sz, of)) {
 			return 1;
 		}
 	}
