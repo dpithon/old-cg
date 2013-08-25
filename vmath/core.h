@@ -58,48 +58,4 @@ extern const coord_st  vector_j;
 extern const coord_st  vector_k;
 extern const coord_st  point_o;
 
-#ifdef COUNTERS
-typedef struct counter {
-	unsigned long sto;
-	unsigned long cmp;
-	unsigned long add;
-	unsigned long mul;
-	unsigned long abs;
-	unsigned long sqr;
-	unsigned long trg;
-	unsigned long idx;
-	unsigned long neg;
-
-	unsigned long is_pnt;
-	unsigned long is_vec;
-	unsigned long is_0;
-	unsigned long is_1;
-	unsigned long is_ort;
-	unsigned long fn_len;
-	unsigned long fn_dot;
-	unsigned long fn_vec;
-	unsigned long fn_scl;
-	unsigned long fn_1;
-	unsigned long fn_add;
-	unsigned long fn_sub;
-	unsigned long fn_x;
-	unsigned long fn_hmg;
-	unsigned long fn_mxc;
-	unsigned long fn_mxm;
-	unsigned long fn_t;
-	unsigned long fn_rtx;
-	unsigned long fn_rty;
-	unsigned long fn_rtz;
-	unsigned long fn_rot;
-	unsigned long fn_tsl;
-	unsigned long fn_feq;
-} counter_st;
-
-extern const char *const counter_name[];
-
-void reset_counters(void);
-void copy_counters(counter_st*);
-
-#endif /* COUNTERS */
-
 #endif /* _VMATH_CORE_H */

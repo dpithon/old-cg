@@ -1,10 +1,10 @@
 .PHONY: all clean purge test
 
-OPTS=-DCOUNTERS
+OPTS=-DVSTAT
 CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe -O0 -g2 $(OPTS)
 CC=gcc
 LD=gcc
-OBJS=core.o io.o mstack.o
+OBJS= vstat.o core.o io.o mstack.o
 
 all: $(OBJS)
 
@@ -19,5 +19,6 @@ purge: clean
 
 core.o: core.c core.h
 io.o: io.c io.h
-mstack.o: mstack.c mstack.h
+mstack.o: mstack.c mstack.h mstack.p
+stat.o: stat.c stat.h stat.p
 testing.o: testing.c

@@ -3,7 +3,8 @@
 #include <math.h>
 
 #include "core.h" 
-#include "core_private.h" 
+#include "vstat.h"
+#include "vstat.p"
 
 #define DOT(u,v) 	 ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define E(m, r, c)	 ((m)->cell[r][c])
@@ -20,21 +21,6 @@ const coord_st  vector_i  = VEC_I;
 const coord_st  vector_j  = VEC_J;
 const coord_st  vector_k  = VEC_K;
 const coord_st  point_o   = PNT_O;
-
-#ifdef COUNTERS
-
-static counter_st cnt;
-const char *const counter_name[] = {
-	"sto", "cmp", "add", "mul", "abs",
-	"sqr", "trg", "idx", "neg", "is_pnt",
-	"is_vec", "is_0", "is_1", "is_ort", "fn_len",
-	"fn_dot", "fn_vec", "fn_scl", "fn_1", "fn_add",
-	"fn_sub", "fn_x", "fn_hmg", "fn_mxc", "fn_mxm",
-	"fn_t", "fn_rtx", "fn_rty", "fn_rtz", "fn_rot",
-	"fn_tsl", "fn_feq", 0
-};
-
-#endif /* COUNTERS */
 
 
 bool is_point(const coord_st *c) 
@@ -472,20 +458,6 @@ matrix_st *translation(matrix_st *m, coord_st *v)
 
 	return m;
 }
-
-
-#ifdef COUNTERS
-void reset_counters(void)
-{
-	memset(&cnt, 0, sizeof cnt);
-}
-
-
-void copy_counters(counter_st *dst)
-{
-	memcpy(dst, &cnt, sizeof cnt); 
-}
-#endif /* COUNTERS */
 
 
 #define EPSILON 0.001

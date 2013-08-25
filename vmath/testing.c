@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "core.h"
+#include "vstat.h"
 #include "mstack.h"
 #include "io.h"
 
@@ -63,6 +64,7 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 		return 1;
 	}
 	prints(0, &stck);
+	print_vstat(0);
 	
 
 	return 0;

@@ -1,5 +1,5 @@
-#ifndef _MSTACK_H
-#define _MSTACK_H
+#ifndef _VMATH_MSTACK_H
+#define _VMATH_MSTACK_H
 
 /* Matrix stack */
 #define MAX_STACK_SIZE	16
@@ -17,4 +17,4 @@ extern bool stack_push(const matrix_st*);
 extern bool stack_pop(void);
 extern const matrix_st *stack_peek(void);
 
-#endif /* _MSTACK_H */
+#endif /* _VMATH_MSTACK_H */

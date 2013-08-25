@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "core.h"
 #include "mstack.h"
-#include "mstack_private.h"
+#include "mstack.p"
+#include "vstat.h"
+#include "vstat.p"
 #include "io.h"
 
 static int dump_mm(char*, int, int*, const void*, int, char);
@@ -49,16 +51,27 @@ void prints(const char *fmt, mstack_st *s)
 }
 
 
-#ifdef COUNTERS
-void print_counters(counter_st *cnt)
+#ifdef VSTAT
+/**
+ * print_vstat: output detailed statistics
+ *
+ * stat: pointer to a vstat structure (0 means current stats)
+ */
+void print_vstat(vstat_st *stat)
 {
-	unsigned long *ul = (unsigned long*) cnt;
+	unsigned long *ul;
 
-	for (int i = 0; counter_name[i]; i++) {
-		printf("%6ld ..... %s\n", ul[i], counter_name[i]);
+	if (! stat) {
+		stat = &vmath_stat;
+	}
+
+	ul = (unsigned long*) stat;
+
+	for (int i = 0; vstat_str[i]; i++) {
+		printf("%6ld ..... %s\n", ul[i], vstat_str[i]);
 	}
 }
-#endif /* COUNTERS */
+#endif /* VSTAT */
 
 
 
@@ -133,7 +146,7 @@ int dump_matrix(char *buf, int sz, int *of, const matrix_st *m)
 int dump_stack(char *buf, int sz, int *of, const mstack_st *s)
 {
 	if (! s) {
-		s = (const mstack_st*) &mstack;
+		s = (const mstack_st*) &vmath_mstack;
 	}
 
 	dump_mm(buf, sz, of, &(s->i), sizeof s->i, '\n');
@@ -177,7 +190,7 @@ int load_matrix(matrix_st *m, const char *buf, int sz, int *of)
 int load_stack(mstack_st* s, const char *buf, int sz, int *of)
 {
 	if (! s) {
-		s = (mstack_st*) &mstack;
+		s = (mstack_st*) &vmath_mstack;
 	}
 
 	load_mm(buf, sz, of, &(s->i), sizeof s->i);

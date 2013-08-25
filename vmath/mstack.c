@@ -3,7 +3,7 @@
 #include "mstack.h"
 
 
-mstack_st mstack = {
+mstack_st vmath_mstack = {
 	.i = 0,
 	.m = { MAT_ID }
 };
@@ -49,17 +49,17 @@ const matrix_st *stack_peek_r(mstack_st *s)
 
 bool stack_push(const matrix_st *s)
 {
-	return stack_push_r(&mstack, s);
+	return stack_push_r(&vmath_mstack, s);
 }
 
 
 bool stack_pop(void)
 {
-	return stack_pop_r(&mstack);
+	return stack_pop_r(&vmath_mstack);
 }
 
 
 const matrix_st *stack_peek(void)
 {
-	return stack_peek_r(&mstack);
+	return stack_peek_r(&vmath_mstack);
 }
