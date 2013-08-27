@@ -1,6 +1,10 @@
 #ifndef _VMATH_STAT_PRIVATE_H
 #define _VMATH_STAT_PRIVATE_H
 
+#ifndef _VMATH_INTERNALS
+#error _VMATH_INTERNALS not defined !
+#endif /* _VMATH_INTERNALS */
+
 #ifdef VSTAT
 extern vstat_st vmath_stat;
 extern const char *const vstat_str[];

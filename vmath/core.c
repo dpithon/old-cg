@@ -2,6 +2,8 @@
 #include <string.h>
 #include <math.h>
 
+#define _VMATH_INTERNALS
+
 #include "core.h" 
 #include "vstat.h"
 #include "vstat.p"

@@ -1,9 +1,16 @@
 #ifndef _VMATH_IO_H
 #define _VMATH_IO_H
 
-extern void printc(const char*, coord_st*);
-extern void printm(const char*, matrix_st*);
-extern void prints(const char*, mstack_st*);
+extern void io_set_wp(int, int);
+extern void io_get_wp(int*, int*);
+
+extern char *coord_to_str(char*, int, int*, char, const coord_st*);
+extern char *matrix_to_str(char*, int, int*, const matrix_st*);
+extern char *mstack_to_str(char*, int, int*, const mstack_st*);
+
+extern void print_coord(char*, const coord_st*);
+extern void print_matrix(char*, const matrix_st*);
+extern void print_mstack(char*, const mstack_st*);
 
 extern void print_vstat(vstat_st*);
 

@@ -1,4 +1,7 @@
 #include <stdio.h>
+
+#define _VMATH_INTERNALS
+
 #include "core.h"
 #include "mstack.h"
 #include "mstack.p"
@@ -8,47 +11,114 @@
 
 static int dump_mm(char*, int, int*, const void*, int, char);
 static int load_mm(const char*, int, int*, void*, int);
+static void printfmt(char*, char*);
+
+static int width = 5;
+static int prec  = 2;
 
 #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
 #error "Unsupported byte order."
 #endif
 
 
-void printc(const char *fmt, coord_st *c)
+void io_set_wp(int w, int p)
 {
-	static char val[30];
-
-	sprintf(val, "%5.2f %5.2f %5.2f %5.2f", c->x, c->y, c->z, c->w);
-	if (fmt) {
-		printf(fmt, val);
-	} else {
-		printf("%s", val);
-	}
+	width = w;
+	prec  = p;
 }
 
 
-void printm(const char *fmt, matrix_st *m)
+void io_get_wp(int *w, int *p)
 {
-	int i;
-	for (i = 0; i < 4; i++) {
-		printc(fmt, (coord_st*) m->cell[i]);
-		if (! fmt) {
-			printf("\n");
+	*w = width;
+	*p = prec;
+}
+
+
+char *coord_to_str(char *buf, int sz, int *of, char z, const coord_st *c)
+{
+        int rsz;
+
+        rsz = snprintf(
+		&(buf[*of]), (sz - *of), 
+		"%*.*f %*.*f %*.*f %*.*f%c",
+		width, prec, c->x, width, prec, c->y,
+		width, prec, c->z, width, prec, c->w, z
+	);
+
+        if (rsz >= (sz - *of)) {
+                return NULL;
+        }
+
+	*of += rsz;
+
+        return buf;
+}
+
+
+#define MATROW(m, i) ((coord_st*) &(m->cell[i]))
+char *matrix_to_str(char *buf, int sz, int *of, const matrix_st *m)
+{
+        for (int i = 0; i < 4;  i++) {
+                if (! coord_to_str(buf, sz, of, '\n', MATROW(m, i))) {
+                        return NULL;
+                }
+        }
+
+        return buf;
+}
+
+
+char *mstack_to_str(char *buf, int sz, int *of, const mstack_st *s)
+{
+	if (! s) {
+		s = &vmath_mstack;
+	}
+
+        int i = s->i;
+        while (i >= 0) {
+                if (! matrix_to_str(buf, sz, of, &(s->m[i--]))) {
+                        return NULL;
+                }
+		if (sz - *of >= 2) {
+			buf[(*of)++] = '\n';
+			buf[*of] = '\0';
+		} else {
+			return NULL;
 		}
-	}
+        }
+
+	return buf;
 }
 
 
-void prints(const char *fmt, mstack_st *s)
+void print_coord(char *fmt, const coord_st *c)
 {
-	int i = s->i;
-	while (i >= 0) {
-		printm(fmt, &(s->m[i--]));
-		printf("\n");
-	}
+	static char buf[80];
+	int i = 0;
 
-	printf("-------------------------------------\n");
+	printfmt(fmt, coord_to_str(buf, 80, &i, 0, c));
 }
+
+
+void print_matrix(char *fmt, const matrix_st *m)
+{
+	static char buf[320];
+	int i = 0;
+
+	printfmt(fmt, matrix_to_str(buf, 320, &i, m));
+}
+
+
+void print_mstack(char *fmt, const mstack_st *s)
+{
+	static char buf[5120];
+	int i = 0;
+
+	printfmt(fmt, mstack_to_str(buf, 5120, &i, s));
+}
+
+
 
 
 #ifdef VSTAT
@@ -59,17 +129,17 @@ void prints(const char *fmt, mstack_st *s)
  */
 void print_vstat(vstat_st *stat)
 {
-	unsigned long *ul;
+        unsigned long *ul;
 
-	if (! stat) {
-		stat = &vmath_stat;
-	}
+        if (! stat) {
+                stat = &vmath_stat;
+        }
 
-	ul = (unsigned long*) stat;
+        ul = (unsigned long*) stat;
 
-	for (int i = 0; vstat_str[i]; i++) {
-		printf("%6ld ..... %s\n", ul[i], vstat_str[i]);
-	}
+        for (int i = 0; vstat_str[i]; i++) {
+                printf("%6ld ..... %s\n", ul[i], vstat_str[i]);
+        }
 }
 #endif /* VSTAT */
 
@@ -93,15 +163,15 @@ void print_vstat(vstat_st *stat)
  */
 int dump_coord(char *buf, int sz, int *of, char z, const coord_st *c)
 {
-	float *f = (float*) c;
+        float *f = (float*) c;
 
-	for (int i = 0; i < 4; i++) {
-		if (dump_mm(buf, sz, of, &f[i], sizeof *f, (i == 3)? z: ' ')) {
-			return 1;
-		}
-	}
+        for (int i = 0; i < 4; i++) {
+                if (dump_mm(buf, sz, of, &f[i], sizeof *f, (i == 3)? z: ' ')) {
+                        return 1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 
@@ -120,13 +190,13 @@ int dump_coord(char *buf, int sz, int *of, char z, const coord_st *c)
  */
 int dump_matrix(char *buf, int sz, int *of, const matrix_st *m)
 {
-	for (int i = 0; i < 4;  i++) {
-		if (dump_coord(buf, sz, of, '\n', (coord_st*) &(m->cell[i]))) {
-			return 1;
-		}
-	}
+        for (int i = 0; i < 4;  i++) {
+                if (dump_coord(buf, sz, of, '\n', (coord_st*) &(m->cell[i]))) {
+                        return 1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 
@@ -145,63 +215,63 @@ int dump_matrix(char *buf, int sz, int *of, const matrix_st *m)
  */
 int dump_stack(char *buf, int sz, int *of, const mstack_st *s)
 {
-	if (! s) {
-		s = (const mstack_st*) &vmath_mstack;
-	}
+        if (! s) {
+                s = (const mstack_st*) &vmath_mstack;
+        }
 
-	dump_mm(buf, sz, of, &(s->i), sizeof s->i, '\n');
-	for (int i = s->i; i >= 0; i--) {
-		if (dump_matrix(buf, sz, of, &(s->m[i]))) {
-			return 1;
-		}
-	}
+        dump_mm(buf, sz, of, &(s->i), sizeof s->i, '\n');
+        for (int i = s->i; i >= 0; i--) {
+                if (dump_matrix(buf, sz, of, &(s->m[i]))) {
+                        return 1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 
 int load_coord(coord_st *c, const char *buf, int sz, int *of)
 {
-	float *f = (float*) c;
+        float *f = (float*) c;
 
-	for (int i = 0; i < 4; i++) {
-		if (load_mm(buf, sz, of, &f[i], sizeof *f)) {
-			return 1;
-		}
-		(*of)++;
-	}
+        for (int i = 0; i < 4; i++) {
+                if (load_mm(buf, sz, of, &f[i], sizeof *f)) {
+                        return 1;
+                }
+                (*of)++;
+        }
 
-	return 0;
+        return 0;
 }
 
 
 int load_matrix(matrix_st *m, const char *buf, int sz, int *of)
 {
-	for (int i = 0; i < 4;  i++) {
-		if (load_coord((coord_st*) &(m->cell[i]), buf, sz, of)) {
-			return 1;
-		}
-	}
+        for (int i = 0; i < 4;  i++) {
+                if (load_coord((coord_st*) &(m->cell[i]), buf, sz, of)) {
+                        return 1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 
 int load_stack(mstack_st* s, const char *buf, int sz, int *of)
 {
-	if (! s) {
-		s = (mstack_st*) &vmath_mstack;
-	}
+        if (! s) {
+                s = (mstack_st*) &vmath_mstack;
+        }
 
-	load_mm(buf, sz, of, &(s->i), sizeof s->i);
-	(*of) ++;
-	for (int i = s->i; i >= 0; i--) {
-		if (load_matrix(&(s->m[i]), buf, sz, of)) {
-			return 1;
-		}
-	}
+        load_mm(buf, sz, of, &(s->i), sizeof s->i);
+        (*of) ++;
+        for (int i = s->i; i >= 0; i--) {
+                if (load_matrix(&(s->m[i]), buf, sz, of)) {
+                        return 1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 
@@ -223,36 +293,36 @@ int load_stack(mstack_st* s, const char *buf, int sz, int *of)
 
 int dump_mm(char *buf, int bsz, int *of, const void *mm, int sz, char z)
 {
-	static char hexa[] = { 
-		'0', '1', '2', '3', '4', '5', '6', '7',
-		'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-	};
-	const unsigned char *uc = (const unsigned char*) mm;
-	unsigned char b;
+        static char hexa[] = { 
+                '0', '1', '2', '3', '4', '5', '6', '7',
+                '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+        const unsigned char *uc = (const unsigned char*) mm;
+        unsigned char b;
 
-	for (int i = 0; i < sz; i++) {
-		if (bsz - *of < 3) {
-			return 1;
-		}
+        for (int i = 0; i < sz; i++) {
+                if (bsz - *of < 3) {
+                        return 1;
+                }
 
-		b = uc[sz - 1 - i];
-		buf[(*of)++] = hexa[b >> 4];
-		buf[(*of)++] = hexa[b & 0x0F];
-	}
+                b = uc[sz - 1 - i];
+                buf[(*of)++] = hexa[b >> 4];
+                buf[(*of)++] = hexa[b & 0x0F];
+        }
 
-	buf[(*of)++] = z;
-	return 0;
+        buf[(*of)++] = z;
+        return 0;
 }
 
 
 static unsigned char decode_hex(char c)
 {
-	if (c >= '0' && c <= '9')
-		return c - '0';
-	else if (c >= 'A' && c <= 'F')
-		return 10 + (c - 'A');
-	else
-		return 16;
+        if (c >= '0' && c <= '9')
+                return c - '0';
+        else if (c >= 'A' && c <= 'F')
+                return 10 + (c - 'A');
+        else
+                return 16;
 }
 
 
@@ -273,23 +343,32 @@ static unsigned char decode_hex(char c)
  */
 int load_mm(const char *buf, int bsz, int *of, void *mm, int sz)
 {
-	unsigned char *uc = (unsigned char*) mm;
-	unsigned char hi, lo;
+        unsigned char *uc = (unsigned char*) mm;
+        unsigned char hi, lo;
 
-	for (int i = sz - 1; i >= 0; i--) {
-		if (bsz - *of < 2) {
-			return 1;
-		}
+        for (int i = sz - 1; i >= 0; i--) {
+                if (bsz - *of < 2) {
+                        return 1;
+                }
 
-		// decode two HEX characters in a byte
-		hi = decode_hex(buf[(*of)++]);
-		lo = decode_hex(buf[(*of)++]);
-		if (hi > 15 || lo > 15)
-			return 2;
+                // decode two HEX characters in a byte
+                hi = decode_hex(buf[(*of)++]);
+                lo = decode_hex(buf[(*of)++]);
+                if (hi > 15 || lo > 15)
+                        return 2;
 
-		uc[i]  = hi << 4;
-		uc[i] += lo;
-	}
+                uc[i]  = hi << 4;
+                uc[i] += lo;
+        }
 
-	return 0;
+        return 0;
 }
+
+
+
+static void printfmt(char *fmt, char *str)
+{
+	printf(fmt, str);
+}
+
+

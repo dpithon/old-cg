@@ -1,0 +1,5 @@
+core.o: core.c core.h vstat.h vstat.p
+io.o: io.c core.h mstack.h mstack.p vstat.h vstat.p io.h
+mstack.o: mstack.c core.h mstack.h
+testing.o: testing.c core.h vstat.h mstack.h io.h
+vstat.o: vstat.c vstat.h

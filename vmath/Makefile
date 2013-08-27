@@ -1,7 +1,10 @@
-.PHONY: all clean purge test
+.PHONY: all clean purge test deps
 
+OPTS=-DNDEBUG
 OPTS=-DVSTAT
-CFLAGS+=-Wall -Wextra -std=c99 -pedantic -pipe -O0 -g2 $(OPTS)
+DEBUG=-O2 -g0
+DEBUG=-O0 -g2
+CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
 OBJS= vstat.o core.o io.o mstack.o
@@ -17,8 +20,7 @@ clean:
 purge: clean
 	rm -f testing
 
-core.o: core.c core.h
-io.o: io.c io.h
-mstack.o: mstack.c mstack.h mstack.p
-stat.o: stat.c stat.h stat.p
-testing.o: testing.c
+deps:
+	$(CC) -MM *.c >Makefile.deps
+ 
+include Makefile.deps

@@ -20,10 +20,6 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 {
 	float v;
 	matrix_st m1, tm1, m2, tm2, m3;
-	int idx = 0;
-	#define SZ 2000
-	char buf[SZ];
-	mstack_st stck;
 
 	assert( is_unit(u) );
 
@@ -56,16 +52,6 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 	stack_push(&m1);
 	memcpy(rot, stack_peek(), sizeof(matrix_st));
 	/* stack_restore() */
-
-	dump_stack(buf, SZ, &idx, 0);
-	idx = 0;
-	if (load_stack(&stck, buf, SZ, &idx)) {
-		printf("error\n");
-		return 1;
-	}
-	prints(0, &stck);
-	print_vstat(0);
-	
 
 	return 0;
 }
@@ -102,6 +88,11 @@ int main(int argc, char *argv[])
 
 	mulc(&rt1, &rot1, &p);
 	mulc(&rt2, &rot2, &p);
+
+	io_set_wp(6, 3);
+	print_matrix("rotation matrix :\n%s", &rot1);
+	print_coord("point: %s\n", &rt1);
+	print_mstack("stack :\n %s\n", 0);
 
 	return 0;
 }
