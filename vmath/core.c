@@ -5,8 +5,9 @@
 #define _VMATH_INTERNALS
 
 #include "core.h" 
-#include "vstat.h"
-#include "vstat.p"
+#include "stat.h"
+#include "stat.p"
+#include "settings.p"
 
 #define DOT(u,v) 	 ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define E(m, r, c)	 ((m)->cell[r][c])
@@ -462,7 +463,6 @@ matrix_st *translation(matrix_st *m, coord_st *v)
 }
 
 
-#define EPSILON 0.001
 static bool float_equals(float a, float b)
 {
 	FN_FEQ(1);
@@ -481,11 +481,11 @@ static bool float_equals(float a, float b)
 		CMP(2); MUL(1);
 
 		// relative error is not meaningful here
-		return diff < EPSILON;
+		return diff < vmset_eps;
 
         } else { // use relative error
 		CMP(3); MUL(1); ADD(1);
 
-            return diff / (absA + absB) < EPSILON;
+            return diff / (absA + absB) < vmset_eps;
         }
 }

@@ -10,9 +10,10 @@
 #include <string.h>
 
 #include "core.h"
-#include "vstat.h"
+#include "stat.h"
 #include "mstack.h"
 #include "io.h"
+#include "settings.h"
 
 #define PI 3.141592654f
 
@@ -89,10 +90,13 @@ int main(int argc, char *argv[])
 	mulc(&rt1, &rot1, &p);
 	mulc(&rt2, &rot2, &p);
 
-	io_set_wp(6, 3);
+	vmath_set(VMSET_IO_WIDTH, VMSET_CAST(8));
+	vmath_set(VMSET_IO_PREC, VMSET_CAST(4));
+	vmath_set(VMSET_IO_START_CHAR, VMSET_CAST(0));
+
 	print_matrix("rotation matrix :\n%s", &rot1);
-	print_coord("point: %s\n", &rt1);
-	print_mstack("stack :\n %s\n", 0);
+	print_coord("point :\n%s\n", &rt1);
+	print_mstack("stack :\n%s\n", 0);
 
 	return 0;
 }

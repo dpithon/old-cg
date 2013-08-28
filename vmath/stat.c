@@ -1,5 +1,5 @@
 #include <string.h>
-#include "vstat.h"
+#include "stat.h"
 
 vstat_st vmath_stat;
 const char *const vstat_str[] = {

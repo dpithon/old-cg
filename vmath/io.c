@@ -5,46 +5,44 @@
 #include "core.h"
 #include "mstack.h"
 #include "mstack.p"
-#include "vstat.h"
-#include "vstat.p"
+#include "stat.h"
+#include "stat.p"
 #include "io.h"
+#include "settings.p"
 
 static int dump_mm(char*, int, int*, const void*, int, char);
 static int load_mm(const char*, int, int*, void*, int);
 static void printfmt(char*, char*);
-
-static int width = 5;
-static int prec  = 2;
 
 #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
 #error "Unsupported byte order."
 #endif
 
 
-void io_set_wp(int w, int p)
-{
-	width = w;
-	prec  = p;
-}
-
-
-void io_get_wp(int *w, int *p)
-{
-	*w = width;
-	*p = prec;
-}
-
-
 char *coord_to_str(char *buf, int sz, int *of, char z, const coord_st *c)
 {
         int rsz;
 
-        rsz = snprintf(
-		&(buf[*of]), (sz - *of), 
-		"%*.*f %*.*f %*.*f %*.*f%c",
-		width, prec, c->x, width, prec, c->y,
-		width, prec, c->z, width, prec, c->w, z
-	);
+        if (vmset_start_char) {
+                rsz = snprintf(
+                        &(buf[*of]), (sz - *of), 
+                        "%c %*.*f %*.*f %*.*f %*.*f%c",
+                        vmset_start_char,
+                        vmset_width, vmset_prec, c->x, 
+                        vmset_width, vmset_prec, c->y,
+                        vmset_width, vmset_prec, c->z, 
+                        vmset_width, vmset_prec, c->w, z
+                );
+        } else {
+                rsz = snprintf(
+                        &(buf[*of]), (sz - *of), 
+                        "%*.*f %*.*f %*.*f %*.*f%c",
+                        vmset_width, vmset_prec, c->x, 
+                        vmset_width, vmset_prec, c->y,
+                        vmset_width, vmset_prec, c->z, 
+                        vmset_width, vmset_prec, c->w, z
+                );
+        }
 
         if (rsz >= (sz - *of)) {
                 return NULL;

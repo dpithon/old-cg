@@ -1,4 +1,2 @@
 - document dump/restore coord,matrix,stack to/from hex file.
 - dump/restore counters
-- vmath_set(CONSTANT, value) / vmath_get(CONSTANT, void*) 
-  > pour fixer la précision (io_set_wp), Epsilon ...
