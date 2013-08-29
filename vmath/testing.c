@@ -58,12 +58,16 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 }
 
 
+#define SZ 5440
 int main(int argc, char *argv[])
 {
 	float theta;
 	coord_st u;
 	matrix_st rot1, rot2;
 	coord_st p, rt1, rt2;
+	char buf[SZ];
+	int idx = 0;
+	vstat_st mys;
 
 	if (argc < 8) {
 		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
@@ -94,9 +98,18 @@ int main(int argc, char *argv[])
 	vmath_set(VMSET_IO_PREC, VMSET_CAST(4));
 	vmath_set(VMSET_IO_START_CHAR, VMSET_CAST(0));
 
-	print_matrix("rotation matrix :\n%s", &rot1);
-	print_coord("point :\n%s\n", &rt1);
-	print_mstack("stack :\n%s\n", 0);
+	print_vstat(0);
+	dump_vstat(buf, SZ, &idx, 0);
+	idx = 0;
+	load_vstat(&mys, buf, SZ, &idx);
+	idx = 0;
+	dump_vstat(buf, SZ, &idx, &mys);
+	buf[idx] = 0;
+	printf("%s", buf);
+idx = 0;
+	dump_mstack(buf, SZ, &idx, 0);
+	printf("%s", buf);
+
 
 	return 0;
 }
