@@ -7,7 +7,7 @@ DEBUG=-O0 -g2
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
-OBJS= stat.o core.o io.o mstack.o settings.o
+OBJS= stat.o core.o iob.o mstack.o settings.o
 
 all: $(OBJS)
 

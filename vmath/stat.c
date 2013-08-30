@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include "stat.h"
 
@@ -22,4 +23,20 @@ void reset_stat(void)
 void copy_stat(vstat_st *dst)
 {
 	memcpy(dst, &vmath_stat, sizeof vmath_stat); 
+}
+
+
+void print_stat(vstat_st *stat)
+{
+        uint32_t *ul;
+
+        if (! stat) {
+                stat = &vmath_stat;
+        }
+
+        ul = (uint32_t*) stat;
+
+        for (int i = 0; vstat_str[i]; i++) {
+                printf("%6d ..... %s\n", ul[i], vstat_str[i]);
+        }
 }

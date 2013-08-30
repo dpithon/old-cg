@@ -42,5 +42,6 @@ typedef struct vstat {
 
 void reset_stat(void);
 void copy_stat(vstat_st*);
+void print_stat(vstat_st*);
 
 #endif /* _VMATH_STAT_H */

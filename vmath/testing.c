@@ -12,10 +12,15 @@
 #include "core.h"
 #include "stat.h"
 #include "mstack.h"
-#include "io.h"
+#include "iob.h"
 #include "settings.h"
 
 #define PI 3.141592654f
+
+static void check_dump_and_load_coord(const coord_st*);
+static void check_dump_and_load_matrix(const matrix_st*);
+static void check_dump_and_load_mstack(const mstack_st*);
+static void check_dump_and_load_vstat(const vstat_st*);
 
 int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 {
@@ -58,16 +63,15 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 }
 
 
-#define SZ 5440
+#define BUFSZ 8192
+vmiob_st iob;
+char buf[BUFSZ];
 int main(int argc, char *argv[])
 {
 	float theta;
 	coord_st u;
 	matrix_st rot1, rot2;
 	coord_st p, rt1, rt2;
-	char buf[SZ];
-	int idx = 0;
-	vstat_st mys;
 
 	if (argc < 8) {
 		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
@@ -94,22 +98,134 @@ int main(int argc, char *argv[])
 	mulc(&rt1, &rot1, &p);
 	mulc(&rt2, &rot2, &p);
 
-	vmath_set(VMSET_IO_WIDTH, VMSET_CAST(8));
-	vmath_set(VMSET_IO_PREC, VMSET_CAST(4));
-	vmath_set(VMSET_IO_START_CHAR, VMSET_CAST(0));
-
-	print_vstat(0);
-	dump_vstat(buf, SZ, &idx, 0);
-	idx = 0;
-	load_vstat(&mys, buf, SZ, &idx);
-	idx = 0;
-	dump_vstat(buf, SZ, &idx, &mys);
-	buf[idx] = 0;
-	printf("%s", buf);
-idx = 0;
-	dump_mstack(buf, SZ, &idx, 0);
-	printf("%s", buf);
-
+	check_dump_and_load_coord(&rt1);
+	check_dump_and_load_matrix(&rot1);
+	check_dump_and_load_mstack(0);
+	check_dump_and_load_vstat(0);
 
 	return 0;
+}
+
+
+static void check_dump_and_load_coord(const coord_st *c)
+{
+	char buf[80];
+	vmiob_st iob;
+	coord_st d;
+
+	// dump c to human readable string
+	init_iob(&iob, buf, 80);
+	printf("c (asc): [%s]\n", dump_coord(&iob, c));
+
+	// dump c to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("c (hex): [%s]\n", dump_coord(&iob, c));
+
+	// load d from hex string
+	reset_iob(&iob);
+	load_coord(&d, &iob);
+
+	// dump d to human readable string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("d (asc): [%s]\n", dump_coord(&iob, &d));
+
+	// dump d to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("d (hex): [%s]\n", dump_coord(&iob, &d));
+}
+
+
+static void check_dump_and_load_matrix(const matrix_st *m)
+{
+	char buf[180];
+	vmiob_st iob;
+	matrix_st n;
+
+	// dump m to human readable string
+	init_iob(&iob, buf, 180);
+	printf("m (asc):\n%s\n", dump_matrix(&iob, m));
+
+	// dump m to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("m (hex):\n%s\n", dump_matrix(&iob, m));
+
+	// load n from hex string
+	reset_iob(&iob);
+	load_matrix(&n, &iob);
+
+	// dump n to human readable string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("n (asc):\n%s\n", dump_matrix(&iob, &n));
+
+	// dump n to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("n (hex):\n%s\n", dump_matrix(&iob, &n));
+}
+
+
+static void check_dump_and_load_mstack(const mstack_st *s)
+{
+	char buf[4000];
+	vmiob_st iob;
+	mstack_st t;
+
+	// dump s to human readable string
+	init_iob(&iob, buf, 4000);
+	printf("s (asc):\n%s\n", dump_mstack(&iob, s));
+
+	// dump s to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("s (hex):\n%s\n", dump_mstack(&iob, s));
+
+	// load t from hex string
+	reset_iob(&iob);
+	load_mstack(&t, &iob);
+
+	// dump t to human readable string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("t (asc):\n%s\n", dump_mstack(&iob, &t));
+
+	// dump t to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("t (hex):\n%s\n", dump_mstack(&iob, &t));
+}
+
+
+static void check_dump_and_load_vstat(const vstat_st *vs)
+{
+	char buf[4000];
+	vmiob_st iob;
+	vstat_st vt;
+
+	// dump vs to human readable string
+	init_iob(&iob, buf, 4000);
+	printf("vs (asc):\n%s\n", dump_vstat(&iob, vs));
+
+	// dump vs to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("vs (hex):\n%s\n", dump_vstat(&iob, vs));
+
+	// load vt from hex string
+	reset_iob(&iob);
+	load_vstat(&vt, &iob);
+
+	// dump vt to human readable string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("vt (asc):\n%s\n", dump_vstat(&iob, &vt));
+
+	// dump vt to hex string
+	reset_iob(&iob);
+	switch_iob(&iob);
+	printf("vt (hex):\n%s\n", dump_vstat(&iob, &vt));
 }

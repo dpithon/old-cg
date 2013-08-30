@@ -1,6 +1,7 @@
 core.o: core.c core.h stat.h stat.p settings.p
 io.o: io.c core.h mstack.h mstack.p stat.h stat.p io.h settings.p
+iob.o: iob.c core.h mstack.h mstack.p stat.h stat.p iob.h settings.p
 mstack.o: mstack.c core.h mstack.h
 settings.o: settings.c settings.h
 stat.o: stat.c stat.h
-testing.o: testing.c core.h stat.h mstack.h io.h settings.h
+testing.o: testing.c core.h stat.h mstack.h iob.h settings.h
