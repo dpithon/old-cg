@@ -17,6 +17,8 @@ typedef struct matrix {
 	float cell[4][4];
 } matrix_st;
 
+#define MATROW(m, i) ((coord_st*) &(m->cell[i]))
+
 /*** Initalizer values */
 #define VEC_I    { 1.F, 0.F, 0.F, 0.F }
 #define VEC_J    { 0.F, 1.F, 0.F, 0.F }

@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
 	check_dump_and_load_mstack(0);
 	check_dump_and_load_vstat(0);
 
+	print_stat(0);
+
 	return 0;
 }
 

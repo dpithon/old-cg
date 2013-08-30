@@ -58,13 +58,14 @@ __Let's compute M(wc) :__
             |  0    0    0    1 |   |  0    0    0    1 |   |  1  |
              \_______ T _______/     \_______ R _______/
 
-    M(wc) = T . C . M(lc)
 
-    T[-1] . M(wc) = Id . R . M(lc)
+                    M(wc) = T . R . M(lc)
+           
+            T[-1] . M(wc) = Id . R . M(lc)
 
-    R[-1] . T[-1] . M(cw) = R[-1] . R . M(lc)
+    R[-1] . T[-1] . M(cw) = Id . M(lc)
 
-    M(lc) = R[t] . T[-1]  . M(cw)
+    R[t] . T[-1]  . M(cw) = M(lc)
 
             | ux   uy   uz    0 |   |  1    0    0  -ax |   |  x  |
             |                   |   |                   |   |     |
@@ -73,4 +74,5 @@ __Let's compute M(wc) :__
             | wx   wy   wz    0 |   |  0    0    1  -az |   |  z  |
             |                   |   |                   |   |     |
             |  0    0    0    1 |   |  0    0    0    1 |   |  1  |
+             \_____ R[t] ______/     \_____ T[-1] _____/
 

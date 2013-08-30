@@ -19,8 +19,6 @@ static int dump_mm(vmiob_st*, const void*, int);
 static int load_mm(vmiob_st*, void*, int);
 static unsigned char decode_hex(char);
 
-#define MATROW(m, i) ((coord_st*) &(m->cell[i]))
-
 
 char *dump_coord(vmiob_st *iob, const coord_st *c)
 {
@@ -181,6 +179,20 @@ int load_vstat(vstat_st* s, vmiob_st *iob)
 #endif /* VSTAT */
 
 
+/***************************************************************************/
+
+
+static unsigned char decode_hex(char c)
+{
+        if (c >= '0' && c <= '9')
+                return c - '0';
+        else if (c >= 'A' && c <= 'F')
+                return 10 + (c - 'A');
+        else
+                return 16; /* 16 means: error! */
+}
+
+
 static int dump_mm(vmiob_st *iob, const void *mm, int sz)
 {
         static char hexa[] = { 
@@ -204,17 +216,6 @@ static int dump_mm(vmiob_st *iob, const void *mm, int sz)
         iob->buf[iob->of] = '\0';
 
         return 0;
-}
-
-
-static unsigned char decode_hex(char c)
-{
-        if (c >= '0' && c <= '9')
-                return c - '0';
-        else if (c >= 'A' && c <= 'F')
-                return 10 + (c - 'A');
-        else
-                return 16; /* 16 means: error! */
 }
 
 
