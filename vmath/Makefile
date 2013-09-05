@@ -8,14 +8,18 @@ CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
 OBJS= stat.o core.o iob.o mstack.o settings.o
+LDFLAGS=-L. -lvmath -lm
 
-all: $(OBJS)
+all: libvmath.a
 
-test: testing.o $(OBJS)
-	$(LD) $^ -lm -o testing
+libvmath.a: $(OBJS)
+	ar -rs $@ $(OBJS)
+
+test: testing.o
+	$(LD) $^ $(LDFLAGS) -o testing
 
 clean:
-	rm -rf *.o *.gch unit/*.o
+	rm -rf *.o *.gch unit/*.o *.a
 
 purge: clean
 	rm -f testing
