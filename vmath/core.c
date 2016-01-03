@@ -4,7 +4,7 @@
 
 #define _VMATH_INTERNALS
 
-#include "core.h" 
+#include "core.h"
 #include "stat.h"
 #include "stat.p"
 #include "settings.p"
@@ -276,7 +276,7 @@ matrix_st *transpose(matrix_st *m, matrix_st *n)
 {
 	FN_T(1);
 	CMP(26); STO(n == m ? 38 : 21); ADD(20); IDX(32);
-	
+
 	int i, j;
 	matrix_st tmp;
 
