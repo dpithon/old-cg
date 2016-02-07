@@ -16,7 +16,7 @@ typedef struct vmiob {
 	char *buf;
 	int sz, of;
 	int err, fmt;
-} vmiob_st;
+} vmiob_t;
 
 #define init_iob(iob, b, s)	(iob)->buf    = (b);          \
 				(iob)->sz     = (s);          \
@@ -28,21 +28,21 @@ typedef struct vmiob {
 #define switch_iob(iob)		(iob)->fmt = (iob)->fmt? VMIOB_ASC: VMIOB_HEX
 
 /**
- * dump_xxxx(vmiob_st *iob, const xxx_st *obj):
+ * dump_xxxx(vmiob_t *iob, const xxx_t *obj):
  *   dump obj into string (ascii or hexa) controlled by iob
  *
- * load_xxxx(const xxx_st *obj, vmiob_st *iob):
+ * load_xxxx(const xxx_t *obj, vmiob_t *iob):
  *   load obj from string (ascii or hexa) controlled by iob
  *
  * for mstack and vstat, null pointer means vmath_mstak/vmath_vstat
  */
-extern char *dump_coord(vmiob_st*, const coord_st*);
-extern char *dump_matrix(vmiob_st*, const matrix_st*);
-extern char *dump_mstack(vmiob_st*, const mstack_st*);
-extern char *dump_vstat(vmiob_st*, const vstat_st*);
-extern int   load_coord(coord_st*, vmiob_st*);
-extern int   load_matrix(matrix_st*, vmiob_st*);
-extern int   load_mstack(mstack_st*, vmiob_st*);
-extern int   load_vstat(vstat_st*, vmiob_st*);
+extern char *dump_coord(vmiob_t*, const coord_t*);
+extern char *dump_matrix(vmiob_t*, const matrix_t*);
+extern char *dump_mstack(vmiob_t*, const mstack_t*);
+extern char *dump_vstat(vmiob_t*, const vstat_t*);
+extern int   load_coord(coord_t*, vmiob_t*);
+extern int   load_matrix(matrix_t*, vmiob_t*);
+extern int   load_mstack(mstack_t*, vmiob_t*);
+extern int   load_vstat(vstat_t*, vmiob_t*);
 
 #endif /* _VMATH_IOB_H */

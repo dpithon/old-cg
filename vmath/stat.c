@@ -2,8 +2,8 @@
 #include <string.h>
 #include "stat.h"
 
-vstat_st vmath_stat;
-const char *const vstat_str[] = {
+vstat_t vmath_tat;
+const char *const vstat_tr[] = {
 	"sto", "cmp", "add", "mul", "abs",
 	"sqr", "trg", "idx", "neg", "is_pnt",
 	"is_vec", "is_0", "is_1", "is_ort", "fn_len",
@@ -14,29 +14,29 @@ const char *const vstat_str[] = {
 };
 
 
-void reset_stat(void)
+void reset_tat(void)
 {
-	memset(&vmath_stat, 0, sizeof vmath_stat);
+	memset(&vmath_tat, 0, sizeof vmath_tat);
 }
 
 
-void copy_stat(vstat_st *dst)
+void copy_tat(vstat_t *dst)
 {
-	memcpy(dst, &vmath_stat, sizeof vmath_stat); 
+	memcpy(dst, &vmath_tat, sizeof vmath_tat); 
 }
 
 
-void print_stat(vstat_st *stat)
+void print_tat(vstat_t *stat)
 {
         uint32_t *ul;
 
         if (! stat) {
-                stat = &vmath_stat;
+                stat = &vmath_tat;
         }
 
         ul = (uint32_t*) stat;
 
-        for (int i = 0; vstat_str[i]; i++) {
-                printf("%6d ..... %s\n", ul[i], vstat_str[i]);
+        for (int i = 0; vstat_tr[i]; i++) {
+                printf("%6d ..... %s\n", ul[i], vstat_tr[i]);
         }
 }

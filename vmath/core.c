@@ -19,23 +19,23 @@
 
 static bool float_equals(float a, float b);
 
-const matrix_st matrix_id = MAT_ID;
-const coord_st  vector_i  = VEC_I;
-const coord_st  vector_j  = VEC_J;
-const coord_st  vector_k  = VEC_K;
-const coord_st  point_o   = PNT_O;
+const matrix_t matrix_id = MAT_ID;
+const coord_t  vector_i  = VEC_I;
+const coord_t  vector_j  = VEC_J;
+const coord_t  vector_k  = VEC_K;
+const coord_t  point_o   = PNT_O;
 
 
-bool is_point(const coord_st *c) 
+bool is_point(const coord_t *c) 
 {
 	IS_PNT(1);
 	CMP(1);
 
-	return c->w == 1.F; 
+	return c->w != 0.F; 
 }
 
 
-bool is_vector(const coord_st *c)
+bool is_vector(const coord_t *c)
 {
 	IS_VEC(1);
 	CMP(1);
@@ -44,27 +44,27 @@ bool is_vector(const coord_st *c)
 }
 
 
-bool is_zero(const coord_st *v)
+bool is_vzero(const coord_t *v)
 {
 	IS_0(1);
 
 	assert(is_vector(v));
 
-	return float_equals( len(v), 0.F );
+	return float_equals(len(v), 0.F);
 }
 
 
-bool is_unit(const coord_st *v)
+bool is_vunit(const coord_t *v)
 {
 	IS_1(1);
 
 	assert(is_vector(v));
 
-	return float_equals( len(v), 1.F );
+	return float_equals(len(v), 1.F);
 }
 
 
-bool is_ortho(const coord_st *u, const coord_st *v)
+bool is_vortho(const coord_t *u, const coord_t *v)
 {
 	IS_ORT(1); 
 	ADD(2); MUL(3);
@@ -72,11 +72,11 @@ bool is_ortho(const coord_st *u, const coord_st *v)
 	assert(is_vector(u)); /* u, w are vectors */
 	assert(is_vector(v));
 
-	return float_equals( DOT(u, v), 0.F );
+	return float_equals(DOT(u, v), 0.F);
 }
 
 
-float len(const coord_st *v)
+float len(const coord_t *v)
 {
 	FN_LEN(1); 
 	SQR(1); ADD(2); MUL(3);
@@ -87,7 +87,7 @@ float len(const coord_st *v)
 }
 
 
-float dot(const coord_st *v, const coord_st *u)
+float dot(const coord_t *v, const coord_t *u)
 {
 	FN_DOT(1); 
 	ADD(2); MUL(3);
@@ -99,7 +99,7 @@ float dot(const coord_st *v, const coord_st *u)
 }
 
 
-coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
+coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
 {
 	FN_VEC(1); 
 	ADD(3); STO(4);
@@ -107,16 +107,16 @@ coord_st *vector(coord_st *v, const coord_st *p, const coord_st *q)
 	assert(is_point(p));
 	assert(is_point(q));
 
-	v->x = q->x - p->x;
-	v->y = q->y - p->y;
-	v->z = q->z - p->z;
+	v->x = q->x / q->w - p->x / p->w;
+	v->y = q->y / q->w - p->y / p->w;
+	v->z = q->z / q->w - p->z / p->w;
 	v->w = 0.F;
 
 	return v;
 }
 
 
-coord_st *scale(coord_st *v, coord_st *u, float k)
+coord_t *scale(coord_t *v, coord_t *u, float k)
 {
 	FN_SCL(1); 
 	STO(4); MUL(3);
@@ -132,13 +132,13 @@ coord_st *scale(coord_st *v, coord_st *u, float k)
 }
 
 
-coord_st *unit(coord_st *v, coord_st *u)
+coord_t *unit(coord_t *v, coord_t *u)
 {
 	FN_1(1); 
 	STO(5); SQR(1); MUL(6); ADD(2);
 
 	assert(is_vector(u));
-	assert(! is_zero(u));
+	assert(! is_vzero(u));
 
 	float l = sqrtf(DOT(u, u));
 
@@ -151,7 +151,7 @@ coord_st *unit(coord_st *v, coord_st *u)
 }
 
 
-coord_st *add(coord_st *v, coord_st *u, coord_st *w)
+coord_t *add(coord_t *v, coord_t *u, coord_t *w)
 {
 	FN_ADD(1); 
 	STO(4); ADD(3);
@@ -168,7 +168,7 @@ coord_st *add(coord_st *v, coord_st *u, coord_st *w)
 }
 
 
-coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
+coord_t *sub(coord_t *v, coord_t *u, coord_t *w)
 {
 	FN_SUB(1); 
 	STO(4); ADD(3);
@@ -185,7 +185,7 @@ coord_st *sub(coord_st *v, coord_st *u, coord_st *w)
 }
 
 
-coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
+coord_t *cross(coord_t *v, const coord_t *u, const coord_t *w)
 {
 	FN_X(1); 
 	STO(4); MUL(6); ADD(3);
@@ -202,7 +202,7 @@ coord_st *cross(coord_st *v, const coord_st *u, const coord_st *w)
 }
 
 
-coord_st *homogeneize(coord_st *p, coord_st *q)
+coord_t *homogeneize(coord_t *p, coord_t *q)
 {
 	FN_HMG(1); 
 	STO(1); MUL(3);
@@ -218,12 +218,12 @@ coord_st *homogeneize(coord_st *p, coord_st *q)
 }
 
 
-coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
+coord_t *mulc(coord_t *v, const matrix_t *m, coord_t *u)
 {
 	FN_MXC(1);
 	CMP(1); IDX(16); MUL(16); ADD(12); STO((u == v) ? 9 : 4);
 
-	coord_st tmp;
+	coord_t tmp;
 
 	if (u == v) {
 		memcpy(&tmp, u, sizeof tmp);
@@ -239,7 +239,7 @@ coord_st *mulc(coord_st *v, const matrix_st *m, coord_st *u)
 }
  
 
-matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
+matrix_t *mulm(matrix_t *m, matrix_t *m1, matrix_t *m2)
 {
 	FN_MXM(1);
 	ADD(148); MUL(64); IDX(208);
@@ -247,7 +247,7 @@ matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 	STO((m == m1) || (m == m2) ? 35 : 16);
 
 	int i, j, k;
-	matrix_st tmp, *old = 0;
+	matrix_t tmp, *old = 0;
 
 	if (m == m1 || m == m2) {
 		old = m;
@@ -272,13 +272,13 @@ matrix_st *mulm(matrix_st *m, matrix_st *m1, matrix_st *m2)
 }
 
 
-matrix_st *transpose(matrix_st *m, matrix_st *n)
+matrix_t *transpose(matrix_t *m, matrix_t *n)
 {
 	FN_T(1);
 	CMP(26); STO(n == m ? 38 : 21); ADD(20); IDX(32);
 
 	int i, j;
-	matrix_st tmp;
+	matrix_t tmp;
 
 	if (n == m) {
 		memcpy(&tmp, n, sizeof tmp);
@@ -295,7 +295,7 @@ matrix_st *transpose(matrix_st *m, matrix_st *n)
 }
 
 
-matrix_st *rotationx(matrix_st *m, float a)
+matrix_t *rotationx(matrix_t *m, float a)
 {
 	FN_RTX(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
@@ -327,7 +327,7 @@ matrix_st *rotationx(matrix_st *m, float a)
 }
 
 
-matrix_st *rotationy(matrix_st *m, float a)
+matrix_t *rotationy(matrix_t *m, float a)
 {
 	FN_RTY(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
@@ -359,7 +359,7 @@ matrix_st *rotationy(matrix_st *m, float a)
 }
 
 
-matrix_st *rotationz(matrix_st *m, float a)
+matrix_t *rotationz(matrix_t *m, float a)
 {
 	FN_RTZ(1);
 	TRG(2); STO(18); NEG(1); IDX(16);
@@ -391,12 +391,12 @@ matrix_st *rotationz(matrix_st *m, float a)
 }
 
 
-matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
+matrix_t *rotation(matrix_t *m, const coord_t *v, float a)
 {
 	FN_ROT(1);
 	TRG(2); STO(27); MUL(21); ADD(18); IDX(16);
 
-	assert(is_unit(v));
+	assert(is_vunit(v));
 
 	float c = cosf(a);
 	float s = sinf(a);
@@ -434,7 +434,7 @@ matrix_st *rotation(matrix_st *m, const coord_st *v, float a)
 }
 
 
-matrix_st *translation(matrix_st *m, coord_st *v)
+matrix_t *translation(matrix_t *m, coord_t *v)
 {
 	FN_TSL(1);
 	IDX(16); STO(16);
