@@ -2,7 +2,7 @@
 #include <string.h>
 #include "stat.h"
 
-vstat_t vmath_tat;
+vstat_t vmath_stat;
 const char *const vstat_tr[] = {
 	"sto", "cmp", "add", "mul", "abs",
 	"sqr", "trg", "idx", "neg", "is_pnt",
@@ -14,24 +14,24 @@ const char *const vstat_tr[] = {
 };
 
 
-void reset_tat(void)
+void reset_stat(void)
 {
-	memset(&vmath_tat, 0, sizeof vmath_tat);
+	memset(&vmath_stat, 0, sizeof vmath_stat);
 }
 
 
-void copy_tat(vstat_t *dst)
+void copy_stat(vstat_t *dst)
 {
-	memcpy(dst, &vmath_tat, sizeof vmath_tat); 
+	memcpy(dst, &vmath_stat, sizeof vmath_stat); 
 }
 
 
-void print_tat(vstat_t *stat)
+void print_stat(vstat_t *stat)
 {
         uint32_t *ul;
 
         if (! stat) {
-                stat = &vmath_tat;
+                stat = &vmath_stat;
         }
 
         ul = (uint32_t*) stat;

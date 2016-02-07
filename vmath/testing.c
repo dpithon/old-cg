@@ -17,17 +17,17 @@
 
 #define PI 3.141592654f
 
-static void check_dump_and_load_coord(const coord_st*);
-static void check_dump_and_load_matrix(const matrix_st*);
-static void check_dump_and_load_mstack(const mstack_st*);
-static void check_dump_and_load_vstat(const vstat_st*);
+static void check_dump_and_load_coord(const coord_t*);
+static void check_dump_and_load_matrix(const matrix_t*);
+static void check_dump_and_load_mstack(const mstack_t*);
+static void check_dump_and_load_vstat(const vstat_t*);
 
-int build_rotation(matrix_st *rot, const coord_st *u, float theta)
+int build_rotation(matrix_t *rot, const coord_t *u, float theta)
 {
 	float v;
-	matrix_st m1, tm1, m2, tm2, m3;
+	matrix_t m1, tm1, m2, tm2, m3;
 
-	assert( is_unit(u) );
+	assert( is_vunit(u) );
 
 	/* R1 (rotation autour de z pour amener u dans xOz) */
 	v = sqrtf(u->x * u->x  +  u->y * u->y);
@@ -56,7 +56,7 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 	stack_push(&m3);
 	stack_push(&m2);
 	stack_push(&m1);
-	memcpy(rot, stack_peek(), sizeof(matrix_st));
+	memcpy(rot, stack_peek(), sizeof(matrix_t));
 	/* stack_restore() */
 
 	return 0;
@@ -64,14 +64,14 @@ int build_rotation(matrix_st *rot, const coord_st *u, float theta)
 
 
 #define BUFSZ 8192
-vmiob_st iob;
+vmiob_t iob;
 char buf[BUFSZ];
 int main(int argc, char *argv[])
 {
 	float theta;
-	coord_st u;
-	matrix_st rot1, rot2;
-	coord_st p, rt1, rt2;
+	coord_t u;
+	matrix_t rot1, rot2;
+	coord_t p, rt1, rt2;
 
 	if (argc < 8) {
 		fprintf(stderr, "%s x y z theta_deg px py pz\n", argv[0]);
@@ -109,11 +109,11 @@ int main(int argc, char *argv[])
 }
 
 
-static void check_dump_and_load_coord(const coord_st *c)
+static void check_dump_and_load_coord(const coord_t *c)
 {
 	char buf[80];
-	vmiob_st iob;
-	coord_st d;
+	vmiob_t iob;
+	coord_t d;
 
 	// dump c to human readable string
 	init_iob(&iob, buf, 80);
@@ -140,11 +140,11 @@ static void check_dump_and_load_coord(const coord_st *c)
 }
 
 
-static void check_dump_and_load_matrix(const matrix_st *m)
+static void check_dump_and_load_matrix(const matrix_t *m)
 {
 	char buf[180];
-	vmiob_st iob;
-	matrix_st n;
+	vmiob_t iob;
+	matrix_t n;
 
 	// dump m to human readable string
 	init_iob(&iob, buf, 180);
@@ -171,11 +171,11 @@ static void check_dump_and_load_matrix(const matrix_st *m)
 }
 
 
-static void check_dump_and_load_mstack(const mstack_st *s)
+static void check_dump_and_load_mstack(const mstack_t *s)
 {
 	char buf[4000];
-	vmiob_st iob;
-	mstack_st t;
+	vmiob_t iob;
+	mstack_t t;
 
 	// dump s to human readable string
 	init_iob(&iob, buf, 4000);
@@ -202,11 +202,11 @@ static void check_dump_and_load_mstack(const mstack_st *s)
 }
 
 
-static void check_dump_and_load_vstat(const vstat_st *vs)
+static void check_dump_and_load_vstat(const vstat_t *vs)
 {
 	char buf[4000];
-	vmiob_st iob;
-	vstat_st vt;
+	vmiob_t iob;
+	vstat_t vt;
 
 	// dump vs to human readable string
 	init_iob(&iob, buf, 4000);

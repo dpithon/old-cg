@@ -40,8 +40,8 @@ typedef struct vstat {
 } vstat_t;
 
 
-void reset_tat(void);
-void copy_tat(vstat_t*);
-void print_tat(vstat_t*);
+void reset_stat(void);
+void copy_stat(vstat_t*);
+void print_stat(vstat_t*);
 
 #endif /* _VMATH_STAT_H */

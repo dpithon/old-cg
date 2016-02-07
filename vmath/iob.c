@@ -85,7 +85,7 @@ char *dump_vstat(vmiob_t *iob, const vstat_t *s)
 	uint32_t *ul;
 
         if (! s) {
-                ul = (uint32_t*) &vmath_tat;
+                ul = (uint32_t*) &vmath_stat;
         } else {
                 ul = (uint32_t*) s;
 	}
@@ -162,7 +162,7 @@ int load_vstat(vstat_t* s, vmiob_t *iob)
 	uint32_t *ul;
 
         if (! s) {
-                ul = (uint32_t*) &vmath_tat;
+                ul = (uint32_t*) &vmath_stat;
         } else {
                 ul = (uint32_t*) s;
 	}
