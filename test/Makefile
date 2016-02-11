@@ -5,8 +5,9 @@ all: pinhole
 clean:
 	rm -f pinhole *.o
 
-LDPATH=/usr/local/lib64
+CFLAGS=-I/usr/local/include
+LDPATH=/usr/local/lib
+LDFLAGS=-L/usr/local/lib -lvmath -lm
+CC=gcc
 
 pinhole: pinhole.c
-	gcc -o pinhole pinhole.c -lvmath -lm
-

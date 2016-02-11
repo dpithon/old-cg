@@ -40,7 +40,8 @@ bool is_vzero(const coord_t *v)
 {
 	assert(is_vector(v));
 
-	return float_equals(len(v), 0.F);
+	return float_equals(v->x, 0.F) && float_equals(v->y, 0.F) &&
+		float_equals(v->z, 0.F);
 }
 
 
@@ -65,6 +66,27 @@ bool is_vequal(const coord_t *u, const coord_t *v)
 {
 	return float_equals(u->x, v->x) && float_equals(u->y, v->y) &&
 	       float_equals(u->z, v->z) && float_equals(u->w, v->w);
+}
+
+
+bool is_collinear(const coord_t *u, const coord_t *v, float *k)
+{
+	coord_t w;
+
+	assert(is_vector(u));
+	assert(is_vector(v));
+
+	if (is_vzero(u) || is_vzero(v))
+		return true;
+
+	if (! float_equals(v->x, 0.F))
+		*k = u->x / v->x;
+	else if (! float_equals(v->y, 0.F))
+		*k = u->y / v->y;
+	else
+		*k = u->z / v->z;
+
+	return is_vequal(scale(&w, (coord_t*) v, *k), u);
 }
 
 

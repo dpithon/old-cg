@@ -4,44 +4,72 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <vmath/vmath.h>
 
-bool pinhole(matrix_t *m, coord_t *s, coord_t *t)
+struct camera {
+	coord_t o;
+	coord_t i;
+	coord_t j;
+	coord_t k;
+
+	float a;
+
+	matrix_t m;
+	matrix_t mp;
+} camera;
+
+
+static bool init(coord_t *s, coord_t *t)
 {
-	coord_t i, j, k, v = {0, 1, 0, 0};
+	coord_t u, v = VEC_J;
+	float p;
 
-	unit(&k, vector(&k, s, t));
-	unit(&j, sub(&j, &v, scale(&j, &k, dot(&vector_j, &k))));
-	cross(&i, &j, &k);
+	vector(&camera.k, s, t);
+	unit(&camera.k, &camera.k);
 
-	if (!is_pccs(&i, &j, &k)) {
-		fprintf(stderr, "base non orthonormée directe\n");
+	if (is_collinear(&camera.k, &v, &p)) {
+		if (p > 0.F) {
+			memcpy(&camera.j, &vector_i, sizeof(coord_t));
+			memcpy(&camera.i, &vector_k, sizeof(coord_t));
+		} else {
+			memcpy(&camera.j, &vector_k, sizeof(coord_t));
+			memcpy(&camera.i, &vector_i, sizeof(coord_t));
+		}
+	} else {
+		scale(&u, &camera.k, camera.k.y);
+		sub(&camera.j, &v, &u);
+		unit(&camera.j, &camera.j);
+
+		cross(&camera.i, &camera.j, &camera.k);
+	}
+
+	if (!is_pccs(&camera.i, &camera.j, &camera.k)) {
+		fprintf(stderr, "Not positive cartesian coordinate system\n");
 		return false;
 	}
 
-	matrix(m, &i, &j, &k, s);
+	matrix(&camera.m, &camera.i, &camera.j, &camera.k, s);
 
 	return true;
 }
 
+
 int main()
 {
-	matrix_t m, mp;
 	vmiob_t iob;
 	char buffer[200];
 
-	coord_t s = {12, 4, 28, 1};
-	coord_t t = {34, -6, 12, 1};
+	coord_t s = {0, 4, 0, 1};
+	coord_t t = {0, -6, 0, 1};
 
-	pinhole(&m, &s, &t);
+	init(&s, &t);
 
 	init_iob(&iob, buffer, sizeof(buffer));
-
-	printf("%s\n", dump_matrix(&iob, &m));
+	printf("%s\n", dump_matrix(&iob, &camera.m));
 
 	reset_iob(&iob);
-
-	printf("%s", dump_matrix(&iob, &mp));
+	printf("%s", dump_matrix(&iob, &camera.mp));
 
 	return 0;
 }

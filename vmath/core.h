@@ -33,6 +33,7 @@ extern bool      is_vzero(const coord_t*);
 extern bool      is_vunit(const coord_t*);
 extern bool      is_vortho(const coord_t*, const coord_t*);
 extern bool      is_vequal(const coord_t*, const coord_t*);
+extern bool      is_collinear(const coord_t*, const coord_t*, float*);
 extern bool      is_pccs(const coord_t*, const coord_t*, const coord_t*);
 
 extern float     len(const coord_t*);
