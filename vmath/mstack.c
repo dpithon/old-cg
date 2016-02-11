@@ -22,7 +22,7 @@ bool stack_push_r(mstack_t *s, const matrix_t *m)
 		return 1;
 	}
 
-	mulm(&(s->m[s->i + 1]), &(s->m[s->i]), (matrix_t*) m);
+	matmat(&(s->m[s->i + 1]), &(s->m[s->i]), (matrix_t*) m);
 	++ s->i;
 
 	return 0;

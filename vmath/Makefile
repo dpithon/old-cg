@@ -1,4 +1,4 @@
-.PHONY: all clean purge test deps
+.PHONY: all clean purge test deps install
 
 OPTS=-DNDEBUG
 OPTS=-DVSTAT
@@ -7,7 +7,7 @@ DEBUG=-O0 -g2
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
-OBJS= stat.o core.o mstack.o iob.o settings.o
+OBJS=core.o mstack.o iob.o settings.o
 LDFLAGS=-L. -lvmath -lm
 
 all: libvmath.a
@@ -26,5 +26,10 @@ purge: clean
 
 deps:
 	$(CC) -MM *.c >Makefile.deps
- 
+
+install: all
+	mkdir -p /usr/local/include/vmath
+	cp *.h /usr/local/include/vmath
+	cp *.a /usr/local/lib
+
 include Makefile.deps

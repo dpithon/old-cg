@@ -8,8 +8,6 @@
 #include "core.h"
 #include "mstack.h"
 #include "mstack.p"
-#include "stat.h"
-#include "stat.p"
 #include "iob.h"
 #include "settings.p"
 
@@ -42,7 +40,6 @@ char *dump_matrix(vmiob_t *iob, const matrix_t *m)
                         return NULL;
 		}
 		iob->buf[iob->of - 1] = '\n';
-		
 	}
 
         return iob->buf;
@@ -77,34 +74,6 @@ char *dump_mstack(vmiob_t *iob, const mstack_t *s)
 
         return iob->buf;
 }
-
-
-#ifdef VSTAT
-char *dump_vstat(vmiob_t *iob, const vstat_t *s)
-{
-	uint32_t *ul;
-
-        if (! s) {
-                ul = (uint32_t*) &vmath_stat;
-        } else {
-                ul = (uint32_t*) s;
-	}
-
-        for (int i = 0; vstat_tr[i]; i++) {
-		if (dump_mm(iob, &(ul[i]), 4)) {
-                        return NULL;
-                }
-
-		if (i % 5 == 4) 
-			iob->buf[iob->of - 1] = '\n';
-        }
-
-	iob->buf[iob->of - 1] = '\n';
-        return iob->buf;
-}
-#endif /* VSTAT */
-
-
 
 
 int load_coord(coord_t *c, vmiob_t *iob)
@@ -154,29 +123,6 @@ int load_mstack(mstack_t* s, vmiob_t *iob)
 
         return 0;
 }
-
-
-#ifdef VSTAT
-int load_vstat(vstat_t* s, vmiob_t *iob)
-{
-	uint32_t *ul;
-
-        if (! s) {
-                ul = (uint32_t*) &vmath_stat;
-        } else {
-                ul = (uint32_t*) s;
-	}
-
-        for (int i = 0; vstat_tr[i]; i++) {
-		if (load_mm(iob, &(ul[i]), 4)) {
-                        return iob->err;
-                }
-                (iob->of)++;
-        }
-
-        return 0;
-}
-#endif /* VSTAT */
 
 
 /***************************************************************************/
@@ -242,7 +188,6 @@ static int load_mm(vmiob_t *iob, void *mm, int sz)
 
         return iob->err;
 }
-
 
 
 static char *dump_coord_asc(vmiob_t *iob, const coord_t *c)

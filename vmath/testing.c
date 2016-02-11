@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "core.h"
-#include "stat.h"
 #include "mstack.h"
 #include "iob.h"
 #include "settings.h"
@@ -20,7 +19,6 @@
 static void check_dump_and_load_coord(const coord_t*);
 static void check_dump_and_load_matrix(const matrix_t*);
 static void check_dump_and_load_mstack(const mstack_t*);
-static void check_dump_and_load_vstat(const vstat_t*);
 
 int build_rotation(matrix_t *rot, const coord_t *u, float theta)
 {
@@ -95,15 +93,12 @@ int main(int argc, char *argv[])
 
 	rotation(&rot2, &u, theta);
 
-	mulc(&rt1, &rot1, &p);
-	mulc(&rt2, &rot2, &p);
+	matvec(&rt1, &rot1, &p);
+	matvec(&rt2, &rot2, &p);
 
 	check_dump_and_load_coord(&rt1);
 	check_dump_and_load_matrix(&rot1);
 	check_dump_and_load_mstack(0);
-	check_dump_and_load_vstat(0);
-
-	print_stat(0);
 
 	return 0;
 }
@@ -199,35 +194,4 @@ static void check_dump_and_load_mstack(const mstack_t *s)
 	reset_iob(&iob);
 	switch_iob(&iob);
 	printf("t (hex):\n%s\n", dump_mstack(&iob, &t));
-}
-
-
-static void check_dump_and_load_vstat(const vstat_t *vs)
-{
-	char buf[4000];
-	vmiob_t iob;
-	vstat_t vt;
-
-	// dump vs to human readable string
-	init_iob(&iob, buf, 4000);
-	printf("vs (asc):\n%s\n", dump_vstat(&iob, vs));
-
-	// dump vs to hex string
-	reset_iob(&iob);
-	switch_iob(&iob);
-	printf("vs (hex):\n%s\n", dump_vstat(&iob, vs));
-
-	// load vt from hex string
-	reset_iob(&iob);
-	load_vstat(&vt, &iob);
-
-	// dump vt to human readable string
-	reset_iob(&iob);
-	switch_iob(&iob);
-	printf("vt (asc):\n%s\n", dump_vstat(&iob, &vt));
-
-	// dump vt to hex string
-	reset_iob(&iob);
-	switch_iob(&iob);
-	printf("vt (hex):\n%s\n", dump_vstat(&iob, &vt));
 }

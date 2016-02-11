@@ -39,10 +39,8 @@ typedef struct vmiob {
 extern char *dump_coord(vmiob_t*, const coord_t*);
 extern char *dump_matrix(vmiob_t*, const matrix_t*);
 extern char *dump_mstack(vmiob_t*, const mstack_t*);
-extern char *dump_vstat(vmiob_t*, const vstat_t*);
 extern int   load_coord(coord_t*, vmiob_t*);
 extern int   load_matrix(matrix_t*, vmiob_t*);
 extern int   load_mstack(mstack_t*, vmiob_t*);
-extern int   load_vstat(vstat_t*, vmiob_t*);
 
 #endif /* _VMATH_IOB_H */

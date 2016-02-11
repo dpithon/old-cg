@@ -32,18 +32,24 @@ extern bool      is_vector(const coord_t*);
 extern bool      is_vzero(const coord_t*);
 extern bool      is_vunit(const coord_t*);
 extern bool      is_vortho(const coord_t*, const coord_t*);
+extern bool      is_vequal(const coord_t*, const coord_t*);
+extern bool      is_pccs(const coord_t*, const coord_t*, const coord_t*);
 
 extern float     len(const coord_t*);
-extern float     dot(const coord_t*, const coord_t*); 
+extern float     dot(const coord_t*, const coord_t*);
 extern coord_t  *vector(coord_t*, const coord_t*, const coord_t*);
 extern coord_t  *scale(coord_t*, coord_t*, float);
 extern coord_t  *unit(coord_t*, coord_t*);
 extern coord_t  *add(coord_t*, coord_t*, coord_t*);
 extern coord_t  *sub(coord_t*, coord_t*, coord_t*);
 extern coord_t  *cross(coord_t*, const coord_t*, const coord_t*);
+extern coord_t  *matvec(coord_t*, const matrix_t*, coord_t*);
 extern coord_t  *homogeneize(coord_t*, coord_t*);
-extern coord_t  *mulc(coord_t*, const matrix_t*, coord_t*);
-extern matrix_t *mulm(matrix_t*, matrix_t*, matrix_t*);
+extern matrix_t *matrix(matrix_t*, const coord_t*, const coord_t*,
+			const coord_t*, const coord_t*);
+extern matrix_t *matrixr(matrix_t*, const coord_t*, const coord_t*,
+			 const coord_t*, const coord_t*);
+extern matrix_t *matmat(matrix_t*, matrix_t*, matrix_t*);
 extern matrix_t *transpose(matrix_t*, matrix_t*);
 extern matrix_t *rotationx(matrix_t*, float);
 extern matrix_t *rotationy(matrix_t*, float);
