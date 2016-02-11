@@ -132,7 +132,7 @@ coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
 }
 
 
-coord_t *scale(coord_t *v, coord_t *u, float k)
+coord_t *scale(coord_t *v, const coord_t *u, float k)
 {
 	assert(is_vector(u));
 
@@ -145,7 +145,20 @@ coord_t *scale(coord_t *v, coord_t *u, float k)
 }
 
 
-coord_t *unit(coord_t *v, coord_t *u)
+coord_t *scale_me(coord_t *v, float k)
+{
+	assert(is_vector(v));
+
+	v->x *= k;
+	v->y *= k;
+	v->z *= k;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_t *unit(coord_t *v, const coord_t *u)
 {
 	assert(is_vector(u));
 	assert(! is_vzero(u));
@@ -161,7 +174,23 @@ coord_t *unit(coord_t *v, coord_t *u)
 }
 
 
-coord_t *add(coord_t *v, coord_t *u, coord_t *w)
+coord_t *unit_me(coord_t *v)
+{
+	assert(is_vector(v));
+	assert(! is_vzero(v));
+
+	float l = sqrtf(DOT(v, v));
+
+	v->x /= l;
+	v->y /= l;
+	v->z /= l;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_t *add(coord_t *v, const coord_t *u, const coord_t *w)
 {
 	assert(is_vector(u));
 	assert(is_vector(w));
@@ -175,7 +204,21 @@ coord_t *add(coord_t *v, coord_t *u, coord_t *w)
 }
 
 
-coord_t *sub(coord_t *v, coord_t *u, coord_t *w)
+coord_t *add_me(coord_t *v, const coord_t *u)
+{
+	assert(is_vector(u));
+	assert(is_vector(v));
+
+	v->x += u->x;
+	v->y += u->y;
+	v->z += u->z;
+	v->w = 0.F;
+
+	return v;
+}
+
+
+coord_t *sub(coord_t *v, const coord_t *u, const coord_t *w)
 {
 	assert(is_vector(u));
 	assert(is_vector(w));
@@ -185,7 +228,21 @@ coord_t *sub(coord_t *v, coord_t *u, coord_t *w)
 	v->z = u->z - w->z;
 	v->w = 0.F;
 
-	return w;
+	return v;
+}
+
+
+coord_t *sub_me(coord_t *v, const coord_t *u)
+{
+	assert(is_vector(u));
+	assert(is_vector(v));
+
+	v->x -= u->x;
+	v->y -= u->y;
+	v->z -= u->z;
+	v->w = 0.F;
+
+	return v;
 }
 
 
@@ -221,13 +278,26 @@ coord_t *matvec(coord_t *v, const matrix_t *m, coord_t *u)
 }
 
 
-coord_t *homogeneize(coord_t *p, coord_t *q)
+coord_t *homogeneize(coord_t *p, const coord_t *q)
 {
 	assert(is_point(q));
 
-	p->x /= q->w;
-	p->y /= q->w;
-	p->z /= q->w;
+	p->x = q->x / q->w;
+	p->y = q->y / q->w;
+	p->z = q->z / q->w;
+	p->w = 1.F;
+
+	return p;
+}
+
+
+coord_t *homogeneize_me(coord_t *p)
+{
+	assert(is_point(p));
+
+	p->x /= p->w;
+	p->y /= p->w;
+	p->z /= p->w;
 	p->w = 1.F;
 
 	return p;
@@ -288,7 +358,7 @@ matrix_t *matrixr(matrix_t *m, const coord_t *i, const coord_t *j,
 }
 
 
-matrix_t *matmat(matrix_t *m, matrix_t *m1, matrix_t *m2)
+matrix_t *matmat(matrix_t *m, const matrix_t *m1, const matrix_t *m2)
 {
 	int i, j, k;
 	matrix_t tmp, *old = 0;

@@ -7,49 +7,49 @@
 #include <string.h>
 #include <vmath/vmath.h>
 
-struct camera {
-	coord_t o;
-	coord_t i;
-	coord_t j;
-	coord_t k;
-
-	float a;
-
-	matrix_t m;
-	matrix_t mp;
-} camera;
+matrix_t m;
+matrix_t mp;
 
 
 static bool init(coord_t *s, coord_t *t)
 {
-	coord_t u, v = VEC_J;
+	coord_t i, j, k, u, v = VEC_J;
+	matrix_t rot, tsl;
 	float p;
 
-	vector(&camera.k, s, t);
-	unit(&camera.k, &camera.k);
+	vector(&k, s, t);
+	unit_me(&k);
 
-	if (is_collinear(&camera.k, &v, &p)) {
+	if (is_collinear(&k, &v, &p)) {
 		if (p > 0.F) {
-			memcpy(&camera.j, &vector_i, sizeof(coord_t));
-			memcpy(&camera.i, &vector_k, sizeof(coord_t));
+			memcpy(&j, &vector_i, sizeof(coord_t));
+			memcpy(&i, &vector_k, sizeof(coord_t));
 		} else {
-			memcpy(&camera.j, &vector_k, sizeof(coord_t));
-			memcpy(&camera.i, &vector_i, sizeof(coord_t));
+			memcpy(&j, &vector_k, sizeof(coord_t));
+			memcpy(&i, &vector_i, sizeof(coord_t));
 		}
 	} else {
-		scale(&u, &camera.k, camera.k.y);
-		sub(&camera.j, &v, &u);
-		unit(&camera.j, &camera.j);
+		scale(&u, &k, k.y);
+		sub(&j, &v, &u);
+		unit_me(&j);
 
-		cross(&camera.i, &camera.j, &camera.k);
+		cross(&i, &j, &k);
 	}
 
-	if (!is_pccs(&camera.i, &camera.j, &camera.k)) {
+	if (!is_pccs(&i, &j, &k)) {
 		fprintf(stderr, "Not positive cartesian coordinate system\n");
 		return false;
 	}
 
-	matrix(&camera.m, &camera.i, &camera.j, &camera.k, s);
+	matrix(&m, &i, &j, &k, s);
+
+	u.x = -s->x;
+	u.y = -s->y;
+	u.z = -s->z;
+	u.w = 0.F;
+	translation(&tsl, &u);
+	matrixr(&rot, &i, &j, &k, &point_o);
+	matmat(&mp, &rot, &tsl);
 
 	return true;
 }
@@ -59,17 +59,22 @@ int main()
 {
 	vmiob_t iob;
 	char buffer[200];
+	matrix_t id;
 
-	coord_t s = {0, 4, 0, 1};
-	coord_t t = {0, -6, 0, 1};
+	coord_t s = {13.2, 14, -32, 1};
+	coord_t t = {0, 0, 0, 1};
 
 	init(&s, &t);
 
 	init_iob(&iob, buffer, sizeof(buffer));
-	printf("%s\n", dump_matrix(&iob, &camera.m));
+	printf("%s\n", dump_matrix(&iob, &m));
 
 	reset_iob(&iob);
-	printf("%s", dump_matrix(&iob, &camera.mp));
+	printf("%s\n", dump_matrix(&iob, &mp));
+
+	matmat(&id, &m, &mp);
+	reset_iob(&iob);
+	printf("%s", dump_matrix(&iob, &id));
 
 	return 0;
 }
