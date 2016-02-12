@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "bpix/bpix.h"
+#include "rt/bpix.h"
 
 #define L  	 1
 #define ALPHA	90

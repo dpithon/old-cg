@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
-#include "bpix/bpix.h"
+#include "rt/bpix.h"
 
 #define WIDTH	500
 #define HEIGHT	500

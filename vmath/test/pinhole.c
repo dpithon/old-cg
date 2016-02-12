@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <vmath/vmath.h>
+#include <rt/vmath.h>
 
 matrix_t m;
 matrix_t mp;

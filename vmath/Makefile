@@ -28,8 +28,8 @@ deps:
 	$(CC) -MM *.c >Makefile.deps
 
 install: all
-	mkdir -p /usr/local/include/vmath
-	cp *.h /usr/local/include/vmath
+	mkdir -p /usr/local/include/rt
+	cp *.h /usr/local/include/rt
 	cp *.a /usr/local/lib
 
 include Makefile.deps

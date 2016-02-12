@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "bpix/bpix-error.h"
+#include "rt/bpix-error.h"
 
 int main(int argc, char *argv[])
 {
