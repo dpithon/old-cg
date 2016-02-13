@@ -7,74 +7,90 @@
 #include <string.h>
 #include <rt/vmath.h>
 
-matrix_t m;
-matrix_t mp;
+static coord_t os, is, js, ks;
+static matrix_t m, mp;
 
-
-static bool init(coord_t *s, coord_t *t)
+/**
+ * pinhole_coord_sys - compute pinhole basis and associated matrices
+ *
+ * s: pinhole coordinate
+ * t: target point coordinates
+ *
+ * return false if s and t are the same point
+ */
+bool pinhole_coord_sys(coord_t *s, coord_t *t)
 {
-	coord_t i, j, k, u, v = VEC_J;
 	matrix_t rot, tsl;
+	coord_t minus_os;
 	float p;
 
-	vector(&k, s, t);
-	unit_me(&k);
+	if (is_pequal(s, t))
+		return false;
 
-	if (is_collinear(&k, &v, &p)) {
+	memcpy(&os, s, sizeof(coord_t));
+
+	vector(&ks, s, t);
+	unit_me(&ks);
+	if (is_collinear(&ks, &vector_j, &p)) {
 		if (p > 0.F) {
-			memcpy(&j, &vector_i, sizeof(coord_t));
-			memcpy(&i, &vector_k, sizeof(coord_t));
+			memcpy(&is, &vector_k, sizeof(coord_t));
+			memcpy(&js, &vector_i, sizeof(coord_t));
 		} else {
-			memcpy(&j, &vector_k, sizeof(coord_t));
-			memcpy(&i, &vector_i, sizeof(coord_t));
+			memcpy(&is, &vector_i, sizeof(coord_t));
+			memcpy(&js, &vector_k, sizeof(coord_t));
 		}
 	} else {
-		scale(&u, &k, k.y);
-		sub(&j, &v, &u);
-		unit_me(&j);
-
-		cross(&i, &j, &k);
+		cross(&is, &ks, &vector_j);
+		unit_me(&is);
+		cross(&js, &ks, &is);
 	}
 
-	if (!is_pccs(&i, &j, &k)) {
-		fprintf(stderr, "Not positive cartesian coordinate system\n");
-		return false;
-	}
-
-	matrix(&m, &i, &j, &k, s);
-
-	u.x = -s->x;
-	u.y = -s->y;
-	u.z = -s->z;
-	u.w = 0.F;
-	translation(&tsl, &u);
-	matrixr(&rot, &i, &j, &k, &point_o);
+	matrix(&m, &is, &js, &ks, &os);
+	translation(&tsl, scale(&minus_os, &os, -1.F));
+	matrixr(&rot, &is, &js, &ks, &point_o);
 	matmat(&mp, &rot, &tsl);
 
 	return true;
 }
 
+/*********************************************************************/
 
 int main()
 {
 	vmiob_t iob;
 	char buffer[200];
+	coord_t s, t;
 	matrix_t id;
 
-	coord_t s = {13.2, 14, -32, 1};
-	coord_t t = {0, 0, 0, 1};
+	for (;;) {
+		random_point(&s);
+		random_point(&t);
 
-	init(&s, &t);
+		if (!pinhole_coord_sys(&s, &t)) {
+			fprintf(stderr, "cannot compute pccs\n");
+			init_iob(&iob, buffer, sizeof(buffer));
+			printf("S: %s\n", dump_coord(&iob, &s));
+			reset_iob(&iob);
+			printf("T: %s\n", dump_coord(&iob, &t));
+			return 1;
+		}
 
-	init_iob(&iob, buffer, sizeof(buffer));
-	printf("%s\n", dump_matrix(&iob, &m));
+		if (!is_pccs(&is, &js, &ks)) {
+			/* should never happen */
+			fprintf(stderr, "Not positive cartesian coordinate system\n");
+			return 1;
+		}
 
-	reset_iob(&iob);
-	printf("%s\n", dump_matrix(&iob, &mp));
-
-	matmat(&id, &m, &mp);
-	reset_iob(&iob);
-	printf("%s", dump_matrix(&iob, &id));
+		matmat(&id, &m, &mp);
+		if (!is_mequal(&id, &matrix_id)) {
+			fprintf(stderr, "m.mp != id\n");
+			init_iob(&iob, buffer, sizeof(buffer));
+			fprintf(stderr, "S: %s\n", dump_coord(&iob, &s));
+			reset_iob(&iob);
+			fprintf(stderr, "T: %s\n", dump_coord(&iob, &t));
+			return 1;
+		}
+	}
 
 	return 0;
 }

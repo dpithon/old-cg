@@ -64,14 +64,43 @@ bool is_vortho(const coord_t *u, const coord_t *v)
 
 bool is_vequal(const coord_t *u, const coord_t *v)
 {
+	assert(is_vector(u)); /* u, w are vectors */
+	assert(is_vector(v));
+
 	return float_equals(u->x, v->x) && float_equals(u->y, v->y) &&
 	       float_equals(u->z, v->z) && float_equals(u->w, v->w);
+}
+
+
+bool is_pequal(const coord_t *u, const coord_t *v)
+{
+	assert(is_point(u)); /* u, w are points */
+	assert(is_point(v));
+
+	return float_equals(u->x, v->x) && float_equals(u->y, v->y) &&
+	       float_equals(u->z, v->z) && float_equals(u->w, v->w);
+}
+
+
+bool is_mequal(const matrix_t *m, const matrix_t *n)
+{
+	int i, j;
+
+	for (i = 0; i < 4; i++)
+		for (j = 0; j < 4; j++)
+			if (!float_equals(m->cell[i][j], n->cell[i][j]))
+				return false;
+	return true;
 }
 
 
 bool is_collinear(const coord_t *u, const coord_t *v, float *k)
 {
 	coord_t w;
+	float tmp;
+
+	if (k == NULL)
+		k = &tmp;
 
 	assert(is_vector(u));
 	assert(is_vector(v));
@@ -134,12 +163,9 @@ coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
 
 coord_t *scale(coord_t *v, const coord_t *u, float k)
 {
-	assert(is_vector(u));
-
 	v->x = u->x * k;
 	v->y = u->y * k;
 	v->z = u->z * k;
-	v->w = 0.F;
 
 	return v;
 }
@@ -147,12 +173,9 @@ coord_t *scale(coord_t *v, const coord_t *u, float k)
 
 coord_t *scale_me(coord_t *v, float k)
 {
-	assert(is_vector(v));
-
 	v->x *= k;
 	v->y *= k;
 	v->z *= k;
-	v->w = 0.F;
 
 	return v;
 }
@@ -192,13 +215,9 @@ coord_t *unit_me(coord_t *v)
 
 coord_t *add(coord_t *v, const coord_t *u, const coord_t *w)
 {
-	assert(is_vector(u));
-	assert(is_vector(w));
-
 	v->x = u->x + w->x;
 	v->y = u->y + w->y;
 	v->z = u->z + w->z;
-	v->w = 0.F;
 
 	return v;
 }
@@ -206,13 +225,9 @@ coord_t *add(coord_t *v, const coord_t *u, const coord_t *w)
 
 coord_t *add_me(coord_t *v, const coord_t *u)
 {
-	assert(is_vector(u));
-	assert(is_vector(v));
-
 	v->x += u->x;
 	v->y += u->y;
 	v->z += u->z;
-	v->w = 0.F;
 
 	return v;
 }
@@ -220,13 +235,9 @@ coord_t *add_me(coord_t *v, const coord_t *u)
 
 coord_t *sub(coord_t *v, const coord_t *u, const coord_t *w)
 {
-	assert(is_vector(u));
-	assert(is_vector(w));
-
 	v->x = u->x - w->x;
 	v->y = u->y - w->y;
 	v->z = u->z - w->z;
-	v->w = 0.F;
 
 	return v;
 }
@@ -234,13 +245,9 @@ coord_t *sub(coord_t *v, const coord_t *u, const coord_t *w)
 
 coord_t *sub_me(coord_t *v, const coord_t *u)
 {
-	assert(is_vector(u));
-	assert(is_vector(v));
-
 	v->x -= u->x;
 	v->y -= u->y;
 	v->z -= u->z;
-	v->w = 0.F;
 
 	return v;
 }
@@ -260,7 +267,7 @@ coord_t *cross(coord_t *v, const coord_t *u, const coord_t *w)
 }
 
 
-coord_t *matvec(coord_t *v, const matrix_t *m, coord_t *u)
+coord_t *matcol(coord_t *v, const matrix_t *m, coord_t *u)
 {
 	coord_t tmp;
 

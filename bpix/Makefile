@@ -1,11 +1,9 @@
 .PHONY: all clean purge install
 
 CFLAGS=-Wall -Wextra -std=c99 -pedantic -g0 -O3 -pipe
-
-CAIRO_CFLAGS=$(CFLAGS)
-GTK_CFLAGS=$(CFLAGS)
-
 OBJECTS=bpix-core.o bpix-drawing.o bpix-error.o bpix-pnm.o
+CC=gcc
+LD=gcc
 
 all: libbpix.a
 

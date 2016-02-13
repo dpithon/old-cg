@@ -33,6 +33,8 @@ extern bool      is_vzero(const coord_t*);
 extern bool      is_vunit(const coord_t*);
 extern bool      is_vortho(const coord_t*, const coord_t*);
 extern bool      is_vequal(const coord_t*, const coord_t*);
+extern bool      is_pequal(const coord_t*, const coord_t*);
+extern bool      is_mequal(const matrix_t*, const matrix_t*);
 extern bool      is_collinear(const coord_t*, const coord_t*, float*);
 extern bool      is_pccs(const coord_t*, const coord_t*, const coord_t*);
 
@@ -48,7 +50,7 @@ extern coord_t  *add_me(coord_t*, const coord_t*);
 extern coord_t  *sub(coord_t*, const coord_t*, const coord_t*);
 extern coord_t  *sub_me(coord_t*, const coord_t*);
 extern coord_t  *cross(coord_t*, const coord_t*, const coord_t*);
-extern coord_t  *matvec(coord_t*, const matrix_t*, coord_t*);
+extern coord_t  *matcol(coord_t*, const matrix_t*, coord_t*);
 extern coord_t  *homogeneize(coord_t*, const coord_t*);
 extern coord_t  *homogeneize_me(coord_t*);
 extern matrix_t *matrix(matrix_t*, const coord_t*, const coord_t*,

@@ -1,13 +1,12 @@
 .PHONY: all clean purge test deps install
 
 OPTS=-DNDEBUG
-OPTS=-DVSTAT
 DEBUG=-O2 -g0
 DEBUG=-O0 -g2
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
-OBJS=core.o mstack.o iob.o settings.o
+OBJS=core.o mstack.o iob.o settings.o misc.o
 LDFLAGS=-L. -lvmath -lm
 
 all: libvmath.a
