@@ -43,4 +43,7 @@ extern int   load_coord(coord_t*, vmiob_t*);
 extern int   load_matrix(matrix_t*, vmiob_t*);
 extern int   load_mstack(mstack_t*, vmiob_t*);
 
+extern void print_matrix(const char*, const matrix_t*);
+extern void print_coord(const char*, const coord_t*);
+
 #endif /* _VMATH_IOB_H */

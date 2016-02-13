@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
 
 	rotation(&rot2, &u, theta);
 
-	matvec(&rt1, &rot1, &p);
-	matvec(&rt2, &rot2, &p);
+	matcol(&rt1, &rot1, &p);
+	matcol(&rt2, &rot2, &p);
 
 	check_dump_and_load_coord(&rt1);
 	check_dump_and_load_matrix(&rot1);

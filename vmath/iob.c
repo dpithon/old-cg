@@ -238,3 +238,28 @@ static char *dump_coord_hex(vmiob_t *iob, const coord_t *c)
 
         return iob->buf;
 }
+
+
+void print_matrix(const char *pfx, const matrix_t *m)
+{
+	char buf[200];
+	vmiob_t iob;
+
+	init_iob(&iob, buf, sizeof(buf));
+	if (pfx)
+		printf("%s\n-----\n", pfx);
+	printf("%s\n", dump_matrix(&iob, m));
+}
+
+
+void print_coord(const char *pfx, const coord_t *c)
+{
+	char buf[80];
+	vmiob_t iob;
+
+	init_iob(&iob, buf, sizeof(buf));
+	if (pfx)
+		printf("%s: ", pfx);
+	printf("%s\n", dump_coord(&iob, c));
+}
+

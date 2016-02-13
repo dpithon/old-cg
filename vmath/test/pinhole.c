@@ -3,6 +3,7 @@
  *
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <rt/vmath.h>
@@ -20,6 +21,9 @@ static matrix_t m, mp;
  */
 bool pinhole_coord_sys(coord_t *s, coord_t *t)
 {
+	assert(is_point(s));
+	assert(is_point(t));
+
 	matrix_t rot, tsl;
 	coord_t minus_os;
 	float p;
@@ -50,6 +54,7 @@ bool pinhole_coord_sys(coord_t *s, coord_t *t)
 	matrixr(&rot, &is, &js, &ks, &point_o);
 	matmat(&mp, &rot, &tsl);
 
+	assert(is_pccs(&is, &js, &ks));
 	return true;
 }
 
@@ -57,40 +62,40 @@ bool pinhole_coord_sys(coord_t *s, coord_t *t)
 
 int main()
 {
-	vmiob_t iob;
-	char buffer[200];
-	coord_t s, t;
+	coord_t s, t, v, vv, w;
 	matrix_t id;
 
-	for (;;) {
-		random_point(&s);
-		random_point(&t);
+	random_point(&s);
+	random_point(&t);
+	random_vector(&v);
 
-		if (!pinhole_coord_sys(&s, &t)) {
-			fprintf(stderr, "cannot compute pccs\n");
-			init_iob(&iob, buffer, sizeof(buffer));
-			printf("S: %s\n", dump_coord(&iob, &s));
-			reset_iob(&iob);
-			printf("T: %s\n", dump_coord(&iob, &t));
-			return 1;
-		}
-
-		if (!is_pccs(&is, &js, &ks)) {
-			/* should never happen */
-			fprintf(stderr, "Not positive cartesian coordinate system\n");
-			return 1;
-		}
-
-		matmat(&id, &m, &mp);
-		if (!is_mequal(&id, &matrix_id)) {
-			fprintf(stderr, "m.mp != id\n");
-			init_iob(&iob, buffer, sizeof(buffer));
-			fprintf(stderr, "S: %s\n", dump_coord(&iob, &s));
-			reset_iob(&iob);
-			fprintf(stderr, "T: %s\n", dump_coord(&iob, &t));
-			return 1;
-		}
+	if (!pinhole_coord_sys(&s, &t)) {
+		printf("cannot compute pccs\n");
+		print_coord("S", &s);
+		print_coord("T", &s);
+		return 1;
 	}
 
+	matmat(&id, &m, &mp);
+	if (!is_mequal(&id, &matrix_id)) {
+		printf("m.mp != id\n");
+		print_coord("S", &s);
+		print_coord("T", &s);
+		return 1;
+	}
+
+	matcol(&w, &m, &v);
+	matcol(&vv, &mp, &w);
+
+	if (!is_vequal(&v, &vv)) {
+		printf("mp.m.v != v\n");
+		print_coord("S", &s);
+		print_coord("T", &s);
+		return 1;
+	}
+
+	print_coord("V ", &v);
+	print_coord("W ", &w);
+	print_coord("V'", &vv);
 	return 0;
 }
