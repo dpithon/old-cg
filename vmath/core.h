@@ -41,6 +41,7 @@ extern bool      is_pccs(const coord_t*, const coord_t*, const coord_t*);
 extern float     len(const coord_t*);
 extern float     dot(const coord_t*, const coord_t*);
 extern coord_t  *vector(coord_t*, const coord_t*, const coord_t*);
+extern coord_t  *unit_vector(coord_t*, const coord_t*, const coord_t*);
 extern coord_t  *scale(coord_t*, const coord_t*, float);
 extern coord_t  *scale_me(coord_t*, float);
 extern coord_t  *unit(coord_t*, const coord_t*);

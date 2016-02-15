@@ -161,6 +161,12 @@ coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
 }
 
 
+coord_t *unit_vector(coord_t *v, const coord_t *p, const coord_t *q)
+{
+	return unit_me(vector(v, p, q));
+}
+
+
 coord_t *scale(coord_t *v, const coord_t *u, float k)
 {
 	v->x = u->x * k;
