@@ -1,25 +1,48 @@
 /**
- * pinhole camera
+ * pinhole camera.
  *
  */
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <rt/vmath.h>
 
-static coord_t os, is, js, ks;
-static matrix_t m, mp;
+/* Pinhole camera coordinates system. */
+static coord_t pcs_os = PNT_O,
+	       pcs_is = VEC_I,
+	       pcs_js = VEC_J,
+	       pcs_ks = VEC_K;
+
+/** Change-of-coordinates matrices.
+ *
+ *   m: camera to world,
+ *  mi: world to camera
+ */
+static matrix_t pcs_m  = MAT_ID,
+		pcs_mi = MAT_ID;
+
+/* Focal length and field of view */
+static float focal, fov = 40.F;
+
+/* Pinhole camera sensor width and height and mapping constants */
+static int width, height;
+static float sqr_edge, fac_xy, off_x, off_y;
+
 
 /**
- * pinhole_coord_sys - compute pinhole basis and associated matrices
+ * compute_coordsys - compute pinhole camera coordinate system and
+ *                    change-of-coordinates matrices.
+ * 
+ * Any changes on coordinate systems implies new matrices.
  *
- * s: pinhole coordinate
- * t: target point coordinates
+ * s: pinhole focal point in world coordinate system.
+ * t: target point in world coordinate system.
  *
- * return false if s and t are the same point
+ * return false if s and t are the same point.
  */
-bool pinhole_coord_sys(coord_t *s, coord_t *t)
+static bool compute_coordsys(const coord_t *s, const coord_t *t)
 {
 	assert(is_point(s));
 	assert(is_point(t));
@@ -31,32 +54,121 @@ bool pinhole_coord_sys(coord_t *s, coord_t *t)
 	if (is_pequal(s, t))
 		return false;
 
-	memcpy(&os, s, sizeof(coord_t));
+	memcpy(&pcs_os, s, sizeof(coord_t));
 
-	vector(&ks, s, t);
-	unit_me(&ks);
-	if (is_collinear(&ks, &vector_j, &p)) {
+	unit_vector(&pcs_ks, s, t);
+	if (is_collinear(&pcs_ks, &vector_j, &p)) {
 		if (p > 0.F) {
-			memcpy(&is, &vector_k, sizeof(coord_t));
-			memcpy(&js, &vector_i, sizeof(coord_t));
+			memcpy(&pcs_is, &vector_k, sizeof(coord_t));
+			memcpy(&pcs_js, &vector_i, sizeof(coord_t));
 		} else {
-			memcpy(&is, &vector_i, sizeof(coord_t));
-			memcpy(&js, &vector_k, sizeof(coord_t));
+			memcpy(&pcs_is, &vector_i, sizeof(coord_t));
+			memcpy(&pcs_js, &vector_k, sizeof(coord_t));
 		}
 	} else {
-		cross(&is, &ks, &vector_j);
-		unit_me(&is);
-		cross(&js, &ks, &is);
+		cross(&pcs_is, &pcs_ks, &vector_j);
+		unit_me(&pcs_is);
+		cross(&pcs_js, &pcs_ks, &pcs_is);
 	}
 
-	matrix(&m, &is, &js, &ks, &os);
-	translation(&tsl, scale(&minus_os, &os, -1.F));
-	matrixr(&rot, &is, &js, &ks, &point_o);
-	matmat(&mp, &rot, &tsl);
+	matrix(&pcs_m, &pcs_is, &pcs_js, &pcs_ks, &pcs_os);
 
-	assert(is_pccs(&is, &js, &ks));
+	translation(&tsl, scale(&minus_os, &pcs_os, -1.F));
+	matrixr(&rot, &pcs_is, &pcs_js, &pcs_ks, &point_o);
+	matmat(&pcs_mi, &rot, &tsl);
+
 	return true;
 }
+
+
+/** set_fov: set field of view and compute associated focal length.
+ *
+ * f: field of view in degrees
+ *
+ * return false if field of view is invalid.
+ */
+static bool set_fov(float f)
+{
+	if (f <= 0.F || f >= 180.F)
+		return false;
+
+	fov = f;
+	focal = 1.F / (2.F * tanf(f * M_PI / 360.F));
+	return true;
+}
+
+
+/** init_mapping - compute constants to map pixel on "sensor" surface.
+ *
+ * w: horizontal resolution (width of final picture)
+ * h: vertical resolution (height of final picture)
+ *
+ * return false if resolution is not valid
+ */
+static bool init_mapping(int w, int h)
+{
+	if (h > w || w <= 0 || h <= 0)
+		return false;
+
+	width  = w;
+	height = h;
+
+	sqr_edge = 1.F / ((float) width);
+	fac_xy   = - sqr_edge;
+	off_x    = 0.5F - sqr_edge;
+	off_y    = ((float) height) / ((float) (2 * width)) - sqr_edge;
+
+	return true;
+}
+
+
+/**
+ * init_pinhole - initialize pinhole camera.
+ *
+ * s:   pinhole focal point in world coordinate system.
+ * t:   target point in world coordinate system.
+ * w:   horizontal resolution of pinhole sensor
+ * h:   vertical resolution of pinhole sensor
+ * fov: field of view
+ *
+ */
+bool init_pinhole(const coord_t *s, const coord_t* t,
+		  int w, int h, float fov)
+{
+	if (!set_fov(fov))
+		return false;
+
+	if (!compute_coordsys(s, t))
+		return false;
+
+	if (!init_mapping(w, h))
+		return false;
+
+	return true;
+}
+
+
+/** map_pixel - map pixel on "sensor" surface.
+ *
+ * c1: coordinates of lower left corner of mapped pixel
+ * c2: coordinates of upper right corner of mapped pixel
+ * x:  pixel x in [0:W-1]
+ * y:  pixel y in [0:H-1]
+ *
+ */
+void map_pixel(coord_t *c1, coord_t *c2, int x, int y)
+{
+	assert(x >= 0 && y >= 0 && x < width && y < height);
+
+	c1->x = ((float) x) * fac_xy + off_x;
+	c1->y = ((float) y) * fac_xy + off_y;
+	c1->z = c2->z = - focal;
+	c1->w = c2->w = 1.F;
+
+	c2->x = c1->x + sqr_edge;
+	c2->y = c1->y + sqr_edge;
+}
+
 
 /*********************************************************************/
 
@@ -69,23 +181,29 @@ int main()
 	random_point(&t);
 	random_vector(&v);
 
-	if (!pinhole_coord_sys(&s, &t)) {
-		printf("cannot compute pccs\n");
-		print_coord("S", &s);
-		print_coord("T", &s);
+	if (!init_pinhole(&s, &t, 4, 4, 65.F))
 		return 1;
-	}
 
-	matmat(&id, &m, &mp);
+	for (int x = 0; x < 4; x++)
+		for (int y = 0; y < 4; y++) {
+			map_pixel(&v, &vv, x, y);
+			print_coord(NULL, &v);
+			print_coord(NULL, &vv);
+			printf("\n");
+		}
+
+	assert(is_pccs(&pcs_is, &pcs_js, &pcs_ks));
+
+	matmat(&id, &pcs_m, &pcs_mi);
 	if (!is_mequal(&id, &matrix_id)) {
-		printf("m.mp != id\n");
+		printf("m.mi != id\n");
 		print_coord("S", &s);
 		print_coord("T", &s);
 		return 1;
 	}
 
-	matcol(&w, &m, &v);
-	matcol(&vv, &mp, &w);
+	matcol(&w, &pcs_m, &v);
+	matcol(&vv, &pcs_mi, &w);
 
 	if (!is_vequal(&v, &vv)) {
 		printf("mp.m.v != v\n");
@@ -97,5 +215,7 @@ int main()
 	print_coord("V ", &v);
 	print_coord("W ", &w);
 	print_coord("V'", &vv);
+
+	printf("%f\n",  focal);
 	return 0;
 }
