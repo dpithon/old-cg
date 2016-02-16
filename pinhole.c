@@ -4,24 +4,12 @@
  */
 
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <rt/vmath.h>
 
-/* Pinhole camera coordinates system. */
-static coord_t pcs_os = PNT_O,
-	       pcs_is = VEC_I,
-	       pcs_js = VEC_J,
-	       pcs_ks = VEC_K;
-
-/** Change-of-coordinates matrices.
- *
- *   m: camera to world,
- *  mi: world to camera
- */
-static matrix_t pcs_m  = MAT_ID,
-		pcs_mi = MAT_ID;
+/* Pinhole cartesian coordinate system */
+static ccs_t ccs = CCS;
 
 /* Focal length and field of view */
 static float focal, fov = 40.F;
@@ -35,7 +23,8 @@ static float sqr_edge, fac_xy, off_x, off_y;
  * compute_coordsys - compute pinhole camera coordinate system and
  *                    change-of-coordinates matrices.
  * 
- * Any changes on coordinate systems implies new matrices.
+ * Any changes on coordinate systems implies new change-of-coordinate
+ * matrices.
  *
  * s: pinhole focal point in world coordinate system.
  * t: target point in world coordinate system.
@@ -47,41 +36,33 @@ static bool compute_coordsys(const coord_t *s, const coord_t *t)
 	assert(is_point(s));
 	assert(is_point(t));
 
-	matrix_t rot, tsl;
-	coord_t minus_os;
 	float p;
 
 	if (is_pequal(s, t))
 		return false;
 
-	memcpy(&pcs_os, s, sizeof(coord_t));
+	memcpy(&ccs.o, s, sizeof(coord_t));
 
-	unit_vector(&pcs_ks, s, t);
-	if (is_collinear(&pcs_ks, &vector_j, &p)) {
+	unit_vector(&ccs.k, s, t);
+	if (is_collinear(&ccs.k, &vector_j, &p)) {
 		if (p > 0.F) {
-			memcpy(&pcs_is, &vector_k, sizeof(coord_t));
-			memcpy(&pcs_js, &vector_i, sizeof(coord_t));
+			memcpy(&ccs.i, &vector_k, sizeof(coord_t));
+			memcpy(&ccs.j, &vector_i, sizeof(coord_t));
 		} else {
-			memcpy(&pcs_is, &vector_i, sizeof(coord_t));
-			memcpy(&pcs_js, &vector_k, sizeof(coord_t));
+			memcpy(&ccs.i, &vector_i, sizeof(coord_t));
+			memcpy(&ccs.j, &vector_k, sizeof(coord_t));
 		}
 	} else {
-		cross(&pcs_is, &pcs_ks, &vector_j);
-		unit_me(&pcs_is);
-		cross(&pcs_js, &pcs_ks, &pcs_is);
+		cross(&ccs.i, &ccs.k, &vector_j);
+		unit_me(&ccs.i);
+		cross(&ccs.j, &ccs.k, &ccs.i);
 	}
 
-	matrix(&pcs_m, &pcs_is, &pcs_js, &pcs_ks, &pcs_os);
-
-	translation(&tsl, scale(&minus_os, &pcs_os, -1.F));
-	matrixr(&rot, &pcs_is, &pcs_js, &pcs_ks, &point_o);
-	matmat(&pcs_mi, &rot, &tsl);
-
-	return true;
+	return change_of_coord_mat(&ccs);
 }
 
 
-/** set_fov: set field of view and compute associated focal length.
+/** set_fov - set field of view and compute matching focal length.
  *
  * f: field of view in degrees
  *
@@ -167,55 +148,4 @@ void map_pixel(coord_t *c1, coord_t *c2, int x, int y)
 
 	c2->x = c1->x + sqr_edge;
 	c2->y = c1->y + sqr_edge;
-}
-
-
-/*********************************************************************/
-
-int main()
-{
-	coord_t s, t, v, vv, w;
-	matrix_t id;
-
-	random_point(&s);
-	random_point(&t);
-	random_vector(&v);
-
-	if (!init_pinhole(&s, &t, 4, 4, 65.F))
-		return 1;
-
-	for (int x = 0; x < 4; x++)
-		for (int y = 0; y < 4; y++) {
-			map_pixel(&v, &vv, x, y);
-			print_coord(NULL, &v);
-			print_coord(NULL, &vv);
-			printf("\n");
-		}
-
-	assert(is_pccs(&pcs_is, &pcs_js, &pcs_ks));
-
-	matmat(&id, &pcs_m, &pcs_mi);
-	if (!is_mequal(&id, &matrix_id)) {
-		printf("m.mi != id\n");
-		print_coord("S", &s);
-		print_coord("T", &s);
-		return 1;
-	}
-
-	matcol(&w, &pcs_m, &v);
-	matcol(&vv, &pcs_mi, &w);
-
-	if (!is_vequal(&v, &vv)) {
-		printf("mp.m.v != v\n");
-		print_coord("S", &s);
-		print_coord("T", &s);
-		return 1;
-	}
-
-	print_coord("V ", &v);
-	print_coord("W ", &w);
-	print_coord("V'", &vv);
-
-	printf("%f\n",  focal);
-	return 0;
 }

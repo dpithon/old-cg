@@ -15,6 +15,16 @@ typedef struct matrix {
 	float cell[4][4];
 } matrix_t;
 
+typedef struct ccs {
+	coord_t o;
+	coord_t i;
+	coord_t j;
+	coord_t k;
+
+	matrix_t m;
+	matrix_t mi;
+} ccs_t;
+
 #define MATROW(m, i) ((coord_t*) &(m->cell[i]))
 
 /*** Initalizer values */
@@ -26,6 +36,13 @@ typedef struct matrix {
 #define PNT_J    { 0.F, 1.F, 0.F, 1.F }
 #define PNT_K    { 0.F, 0.F, 1.F, 1.F }
 #define MAT_ID   { .cell = { VEC_I, VEC_J, VEC_K, PNT_O } }
+#define CCS 	 { .o = PNT_O,\
+		   .i = VEC_I,\
+		   .j = VEC_J,\
+		   .k = VEC_K,\
+		   .m = MAT_ID,\
+		   .mi = MAT_ID\
+		 }
 
 extern bool      is_point(const coord_t*);
 extern bool      is_vector(const coord_t*);
@@ -66,6 +83,7 @@ extern matrix_t *rotationz(matrix_t*, float);
 extern matrix_t *rotation(matrix_t*, const coord_t*, float);
 extern matrix_t *scaling(matrix_t*, float, float, float);
 extern matrix_t *translation(matrix_t*, coord_t*);
+extern bool      change_of_coord_mat(ccs_t*);
 
 extern const matrix_t matrix_id;
 extern const coord_t  vector_i;

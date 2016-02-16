@@ -1,25 +1,23 @@
-.PHONY: all clean purge install
+.PHONY: all clean purge deps
 
-all:
-	$(MAKE) -C bpix all
-	$(MAKE) -C vmath all
+OPTS=-DNDEBUG
+DEBUG=-O0 -g2
+CFLAGS+=-I/usr/local/include
+CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
+LDFLAGS=-L/usr/local/lib -lvmath -lm
+CC=gcc
+LD=gcc
+OBJS=pinhole.o
 
-test:
-	$(MAKE) -C bpix/test all
-	$(MAKE) -C vmath/test all
+all: $(OBJS)
 
 clean:
-	$(MAKE) -C bpix clean
-	$(MAKE) -C vmath clean
-	$(MAKE) -C bpix/test clean
-	$(MAKE) -C vmath/test clean
+	rm -rf *.o *.gch unit/*.o *.a
 
-purge:
-	$(MAKE) -C bpix purge
-	$(MAKE) -C vmath purge
-	$(MAKE) -C bpix/test purge
-	$(MAKE) -C vmath/test purge
+purge: clean
+	rm -f testing
 
-install:
-	$(MAKE) -C bpix install
-	$(MAKE) -C vmath install
+deps:
+	$(CC) -MM *.c >Makefile.deps
+
+include Makefile.deps

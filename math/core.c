@@ -572,6 +572,21 @@ matrix_t *translation(matrix_t *m, coord_t *v)
 }
 
 
+bool change_of_coord_mat(ccs_t *ccs)
+{
+	matrix_t rot, tsl;
+	coord_t minus_os;
+
+	matrix(&ccs->m, &ccs->i, &ccs->j, &ccs->k, &ccs->o);
+
+	translation(&tsl, scale(&minus_os, &ccs->o, -1.F));
+	matrixr(&rot, &ccs->i, &ccs->j, &ccs->k, &point_o);
+	matmat(&ccs->mi, &rot, &tsl);
+
+	return is_pccs(&ccs->i, &ccs->j, &ccs->k);
+}
+
+
 static bool float_equals(float a, float b)
 {
 	float absA = fabsf(a);
