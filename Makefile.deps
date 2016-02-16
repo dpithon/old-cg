@@ -1,1 +1,4 @@
-pinhole.o: pinhole.c
+pinhole.o: pinhole.c color.h ipoint.h
+raycaster.o: raycaster.c bpix/bpix.h bpix/bpix-core.h bpix/bpix-error.h \
+ bpix/bpix-drawing.h bpix/bpix-pnm.h pinhole.h math/vmath.h math/core.h \
+ math/settings.h math/mstack.h math/iob.h math/misc.h color.h ipoint.h

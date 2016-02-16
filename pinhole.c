@@ -8,6 +8,12 @@
 #include <math.h>
 #include <rt/vmath.h>
 
+#include "color.h"
+#include "ipoint.h"
+
+extern bool intersect(ipoint_t*, const coord_t*);
+extern void render(rgb_t*, const ipoint_t*);
+
 /* Pinhole cartesian coordinate system */
 static ccs_t ccs = CCS;
 
@@ -79,7 +85,8 @@ static bool set_fov(float f)
 }
 
 
-/** init_mapping - compute constants to map pixel on "sensor" surface.
+/**
+ * init_mapping - compute constants to map pixel on "sensor" surface.
  *
  * w: horizontal resolution (width of final picture)
  * h: vertical resolution (height of final picture)
@@ -100,6 +107,25 @@ static bool init_mapping(int w, int h)
 	off_y    = ((float) height) / ((float) (2 * width)) - sqr_edge;
 
 	return true;
+}
+
+
+/**
+ * map_pixel - map pixel on "sensor" surface.
+ *
+ * c: coordinates of lower left corner of mapped pixel
+ * x: pixel x in [0:W-1]
+ * y: pixel y in [0:H-1]
+ *
+ */
+static void map_pixel(coord_t *c, int x, int y)
+{
+	assert(x >= 0 && y >= 0 && x < width && y < height);
+
+	c->x = ((float) x) * fac_xy + off_x;
+	c->y = ((float) y) * fac_xy + off_y;
+	c->z = - focal;
+	c->w = 1.F;
 }
 
 
@@ -129,23 +155,30 @@ bool init_pinhole(const coord_t *s, const coord_t* t,
 }
 
 
-/** map_pixel - map pixel on "sensor" surface.
+/** 
+ * sampling_center - shoot ray from center of sampling surface.
  *
- * c1: coordinates of lower left corner of mapped pixel
- * c2: coordinates of upper right corner of mapped pixel
- * x:  pixel x in [0:W-1]
- * y:  pixel y in [0:H-1]
+ * rgb: resulting color of sampling
+ * px:   pixel x coordinate
+ * py:   pixel y coordinate
  *
+ * return true if ray intersect a shape, false otherwise
  */
-void map_pixel(coord_t *c1, coord_t *c2, int x, int y)
+bool sampling_center(rgb_t* rgb, int px, int py)
 {
-	assert(x >= 0 && y >= 0 && x < width && y < height);
+	coord_t s;
+	coord_t r;
+	ipoint_t i;
 
-	c1->x = ((float) x) * fac_xy + off_x;
-	c1->y = ((float) y) * fac_xy + off_y;
-	c1->z = c2->z = - focal;
-	c1->w = c2->w = 1.F;
+	map_pixel(&s, px, py);
+	s.x += sqr_edge / 2.F;
+	s.y += sqr_edge / 2.F;
 
-	c2->x = c1->x + sqr_edge;
-	c2->y = c1->y + sqr_edge;
+	unit_vector(&r, &s, &point_o);
+	if (intersect(&i, &r)) {
+		render(rgb, &i);
+		return true;
+	}
+
+	return false;
 }
