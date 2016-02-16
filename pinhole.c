@@ -8,6 +8,7 @@
 #include <math.h>
 #include <rt/vmath.h>
 
+#include "sampler.h"
 #include "color.h"
 #include "ipoint.h"
 
@@ -129,6 +130,35 @@ static void map_pixel(coord_t *c, int x, int y)
 }
 
 
+/** 
+ * sampling_center - shoot ray from center of sampling surface.
+ *
+ * rgb: resulting color of sampling
+ * px:   pixel x coordinate
+ * py:   pixel y coordinate
+ *
+ * return true if ray intersect a shape, false otherwise
+ */
+static bool sampling_center(rgb_t* rgb, int px, int py)
+{
+	coord_t s;
+	coord_t r;
+	ipoint_t i;
+
+	map_pixel(&s, px, py);
+	s.x += sqr_edge / 2.F;
+	s.y += sqr_edge / 2.F;
+
+	unit_vector(&r, &s, &point_o);
+	if (intersect(&i, &r)) {
+		render(rgb, &i);
+		return true;
+	}
+
+	return false;
+}
+
+
 /**
  * init_pinhole - initialize pinhole camera.
  *
@@ -151,34 +181,7 @@ bool init_pinhole(const coord_t *s, const coord_t* t,
 	if (!init_mapping(w, h))
 		return false;
 
+	set_sampler(sampling_center);
+
 	return true;
-}
-
-
-/** 
- * sampling_center - shoot ray from center of sampling surface.
- *
- * rgb: resulting color of sampling
- * px:   pixel x coordinate
- * py:   pixel y coordinate
- *
- * return true if ray intersect a shape, false otherwise
- */
-bool sampling_center(rgb_t* rgb, int px, int py)
-{
-	coord_t s;
-	coord_t r;
-	ipoint_t i;
-
-	map_pixel(&s, px, py);
-	s.x += sqr_edge / 2.F;
-	s.y += sqr_edge / 2.F;
-
-	unit_vector(&r, &s, &point_o);
-	if (intersect(&i, &r)) {
-		render(rgb, &i);
-		return true;
-	}
-
-	return false;
 }

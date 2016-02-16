@@ -1,25 +1,39 @@
-.PHONY: all clean purge deps
+.PHONY: all clean purge deps 
 
 OPTS=-DNDEBUG
 DEBUG=-O0 -g2
 CFLAGS+=-I/usr/local/include
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
-LDFLAGS=-L/usr/local/lib -lvmath -lbpix -lm
+LDFLAGS=-L./math -L./bpix -lvmath -lbpix -lm
 CC=gcc
 LD=gcc
-OBJS=pinhole.o raycaster.o
+OBJS=pinhole.o raycaster.o sampler.o
 
-all: $(OBJS)
+all: raycaster
 
 clean:
 	rm -rf *.o *.gch unit/*.o *.a
+	$(MAKE) -C math clean
+	$(MAKE) -C bpix clean
 
 purge: clean
-	rm -f testing
+	rm -f raycaster *.pnm
+	$(MAKE) -C math purge
+	$(MAKE) -C bpix purge
 
 deps:
 	$(CC) -MM *.c >Makefile.deps
+	$(MAKE) -C math deps
+	$(MAKE) -C bpix deps
 
-raycaster: all
+
+math/libvmath.a: math/*.[ch]
+	$(MAKE) -C math all
+
+bpix/libbpix.a: bpix/*.[ch]
+	$(MAKE) -C bpix all
+
+raycaster: $(OBJS) math/libvmath.a bpix/libbpix.a
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
+
 include Makefile.deps

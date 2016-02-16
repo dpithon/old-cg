@@ -2,10 +2,14 @@
 #include "pinhole.h"
 #include "ipoint.h"
 #include "color.h"
+#include "sampler.h"
 #include "math/vmath.h"
 
-bool intersect()
+bool intersect(ipoint_t *i, coord_t *r)
 {
+	i->flags = 0;
+	if (r->y > .0F && r->x < 0.F)
+		return true;
 	return false;
 }
 
@@ -30,7 +34,7 @@ int main()
 
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++) {
-			if (sampling_center(&rgb, x, y))
+			if (sampling(&rgb, x, y))
 				bpix_set(&pix, x, y, rgb.r, rgb.g, rgb.b);
 			else
 				bpix_set(&pix, x, y, 0, 0, 0);
