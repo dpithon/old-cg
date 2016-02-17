@@ -170,7 +170,7 @@ bool init_pinhole(int w, int h, float fov)
 	if (!init_mapping(w, h))
 		return false;
 
-	if (init_picture(w, h, 0))
+	if (init_picture(w, h))
 		return false;
 
 	set_sampler(samplers[DEFAULT_SAMPLER]);

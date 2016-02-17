@@ -5,14 +5,17 @@
 static struct bpix picture;
 static rgb_t def_rgb = RGBBlack;
 
-bool init_picture(int w, int h, const rgb_t *rgb)
+bool init_picture(int w, int h)
 {
-	if (rgb)
-		def_rgb = *rgb;
 	return bpix_init(&picture, w, h);
 }
 
-	
+void set_default_color(const rgb_t *rgb)
+{
+	def_rgb = *rgb;
+}
+
+
 void set_pixel(int x, int y, const rgb_t *rgb)
 {
 	if (rgb)

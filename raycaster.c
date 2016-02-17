@@ -13,12 +13,15 @@ void renderer_nil(rgb_t *rgb)
 #define W	320
 #define H	240
 
+static rgb_t gray = RGBLightGray;
+
 int main()
 {
 	set_location(1.F, 1.F, 1.F);
 	set_target(0.F, 0.F, 0.F);
 	init_pinhole(W, H, 40.F);
 	set_renderer(CAST_RENDERER(renderer_nil));
+	set_default_color(&gray);
 
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++)
