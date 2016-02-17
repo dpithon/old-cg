@@ -15,13 +15,30 @@
 			 E(m, r, 3) * ((v)->w)
 
 
-static bool float_equals(float a, float b);
-
 const matrix_t MatrixId = MATRIX_ID;
 const coord_t  VectorI  = VECTOR_I;
 const coord_t  VectorJ  = VECTOR_J;
 const coord_t  VectorK  = VECTOR_K;
 const coord_t  PointO   = POINT_O;
+
+
+static bool float_equals(float a, float b)
+{
+	float absA = fabsf(a);
+        float absB = fabsf(b);
+        float diff = fabsf(a - b);
+
+        if (a == b) { // shortcut, handles infinities
+		return true;
+
+        } else if (a * b == 0) { // a or b or both are zero
+		// relative error is not meaningful here
+		return diff < vmset_eps;
+
+        } else { // use relative error
+            return diff / (absA + absB) < vmset_eps;
+        }
+}
 
 
 bool is_point(const coord_t *c)
@@ -584,23 +601,4 @@ bool change_of_coord_mat(ccs_t *ccs)
 	matmat(&ccs->mi, &rot, &tsl);
 
 	return is_pccs(&ccs->i, &ccs->j, &ccs->k);
-}
-
-
-static bool float_equals(float a, float b)
-{
-	float absA = fabsf(a);
-        float absB = fabsf(b);
-        float diff = fabsf(a - b);
-
-        if (a == b) { // shortcut, handles infinities
-		return true;
-
-        } else if (a * b == 0) { // a or b or both are zero
-		// relative error is not meaningful here
-		return diff < vmset_eps;
-
-        } else { // use relative error
-            return diff / (absA + absB) < vmset_eps;
-        }
 }
