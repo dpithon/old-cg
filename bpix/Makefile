@@ -26,5 +26,5 @@ clean:
 	rm -rf $(OBJECTS) *.gch
 
 purge: clean
-	rm libbpix.a
+	rm -f libbpix.a
 

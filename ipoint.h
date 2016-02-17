@@ -1,6 +1,8 @@
 #ifndef _IPOINT_H
 #define _IPOINT_H
 
+#include "math/math.h"
+
 #define FLAG_INSIDE	1
 #define FLAG_OUTSIDE	2
 #define FLAG_OVER	4

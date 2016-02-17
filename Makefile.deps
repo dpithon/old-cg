@@ -1,10 +1,15 @@
-pinhole.o: pinhole.c math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h scene.h sampler.h color.h ipoint.h
-raycaster.o: raycaster.c math/math.h math/core.h math/settings.h \
+fatal.o: fatal.c
+picture.o: picture.c math/math.h math/core.h math/settings.h \
  math/mstack.h math/iob.h math/misc.h bpix/bpix.h bpix/bpix-core.h \
- bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h pinhole.h color.h \
- ipoint.h sampler.h scene.h
-sampler.o: sampler.c math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h color.h
+ bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h color.h
+pinhole.o: pinhole.c math/math.h math/core.h math/settings.h \
+ math/mstack.h math/iob.h math/misc.h scene.h ipoint.h color.h picture.h \
+ sampler.h renderer.h
+raycaster.o: raycaster.c pinhole.h math/math.h math/core.h \
+ math/settings.h math/mstack.h math/iob.h math/misc.h color.h sampler.h \
+ renderer.h ipoint.h scene.h picture.h
+renderer.o: renderer.c fatal.h color.h ipoint.h math/math.h math/core.h \
+ math/settings.h math/mstack.h math/iob.h math/misc.h
+sampler.o: sampler.c fatal.h
 scene.o: scene.c math/math.h math/core.h math/settings.h math/mstack.h \
- math/iob.h math/misc.h
+ math/iob.h math/misc.h ipoint.h

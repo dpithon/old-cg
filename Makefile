@@ -7,7 +7,7 @@ CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 LDFLAGS=-L./math -L./bpix -lmath -lbpix -lm
 CC=gcc
 LD=gcc
-OBJS=pinhole.o raycaster.o sampler.o scene.o
+OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o fatal.o renderer.o
 
 all: raycaster
 
@@ -23,7 +23,6 @@ purge: clean
 deps:
 	$(CC) -MM *.c >Makefile.deps
 	$(MAKE) -C math deps
-	$(MAKE) -C bpix deps
 
 
 math/libmath.a: math/*.[ch]

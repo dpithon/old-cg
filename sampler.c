@@ -1,15 +1,15 @@
-#include "math/math.h"
-#include "color.h"
+#include "fatal.h"
 
-static bool (*sampler)(rgb_t*, int, int);
-
-void set_sampler(bool (*f)(rgb_t*, int, int))
+static void no_sampler()
 {
-	sampler = f;
+	fatal("no sampler!");
 }
+	
+
+void (*sampling)(int, int) = no_sampler;
 
 
-bool sampling(rgb_t *rgb, int px, int py)
+void set_sampler(void (*f)(int, int))
 {
-	return (*sampler)(rgb, px, py);
+	sampling = f;
 }
