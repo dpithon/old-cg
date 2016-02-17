@@ -1,5 +1,5 @@
 core.o: core.c core.h settings.p
 iob.o: iob.c core.h mstack.h mstack.p iob.h settings.p
+misc.o: misc.c core.h
 mstack.o: mstack.c core.h mstack.h
 settings.o: settings.c settings.h
-testing.o: testing.c core.h mstack.h iob.h settings.h

@@ -5,14 +5,14 @@
 
 mstack_t vmath_mstack = {
 	.i = 0,
-	.m = { MAT_ID }
+	.m = { MATRIX_ID }
 };
 
 
 void stack_init_r(mstack_t *s)
 {
 	s->i = 0;
-	memcpy(&(s->m[0]), &matrix_id, sizeof matrix_id);
+	memcpy(&(s->m[0]), &MatrixId, sizeof MatrixId);
 }
 
 

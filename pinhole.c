@@ -6,8 +6,9 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-#include <rt/vmath.h>
 
+#include "math/math.h"
+#include "scene.h"
 #include "sampler.h"
 #include "color.h"
 #include "ipoint.h"
@@ -30,37 +31,31 @@ static float sqr_edge, fac_xy, off_x, off_y;
  * compute_coordsys - compute pinhole camera coordinate system and
  *                    change-of-coordinates matrices.
  * 
- * Any changes on coordinate systems implies new change-of-coordinate
+ * Any changes on Location and/or Target implies new change-of-coordinate
  * matrices.
- *
- * s: pinhole focal point in world coordinate system.
- * t: target point in world coordinate system.
  *
  * return false if s and t are the same point.
  */
-static bool compute_coordsys(const coord_t *s, const coord_t *t)
+static bool compute_coordsys(void)
 {
-	assert(is_point(s));
-	assert(is_point(t));
-
 	float p;
 
-	if (is_pequal(s, t))
+	if (is_pequal(&Location, &Target))
 		return false;
 
-	memcpy(&ccs.o, s, sizeof(coord_t));
+	ccs.o = Location;
 
-	unit_vector(&ccs.k, s, t);
-	if (is_collinear(&ccs.k, &vector_j, &p)) {
+	unit_vector(&ccs.k, &Location, &Target);
+	if (is_collinear(&ccs.k, &VectorJ, &p)) {
 		if (p > 0.F) {
-			memcpy(&ccs.i, &vector_k, sizeof(coord_t));
-			memcpy(&ccs.j, &vector_i, sizeof(coord_t));
+			ccs.i = VectorK;
+			ccs.j = VectorI;
 		} else {
-			memcpy(&ccs.i, &vector_i, sizeof(coord_t));
-			memcpy(&ccs.j, &vector_k, sizeof(coord_t));
+			ccs.i = VectorI;
+			ccs.j = VectorK;
 		}
 	} else {
-		cross(&ccs.i, &ccs.k, &vector_j);
+		cross(&ccs.i, &ccs.k, &VectorJ);
 		unit_me(&ccs.i);
 		cross(&ccs.j, &ccs.k, &ccs.i);
 	}
@@ -149,7 +144,7 @@ static bool sampling_center(rgb_t* rgb, int px, int py)
 	s.x += sqr_edge / 2.F;
 	s.y += sqr_edge / 2.F;
 
-	unit_vector(&r, &s, &point_o);
+	unit_vector(&r, &s, &PointO);
 	if (intersect(&i, &r)) {
 		render(rgb, &i);
 		return true;
@@ -162,20 +157,17 @@ static bool sampling_center(rgb_t* rgb, int px, int py)
 /**
  * init_pinhole - initialize pinhole camera.
  *
- * s:   pinhole focal point in world coordinate system.
- * t:   target point in world coordinate system.
  * w:   horizontal resolution of pinhole sensor
  * h:   vertical resolution of pinhole sensor
  * fov: field of view
  *
  */
-bool init_pinhole(const coord_t *s, const coord_t* t,
-		  int w, int h, float fov)
+bool init_pinhole(int w, int h, float fov)
 {
 	if (!set_fov(fov))
 		return false;
 
-	if (!compute_coordsys(s, t))
+	if (!compute_coordsys())
 		return false;
 
 	if (!init_mapping(w, h))

@@ -7,11 +7,11 @@ CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc
 OBJS=core.o mstack.o iob.o settings.o misc.o
-LDFLAGS=-L. -lvmath -lm
+LDFLAGS=-L. -lmath -lm
 
-all: libvmath.a
+all: libmath.a
 
-libvmath.a: $(OBJS)
+libmath.a: $(OBJS)
 	ar -rs $@ $(OBJS)
 
 test: testing.o

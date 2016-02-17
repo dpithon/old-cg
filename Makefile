@@ -4,10 +4,10 @@ OPTS=-DNDEBUG
 DEBUG=-O0 -g2
 CFLAGS+=-I/usr/local/include
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
-LDFLAGS=-L./math -L./bpix -lvmath -lbpix -lm
+LDFLAGS=-L./math -L./bpix -lmath -lbpix -lm
 CC=gcc
 LD=gcc
-OBJS=pinhole.o raycaster.o sampler.o
+OBJS=pinhole.o raycaster.o sampler.o scene.o
 
 all: raycaster
 
@@ -27,13 +27,13 @@ deps:
 	$(MAKE) -C bpix deps
 
 
-math/libvmath.a: math/*.[ch]
+math/libmath.a: math/*.[ch]
 	$(MAKE) -C math all
 
 bpix/libbpix.a: bpix/*.[ch]
 	$(MAKE) -C bpix all
 
-raycaster: $(OBJS) math/libvmath.a bpix/libbpix.a
+raycaster: $(OBJS) math/libmath.a bpix/libbpix.a
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 
 include Makefile.deps

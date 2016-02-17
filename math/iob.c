@@ -2,7 +2,7 @@
 #error "Unsupported byte order."
 #endif
 
-#define _VMATH_INTERNALS
+#define _MATH_INTERNALS
 
 #include <stdio.h>
 #include "core.h"

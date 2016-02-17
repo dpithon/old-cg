@@ -1,9 +1,9 @@
 #ifndef _VMATH_SETTINGS_PRIVATE_H
 #define _VMATH_SETTINGS_PRIVATE_H
 
-#ifndef _VMATH_INTERNALS
-#error _VMATH_INTERNALS not defined !
-#endif /* _VMATH_INTERNALS */
+#ifndef _MATH_INTERNALS
+#error _MATH_INTERNALS not defined !
+#endif /* _MATH_INTERNALS */
 
 extern int vmset_width;
 extern int vmset_prec;

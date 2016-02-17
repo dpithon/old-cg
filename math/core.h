@@ -1,5 +1,5 @@
-#ifndef _VMATH_CORE_H
-#define _VMATH_CORE_H
+#ifndef _MATH_CORE_H
+#define _MATH_CORE_H
 
 #ifndef bool
 typedef enum { false = 0, true = 1 } bool;
@@ -28,20 +28,17 @@ typedef struct ccs {
 #define MATROW(m, i) ((coord_t*) &(m->cell[i]))
 
 /*** Initalizer values */
-#define VEC_I    { 1.F, 0.F, 0.F, 0.F }
-#define VEC_J    { 0.F, 1.F, 0.F, 0.F }
-#define VEC_K    { 0.F, 0.F, 1.F, 0.F }
-#define PNT_O    { 0.F, 0.F, 0.F, 1.F }
-#define PNT_I    { 1.F, 0.F, 0.F, 1.F }
-#define PNT_J    { 0.F, 1.F, 0.F, 1.F }
-#define PNT_K    { 0.F, 0.F, 1.F, 1.F }
-#define MAT_ID   { .cell = { VEC_I, VEC_J, VEC_K, PNT_O } }
-#define CCS 	 { .o = PNT_O,\
-		   .i = VEC_I,\
-		   .j = VEC_J,\
-		   .k = VEC_K,\
-		   .m = MAT_ID,\
-		   .mi = MAT_ID\
+#define VECTOR_I    { 1.F, 0.F, 0.F, 0.F }
+#define VECTOR_J    { 0.F, 1.F, 0.F, 0.F }
+#define VECTOR_K    { 0.F, 0.F, 1.F, 0.F }
+#define POINT_O    { 0.F, 0.F, 0.F, 1.F }
+#define MATRIX_ID   { .cell = { VECTOR_I, VECTOR_J, VECTOR_K, POINT_O } }
+#define CCS 	 { .o = POINT_O,\
+		   .i = VECTOR_I,\
+		   .j = VECTOR_J,\
+		   .k = VECTOR_K,\
+		   .m = MATRIX_ID,\
+		   .mi = MATRIX_ID\
 		 }
 
 extern bool      is_point(const coord_t*);
@@ -85,10 +82,10 @@ extern matrix_t *scaling(matrix_t*, float, float, float);
 extern matrix_t *translation(matrix_t*, coord_t*);
 extern bool      change_of_coord_mat(ccs_t*);
 
-extern const matrix_t matrix_id;
-extern const coord_t  vector_i;
-extern const coord_t  vector_j;
-extern const coord_t  vector_k;
-extern const coord_t  point_o;
+extern const matrix_t MatrixId;
+extern const coord_t  VectorI;
+extern const coord_t  VectorJ;
+extern const coord_t  VectorK;
+extern const coord_t  PointO;
 
-#endif /* _VMATH_CORE_H */
+#endif /* _MATH_CORE_H */

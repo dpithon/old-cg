@@ -1,9 +1,10 @@
+#include "math/math.h"
 #include "bpix/bpix.h"
 #include "pinhole.h"
 #include "ipoint.h"
 #include "color.h"
 #include "sampler.h"
-#include "math/vmath.h"
+#include "scene.h"
 
 bool intersect(ipoint_t *i, coord_t *r)
 {
@@ -26,11 +27,14 @@ void render(rgb_t *rgb)
 int main()
 {
 	struct bpix pix;
-	coord_t s = { 0.F, 5.F, 0.F, 1.F }, t = PNT_O;
 	rgb_t rgb;
 
 	bpix_init(&pix, W, H);
-	init_pinhole(&s, &t, W, H, 40.F);
+
+	set_location(1.F, 1.F, 1.F);
+	set_target(0.F, 0.F, 0.F);
+
+	init_pinhole(W, H, 40.F);
 
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++) {

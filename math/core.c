@@ -2,7 +2,7 @@
 #include <string.h>
 #include <math.h>
 
-#define _VMATH_INTERNALS
+#define _MATH_INTERNALS
 
 #include "core.h"
 #include "settings.p"
@@ -17,11 +17,11 @@
 
 static bool float_equals(float a, float b);
 
-const matrix_t matrix_id = MAT_ID;
-const coord_t  vector_i  = VEC_I;
-const coord_t  vector_j  = VEC_J;
-const coord_t  vector_k  = VEC_K;
-const coord_t  point_o   = PNT_O;
+const matrix_t MatrixId = MATRIX_ID;
+const coord_t  VectorI  = VECTOR_I;
+const coord_t  VectorJ  = VECTOR_J;
+const coord_t  VectorK  = VECTOR_K;
+const coord_t  PointO   = POINT_O;
 
 
 bool is_point(const coord_t *c)
@@ -580,7 +580,7 @@ bool change_of_coord_mat(ccs_t *ccs)
 	matrix(&ccs->m, &ccs->i, &ccs->j, &ccs->k, &ccs->o);
 
 	translation(&tsl, scale(&minus_os, &ccs->o, -1.F));
-	matrixr(&rot, &ccs->i, &ccs->j, &ccs->k, &point_o);
+	matrixr(&rot, &ccs->i, &ccs->j, &ccs->k, &PointO);
 	matmat(&ccs->mi, &rot, &tsl);
 
 	return is_pccs(&ccs->i, &ccs->j, &ccs->k);

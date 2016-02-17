@@ -1,4 +1,4 @@
-#include "math/vmath.h"
+#include "math/math.h"
 #include "color.h"
 
 static bool (*sampler)(rgb_t*, int, int);

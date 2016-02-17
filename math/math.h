@@ -1,5 +1,5 @@
-#ifndef _VMATH_H
-#define _VMATH_H
+#ifndef _MATH_H
+#define _MATH_H
 
 #include "core.h"
 #include "settings.h"
@@ -7,4 +7,4 @@
 #include "iob.h"
 #include "misc.h"
 
-#endif /* _VMATH_H */
+#endif /* _MATH_H */
