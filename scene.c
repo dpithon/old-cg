@@ -1,4 +1,5 @@
 #include "math/math.h"
+#include "ray.h"
 #include "ipoint.h"
 
 coord_t Location = {100.F, 100.F, 100.F, 1.F};
@@ -20,10 +21,10 @@ void set_target(float x, float y, float z)
 	Target.w = 1.F;
 }
 
-bool intersect(ipoint_t *i, const coord_t *r)
+bool intersect(ipoint_t *i, const ray_t *r)
 {
 	i->flags = 0;
-	if (r->y < .0F && r->x > 0.F)
+	if (r->v.y > .0F && r->v.x > 0.F)
 		return true;
 	return false;
 }

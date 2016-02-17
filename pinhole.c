@@ -8,6 +8,7 @@
 
 #include "math/math.h"
 #include "scene.h"
+#include "ray.h"
 #include "color.h"
 #include "ipoint.h"
 #include "picture.h"
@@ -130,15 +131,18 @@ static void map_pixel(coord_t *c, int x, int y)
  */
 static void sampling_center(int px, int py)
 {
-	coord_t s, ray;
+	ray_t ray;
+	coord_t center;
 	ipoint_t i;
 	rgb_t rgb;
 
-	map_pixel(&s, px, py);
-	s.x += sqr_edge / 2.F;
-	s.y += sqr_edge / 2.F;
+	ray.s = PointO;
+	
+	map_pixel(&center, px, py);
+	center.x += sqr_edge / 2.F;
+	center.y += sqr_edge / 2.F;
 
-	unit_vector(&ray, &s, &PointO);
+	unit_vector(&ray.v, &center, &PointO);
 	if (intersect(&i, &ray)) {
 		rendering(&rgb, &i);
 		set_pixel(px, py, &rgb);
