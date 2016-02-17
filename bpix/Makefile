@@ -23,7 +23,8 @@ bpix-error.o: bpix-error.c
 bpix-drawing.o: bpix-drawing.c bpix-core.h
 
 clean:
-	rm -rf $(OBJECTS) libbpix.a *.gch
+	rm -rf $(OBJECTS) *.gch
 
 purge: clean
+	rm libbpix.a
 

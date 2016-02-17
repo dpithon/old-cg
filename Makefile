@@ -12,12 +12,11 @@ OBJS=pinhole.o raycaster.o sampler.o scene.o
 all: raycaster
 
 clean:
-	rm -rf *.o *.gch unit/*.o *.a
+	rm -rf *.o *.gch unit/*.o *.a raycaster *.pnm
 	$(MAKE) -C math clean
 	$(MAKE) -C bpix clean
 
 purge: clean
-	rm -f raycaster *.pnm
 	$(MAKE) -C math purge
 	$(MAKE) -C bpix purge
 

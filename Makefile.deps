@@ -1,0 +1,10 @@
+pinhole.o: pinhole.c math/math.h math/core.h math/settings.h \
+ math/mstack.h math/iob.h math/misc.h scene.h sampler.h color.h ipoint.h
+raycaster.o: raycaster.c math/math.h math/core.h math/settings.h \
+ math/mstack.h math/iob.h math/misc.h bpix/bpix.h bpix/bpix-core.h \
+ bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h pinhole.h color.h \
+ ipoint.h sampler.h scene.h
+sampler.o: sampler.c math/math.h math/core.h math/settings.h \
+ math/mstack.h math/iob.h math/misc.h color.h
+scene.o: scene.c math/math.h math/core.h math/settings.h math/mstack.h \
+ math/iob.h math/misc.h

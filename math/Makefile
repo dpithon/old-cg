@@ -14,14 +14,11 @@ all: libmath.a
 libmath.a: $(OBJS)
 	ar -rs $@ $(OBJS)
 
-test: testing.o
-	$(LD) $^ $(LDFLAGS) -o testing
-
 clean:
-	rm -rf *.o *.gch unit/*.o *.a
+	rm -rf *.o *.gch unit/*.o
 
 purge: clean
-	rm -f testing
+	rm -f libmath.a
 
 deps:
 	$(CC) -MM *.c >Makefile.deps
