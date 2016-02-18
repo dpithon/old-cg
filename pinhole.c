@@ -181,3 +181,12 @@ bool init_pinhole(int w, int h, float fov)
 
 	return true;
 }
+
+
+/**
+ *
+ */
+const ccs_t *pinhole_ccs(void)
+{
+	return &ccs;
+}

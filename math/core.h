@@ -65,7 +65,8 @@ extern coord_t  *add_me(coord_t*, const coord_t*);
 extern coord_t  *sub(coord_t*, const coord_t*, const coord_t*);
 extern coord_t  *sub_me(coord_t*, const coord_t*);
 extern coord_t  *cross(coord_t*, const coord_t*, const coord_t*);
-extern coord_t  *matcol(coord_t*, const matrix_t*, coord_t*);
+extern coord_t  *matcol_me(coord_t*, const matrix_t*);
+extern coord_t  *matcol(coord_t*, const matrix_t*, const coord_t*);
 extern coord_t  *homogeneize(coord_t*, const coord_t*);
 extern coord_t  *homogeneize_me(coord_t*);
 extern matrix_t *matrix(matrix_t*, const coord_t*, const coord_t*,

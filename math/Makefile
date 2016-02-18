@@ -1,8 +1,8 @@
 .PHONY: all clean purge test deps install
 
 OPTS=-DNDEBUG
-DEBUG=-O2 -g0
 DEBUG=-O0 -g2
+DEBUG=-O0 -g
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
 CC=gcc
 LD=gcc

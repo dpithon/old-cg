@@ -1,13 +1,13 @@
 .PHONY: all clean purge deps 
 
-OPTS=-DNDEBUG
-DEBUG=-O0 -g2
+DEBUG=-O0 -g
 CFLAGS+=-I/usr/local/include
-CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) $(OPTS)
+CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG)
 LDFLAGS=-L./math -L./bpix -lmath -lbpix -lm
 CC=gcc
 LD=gcc
-OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o fatal.o renderer.o
+OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o fatal.o renderer.o\
+     surfaces.o
 
 all: raycaster
 
@@ -31,7 +31,7 @@ math/libmath.a: math/*.[ch]
 bpix/libbpix.a: bpix/*.[ch]
 	$(MAKE) -C bpix all
 
-raycaster: $(OBJS) math/libmath.a bpix/libbpix.a
+raycaster: math/libmath.a bpix/libbpix.a $(OBJS) 
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 
 include Makefile.deps

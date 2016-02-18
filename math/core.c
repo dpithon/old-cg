@@ -125,14 +125,15 @@ bool is_collinear(const coord_t *u, const coord_t *v, float *k)
 	if (is_vzero(u) || is_vzero(v))
 		return true;
 
-	if (! float_equals(v->x, 0.F))
+	if (! float_equals(v->x, 0.F)) {
 		*k = u->x / v->x;
-	else if (! float_equals(v->y, 0.F))
+	} else if (! float_equals(v->y, 0.F)) {
 		*k = u->y / v->y;
-	else
+	} else {
 		*k = u->z / v->z;
+	}
 
-	return is_vequal(scale(&w, (coord_t*) v, *k), u);
+	return is_vequal(scale(&w, v, *k), u);
 }
 
 
@@ -189,6 +190,7 @@ coord_t *scale(coord_t *v, const coord_t *u, float k)
 	v->x = u->x * k;
 	v->y = u->y * k;
 	v->z = u->z * k;
+	v->w = u->w * k;
 
 	return v;
 }
@@ -290,15 +292,21 @@ coord_t *cross(coord_t *v, const coord_t *u, const coord_t *w)
 }
 
 
-coord_t *matcol(coord_t *v, const matrix_t *m, coord_t *u)
+coord_t *matcol_me(coord_t *v, const matrix_t *m)
 {
-	coord_t tmp;
+	coord_t u = *v;
 
-	if (u == v) {
-		memcpy(&tmp, u, sizeof tmp);
-		u = &tmp;
-	}
+	v->x = ROW_MUL(m, 0, &u);
+	v->y = ROW_MUL(m, 1, &u);
+	v->z = ROW_MUL(m, 2, &u);
+	v->w = ROW_MUL(m, 3, &u);
 
+	return v;
+}
+
+
+coord_t *matcol(coord_t *v, const matrix_t *m, const coord_t *u)
+{
 	v->x = ROW_MUL(m, 0, u);
 	v->y = ROW_MUL(m, 1, u);
 	v->z = ROW_MUL(m, 2, u);

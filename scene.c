@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "scene.h"
 
 coord_t Location = {100.F, 100.F, 100.F, 1.F};
@@ -30,7 +31,7 @@ bool intersect(ipoint_t *i, const ray_t *r)
 	RESET_IPOINT(i);
 
 	while (s) {
-		s->intersect(i, r);
+		s->intersect(i, r, s);
 		s = s->next;
 	}
 
@@ -45,4 +46,19 @@ void add_shape(shape_t *shp)
 		shapes->next = shp;
 	else
 		shapes = shp;
+}
+
+
+void prepare_shape_matrices(const ccs_t *cam_ccs)
+{
+	shape_t *s = shapes;
+	/* matrix_t id; */
+
+	while (s) {
+		matmat(&s->m, &s->ccs.mi, &cam_ccs->m);
+		matmat(&s->mi, &cam_ccs->mi, &s->ccs.m);
+		/* matmat(&id, &s->m, &s->mi);
+		 * assert(is_mequal(&id, &MatrixId)); */
+		s = s->next;
+	}
 }
