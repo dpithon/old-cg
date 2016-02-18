@@ -3,6 +3,7 @@
 #include "vmath.h"
 #include "shape.h"
 #include "ipoint.h"
+#include "ray.h"
 
 struct coord Location = {100.F, 100.F, 100.F, 1.F};
 struct coord Target   = POINT_O;
@@ -28,18 +29,20 @@ void set_target(float x, float y, float z)
 }
 
 
-bool intersect(struct ipoint *i, const struct ray *r)
+bool intersect(struct ipoint *i, const struct ray *ray_cam)
 {
 	struct shape *s = shapes;
-
-	RESET_IPOINT(i);
+	struct ray ray_shp;
 
 	while (s) {
-		s->intersect(i, r, s);
+		matcol(&ray_shp.s, &s->cam_to_shp, &ray_cam->s);
+		matcol(&ray_shp.v, &s->cam_to_shp, &ray_cam->v);
+
+		s->intersect(i, &ray_shp, s);
 		s = s->next;
 	}
 
-	return IS_DEFINED(i);
+	return is_defined(i);
 }
 
 

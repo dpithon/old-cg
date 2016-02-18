@@ -12,19 +12,17 @@ void renderer_nil(struct rgb *rgb)
 	*rgb = yellow;
 }
 
-#define W	320
-#define H	240
+#define W	640
+#define H	480
 
 static struct rgb gray = RGBLightGray;
 
 int main()
 {
-	set_location(5.F, 0.F, 0.F);
-	set_target(8.F, 0.F, -10.F);
+	set_location(10.F, 10.F, 10.F);
+	set_target(0.F, 0.F, 0.F);
 
-	struct coord norm = {1, 1, 0, 0};
-	
-	plane(&PointO, &norm);
+	sphere(&PointO, 2.F);
 
 	init_pinhole(W, H, 40.F);
 

@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <math.h>
 
 #include "vmath.h"
 #include "types.h"
@@ -8,26 +7,28 @@
 #include "ipoint.h"
 #include "ray.h"
 
-static bool plane_intersect(struct ipoint *i, const struct ray *r,
+static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 			    const struct shape *pln)
 {
-	struct ray rr;
 	float k;
 
-	matcol(&rr.s, &pln->cam_to_shp, &r->s);
-	matcol(&rr.v, &pln->cam_to_shp, &r->v);
+	(void)(pln);
 
-	if (rr.v.y == 0)
+	if (ray->v.y == 0)
 		return false;
 
-	k = - (rr.s.y / rr.v.y);
-	if (k > 0) {
-		i->flags |= FLAG_DEFINED|FLAG_OUTSIDE;
+	k = - (ray->s.y / ray->v.y);
+	if (k > 0 && k < i->k) {
+		if (ray->v.y > 0.F)
+			i->flags |= FLAG_DEFINED|FLAG_UNDER;
+		else
+			i->flags |= FLAG_DEFINED|FLAG_OVER;
 		return true;
 	}
 
 	return false;
 }
+
 
 void plane(const struct coord *loc, const struct coord *norm)
 {	

@@ -1,6 +1,8 @@
 #ifndef IPOINT_H
 #define IPOINT_H
 
+#include <float.h>
+
 #include "types.h"
 #include "vmath.h"
 
@@ -10,13 +12,14 @@
 #define FLAG_OVER	 8
 #define FLAG_UNDER	16
 
-#define IS_INSIDE(i)	((i)->flags & FLAG_INSIDE)
-#define IS_OUTSIDE(i)	((i)->flags & FLAG_OUTSIDE)
-#define IS_OVER(i)	((i)->flags & FLAG_OVER)
-#define IS_UNDER(i)	((i)->flags & FLAG_UNDER)
-#define IS_DEFINED(i)	((i)->flags & FLAG_DEFINED)
+#define is_inside(i)	((i)->flags & FLAG_INSIDE)
+#define is_outside(i)	((i)->flags & FLAG_OUTSIDE)
+#define is_over(i)	((i)->flags & FLAG_OVER)
+#define is_under(i)	((i)->flags & FLAG_UNDER)
+#define is_defined(i)	((i)->flags & FLAG_DEFINED)
 
-#define RESET_IPOINT(i)	(i)->flags = 0
+#define reset_ipoint(i)	(i)->flags = 0;\
+			(i)->k = FLT_MAX
 
 struct ipoint {
 	struct coord i;

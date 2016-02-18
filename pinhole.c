@@ -143,6 +143,7 @@ static void sampling_center(int px, int py)
 	center.y += sqr_edge / 2.F;
 
 	unit_vector(&ray.v, &center, &PointO);
+	reset_ipoint(&i);
 	if (intersect(&i, &ray)) {
 		rendering(&rgb, &i);
 		set_pixel(px, py, &rgb);
