@@ -1,8 +1,12 @@
 #include <stdlib.h>
+#include <math.h>
+
 #include "vmath.h"
+#include "types.h"
 #include "surfaces.h"
 #include "scene.h"
 #include "ipoint.h"
+#include "ray.h"
 
 static bool plane_intersect(struct ipoint *i, const struct ray *r,
 			    const struct shape *pln)
@@ -47,7 +51,7 @@ void plane(const struct coord *loc, const struct coord *norm)
 		cross(&pln->ccs.i, &pln->ccs.j, &pln->ccs.j);
 	}
 
-	matrix_t my;
+	struct matrix my;
 	rotationz(&my, 45.F * M_PI / 180.F);
 	matcol_me(&pln->ccs.i, &my);
 	matcol_me(&pln->ccs.j, &my);

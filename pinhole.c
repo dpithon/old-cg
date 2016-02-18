@@ -3,9 +3,9 @@
  *
  */
 
-#include <string.h>
 #include <math.h>
 
+#include "pinhole.h"
 #include "vmath.h"
 #include "scene.h"
 #include "ray.h"

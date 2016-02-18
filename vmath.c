@@ -14,7 +14,7 @@
 			 E(m, r, 3) * ((v)->w)
 
 
-const matrix_t MatrixId = MATRIX_ID;
+const struct matrix MatrixId = MATRIX_ID;
 const struct coord  VectorI  = VECTOR_I;
 const struct coord  VectorJ  = VECTOR_J;
 const struct coord  VectorK  = VECTOR_K;
@@ -100,7 +100,7 @@ bool is_pequal(const struct coord *u, const struct coord *v)
 }
 
 
-bool is_mequal(const matrix_t *m, const matrix_t *n)
+bool is_mequal(const struct matrix *m, const struct matrix *n)
 {
 	int i, j;
 
@@ -294,7 +294,7 @@ struct coord *cross(struct coord *v, const struct coord *u, const struct coord *
 }
 
 
-struct coord *matcol(struct coord *v, const matrix_t *m, const struct coord *u)
+struct coord *matcol(struct coord *v, const struct matrix *m, const struct coord *u)
 {
 	v->x = ROW_MUL(m, 0, u);
 	v->y = ROW_MUL(m, 1, u);
@@ -305,7 +305,7 @@ struct coord *matcol(struct coord *v, const matrix_t *m, const struct coord *u)
 }
 
 
-struct coord *matcol_me(struct coord *v, const matrix_t *m)
+struct coord *matcol_me(struct coord *v, const struct matrix *m)
 {
 	struct coord u = *v;
 
@@ -344,7 +344,7 @@ struct coord *homogeneize_me(struct coord *p)
 }
 
 
-matrix_t *matrix(matrix_t *m, const struct coord *i, const struct coord *j,
+struct matrix *matrix(struct matrix *m, const struct coord *i, const struct coord *j,
 		 const struct coord *k, const struct coord *o)
 {
 	m->cell[0][0] = i->x;
@@ -371,7 +371,7 @@ matrix_t *matrix(matrix_t *m, const struct coord *i, const struct coord *j,
 }
 
 
-matrix_t *matrixr(matrix_t *m, const struct coord *i, const struct coord *j,
+struct matrix *matrixr(struct matrix *m, const struct coord *i, const struct coord *j,
 		  const struct coord *k, const struct coord *o)
 {
 	m->cell[0][0] = i->x;
@@ -398,10 +398,10 @@ matrix_t *matrixr(matrix_t *m, const struct coord *i, const struct coord *j,
 }
 
 
-matrix_t *matmat(matrix_t *m, const matrix_t *m1, const matrix_t *m2)
+struct matrix *matmat(struct matrix *m, const struct matrix *m1, const struct matrix *m2)
 {
 	int i, j, k;
-	matrix_t tmp, *old = 0;
+	struct matrix tmp, *old = 0;
 
 	if (m == m1 || m == m2) {
 		old = m;
@@ -426,10 +426,10 @@ matrix_t *matmat(matrix_t *m, const matrix_t *m1, const matrix_t *m2)
 }
 
 
-matrix_t *transpose(matrix_t *m, matrix_t *n)
+struct matrix *transpose(struct matrix *m, struct matrix *n)
 {
 	int i, j;
-	matrix_t tmp;
+	struct matrix tmp;
 
 	if (n == m) {
 		memcpy(&tmp, n, sizeof tmp);
@@ -446,7 +446,7 @@ matrix_t *transpose(matrix_t *m, matrix_t *n)
 }
 
 
-matrix_t *rotationx(matrix_t *m, float a)
+struct matrix *rotationx(struct matrix *m, float a)
 {
 	float ca = cosf(a);
 	float sa = sinf(a);
@@ -475,7 +475,7 @@ matrix_t *rotationx(matrix_t *m, float a)
 }
 
 
-matrix_t *rotationy(matrix_t *m, float a)
+struct matrix *rotationy(struct matrix *m, float a)
 {
 	float ca = cosf(a);
 	float sa = sinf(a);
@@ -504,7 +504,7 @@ matrix_t *rotationy(matrix_t *m, float a)
 }
 
 
-matrix_t *rotationz(matrix_t *m, float a)
+struct matrix *rotationz(struct matrix *m, float a)
 {
 	float ca = cosf(a);
 	float sa = sinf(a);
@@ -533,7 +533,7 @@ matrix_t *rotationz(matrix_t *m, float a)
 }
 
 
-matrix_t *rotation(matrix_t *m, const struct coord *v, float a)
+struct matrix *rotation(struct matrix *m, const struct coord *v, float a)
 {
 	assert(is_vunit(v));
 
@@ -573,7 +573,7 @@ matrix_t *rotation(matrix_t *m, const struct coord *v, float a)
 }
 
 
-matrix_t *translation(matrix_t *m, struct coord *v)
+struct matrix *translation(struct matrix *m, struct coord *v)
 {
 	E(m, 0, 0) = 1.F;
         E(m, 0, 1) = 0.F;
@@ -601,7 +601,7 @@ matrix_t *translation(matrix_t *m, struct coord *v)
 
 bool change_of_coord_mat(struct coord_system *ccs)
 {
-	matrix_t rot, tsl;
+	struct matrix rot, tsl;
 	struct coord minus_os;
 
 	matrix(&ccs->m, &ccs->i, &ccs->j, &ccs->k, &ccs->o);

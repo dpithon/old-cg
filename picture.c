@@ -1,4 +1,4 @@
-#include "vmath.h"
+#include "picture.h"
 #include "bpix/bpix.h"
 #include "rgb.h"
 
@@ -10,6 +10,7 @@ bool init_picture(int w, int h)
 {
 	return bpix_init(&picture, w, h);
 }
+
 
 void set_default_color(const struct rgb *rgb)
 {

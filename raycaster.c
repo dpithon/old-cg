@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "picture.h"
 #include "surfaces.h"
+#include "rgb.h"
 
 void renderer_nil(struct rgb *rgb)
 {

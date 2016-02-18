@@ -1,7 +1,7 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-typedef void (*sampler)(int, int);
+#include "types.h"
 
 void set_sampler(sampler);
 

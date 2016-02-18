@@ -1,7 +1,5 @@
-#include "fatal.h"
-#include "rgb.h"
-#include "ipoint.h"
 #include "renderer.h"
+#include "fatal.h"
 
 static void no_renderer()
 {

@@ -1,12 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "rgb.h"
-#include "ipoint.h"
+#include "types.h"
 
-#define CAST_RENDERER(r) ((void (*)(struct rgb*, const struct ipoint*))(r))
-
-typedef void (*renderer)(struct rgb*, const struct ipoint*);
+#define CAST_RENDERER(r) ((renderer)(r))
 
 void set_renderer(renderer);
 

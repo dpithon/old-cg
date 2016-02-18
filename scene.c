@@ -1,5 +1,8 @@
 #include <assert.h>
 #include "scene.h"
+#include "vmath.h"
+#include "shape.h"
+#include "ipoint.h"
 
 struct coord Location = {100.F, 100.F, 100.F, 1.F};
 struct coord Target   = POINT_O;
@@ -53,7 +56,7 @@ void add_shape(struct shape *shp)
 void prepare_shape_matrices(const struct coord_system *cam_ccs)
 {
 	struct shape *s = shapes;
-	/* matrix_t id; */
+	/* struct matrix id; */
 
 	while (s) {
 		matmat(&s->m, &s->ccs.mi, &cam_ccs->m);

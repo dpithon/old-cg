@@ -1,11 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "vmath.h"
-#include "ray.h"
-#include "ipoint.h"
-#include "rgb.h"
-#include "shape.h"
+#include "types.h"
 
 extern void set_location(float, float, float);
 extern void set_target(float, float, float);

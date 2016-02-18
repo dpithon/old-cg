@@ -1,5 +1,5 @@
-#include "fatal.h"
 #include "sampler.h"
+#include "fatal.h"
 
 
 static void no_sampler()
