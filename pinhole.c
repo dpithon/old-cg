@@ -6,10 +6,10 @@
 #include <string.h>
 #include <math.h>
 
-#include "math/math.h"
+#include "vmath.h"
 #include "scene.h"
 #include "ray.h"
-#include "color.h"
+#include "rgb.h"
 #include "ipoint.h"
 #include "picture.h"
 #include "sampler.h"
@@ -17,7 +17,7 @@
 
 
 /* Pinhole cartesian coordinate system */
-static ccs_t ccs = CCS;
+static struct coord_system ccs = CCS;
 
 /* Focal length and field of view */
 static float focal, fov = 40.F;
@@ -114,7 +114,7 @@ static bool init_mapping(int w, int h)
  * y: pixel y in [0:H-1]
  *
  */
-static void map_pixel(coord_t *c, int x, int y)
+static void map_pixel(struct coord *c, int x, int y)
 {
 	c->x = ((float) x) * fac_xy + off_x;
 	c->y = ((float) y) * fac_xy + off_y;
@@ -131,10 +131,10 @@ static void map_pixel(coord_t *c, int x, int y)
  */
 static void sampling_center(int px, int py)
 {
-	ray_t ray;
-	coord_t center;
-	ipoint_t i;
-	rgb_t rgb;
+	struct ray ray;
+	struct coord center;
+	struct ipoint i;
+	struct rgb rgb;
 
 	ray.s = PointO;
 	
@@ -186,7 +186,7 @@ bool init_pinhole(int w, int h, float fov)
 /**
  *
  */
-const ccs_t *pinhole_ccs(void)
+const struct coord_system *pinhole_ccs(void)
 {
 	return &ccs;
 }

@@ -1,11 +1,11 @@
-#ifndef _PINHOLE_H
-#define _PINHOLE_H
+#ifndef PINHOLE_H
+#define PINHOLE_H
 
-#include "math/math.h"
-#include "color.h"
+#include "vmath.h"
+#include "rgb.h"
 
 bool init_pinhole(int, int, float);
-bool sampling_center(rgb_t*, int, int);
-const ccs_t *pinhole_ccs(void);
+bool sampling_center(struct rgb*, int, int);
+const struct coord_system *pinhole_ccs(void);
 
-#endif /* _PINHOLE_H */
+#endif /* PINHOLE_H */

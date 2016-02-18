@@ -1,12 +1,12 @@
-#ifndef _PICTURE_H
-#define _PICTURE_H
+#ifndef PICTURE_H
+#define PICTURE_H
 
-#include "math/math.h"
-#include "color.h"
+#include "vmath.h"
+#include "rgb.h"
 
 extern bool init_picture(int, int);
-extern void set_default_color(const rgb_t*);
-extern void set_pixel(int, int, const rgb_t*);
+extern void set_default_color(const struct rgb*);
+extern void set_pixel(int, int, const struct rgb*);
 extern bool save_picture(const char*);
 
-#endif /* _PICTURE_H */
+#endif /* PICTURE_H */

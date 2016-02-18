@@ -1,13 +1,15 @@
-#ifndef _RENDERER_H
-#define _RENDERER_H
+#ifndef RENDERER_H
+#define RENDERER_H
 
-#include "color.h"
+#include "rgb.h"
 #include "ipoint.h"
 
-#define CAST_RENDERER(r) ((void (*)(rgb_t*, const ipoint_t*))(r))
+#define CAST_RENDERER(r) ((void (*)(struct rgb*, const struct ipoint*))(r))
 
-void set_renderer(void (*)(rgb_t*, const ipoint_t*));
+typedef void (*renderer)(struct rgb*, const struct ipoint*);
 
-extern void (*rendering)(rgb_t*, const ipoint_t*);
+void set_renderer(renderer);
 
-#endif /* _RENDERER_H */
+extern renderer rendering;
+
+#endif /* RENDERER_H */

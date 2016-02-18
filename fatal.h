@@ -1,6 +1,6 @@
-#ifndef _FATAL_H
-#define _FATAL_H
+#ifndef FATAL_H
+#define FATAL_H
 
 void fatal(const char*);
 
-#endif /* _FATAL_H */
+#endif /* FATAL_H */

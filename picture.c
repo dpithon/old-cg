@@ -1,22 +1,23 @@
-#include "math/math.h"
+#include "vmath.h"
 #include "bpix/bpix.h"
-#include "color.h"
+#include "rgb.h"
 
 static struct bpix picture;
-static rgb_t def_rgb = RGBBlack;
+static struct rgb def_rgb = RGBBlack;
+
 
 bool init_picture(int w, int h)
 {
 	return bpix_init(&picture, w, h);
 }
 
-void set_default_color(const rgb_t *rgb)
+void set_default_color(const struct rgb *rgb)
 {
 	def_rgb = *rgb;
 }
 
 
-void set_pixel(int x, int y, const rgb_t *rgb)
+void set_pixel(int x, int y, const struct rgb *rgb)
 {
 	if (rgb)
 		bpix_set(&picture, x, y, rgb->r, rgb->g, rgb->b);

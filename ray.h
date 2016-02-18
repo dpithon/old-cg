@@ -1,9 +1,9 @@
-#ifndef _RAY_H
-#define _RAY_H
+#ifndef RAY_H
+#define RAY_H
 
-typedef struct ray {
-	coord_t s;
-	coord_t v;
-} ray_t;
+struct ray {
+	struct coord s;
+	struct coord v;
+};
 
-#endif /* _RAY_H */
+#endif /* RAY_H */

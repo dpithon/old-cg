@@ -1,8 +1,10 @@
-#ifndef _SAMPLER_H
-#define _SAMPLER_H
+#ifndef SAMPLER_H
+#define SAMPLER_H
 
-void set_sampler(void (*)(int, int));
+typedef void (*sampler)(int, int);
 
-extern void (*sampling)(int, int);
+void set_sampler(sampler);
 
-#endif /* _SAMPLER_H */
+extern sampler sampling;
+
+#endif /* SAMPLER_H */

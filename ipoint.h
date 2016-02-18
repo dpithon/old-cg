@@ -1,7 +1,7 @@
-#ifndef _IPOINT_H
-#define _IPOINT_H
+#ifndef IPOINT_H
+#define IPOINT_H
 
-#include "math/math.h"
+#include "vmath.h"
 
 #define FLAG_DEFINED	 1
 #define FLAG_INSIDE	 2
@@ -17,11 +17,11 @@
 
 #define RESET_IPOINT(i)	(i)->flags = 0
 
-typedef struct ipoint {
+struct ipoint {
 	struct shape *shape;
-	coord_t i;
+	struct coord i;
 	float   k;
 	int     flags;
-} ipoint_t;
+};
 
-#endif /* _IPOINT_H */
+#endif /* IPOINT_H */

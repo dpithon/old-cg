@@ -1,18 +1,13 @@
 fatal.o: fatal.c
-picture.o: picture.c math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h bpix/bpix.h bpix/bpix-core.h \
- bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h color.h
-pinhole.o: pinhole.c math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h scene.h ray.h ipoint.h color.h \
- shape.h picture.h sampler.h renderer.h
-raycaster.o: raycaster.c pinhole.h math/math.h math/core.h \
- math/settings.h math/mstack.h math/iob.h math/misc.h color.h sampler.h \
- renderer.h ipoint.h scene.h ray.h shape.h picture.h surfaces.h
-renderer.o: renderer.c fatal.h color.h ipoint.h math/math.h math/core.h \
- math/settings.h math/mstack.h math/iob.h math/misc.h
-sampler.o: sampler.c fatal.h
-scene.o: scene.c scene.h math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h ray.h ipoint.h color.h shape.h
-surfaces.o: surfaces.c math/math.h math/core.h math/settings.h \
- math/mstack.h math/iob.h math/misc.h surfaces.h ipoint.h shape.h ray.h \
- color.h scene.h
+picture.o: picture.c vmath.h bpix/bpix.h bpix/bpix-core.h \
+ bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h rgb.h
+pinhole.o: pinhole.c vmath.h scene.h ray.h ipoint.h rgb.h shape.h \
+ picture.h sampler.h renderer.h
+raycaster.o: raycaster.c pinhole.h vmath.h rgb.h sampler.h renderer.h \
+ ipoint.h scene.h ray.h shape.h picture.h surfaces.h
+renderer.o: renderer.c fatal.h rgb.h ipoint.h vmath.h renderer.h
+sampler.o: sampler.c fatal.h sampler.h
+scene.o: scene.c scene.h vmath.h ray.h ipoint.h rgb.h shape.h
+surfaces.o: surfaces.c vmath.h surfaces.h ipoint.h shape.h ray.h rgb.h \
+ scene.h
+vmath.o: vmath.c vmath.h

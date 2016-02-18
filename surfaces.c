@@ -1,14 +1,13 @@
 #include <stdlib.h>
-#include "math/math.h"
+#include "vmath.h"
 #include "surfaces.h"
 #include "scene.h"
 #include "ipoint.h"
 
-#include <math.h>
-
-static bool plane_intersect(ipoint_t *i, const ray_t *r, const shape_t *pln)
+static bool plane_intersect(struct ipoint *i, const struct ray *r,
+			    const struct shape *pln)
 {
-	ray_t rr;
+	struct ray rr;
 	float k;
 
 	matcol(&rr.s, &pln->mi, &r->s);
@@ -26,10 +25,10 @@ static bool plane_intersect(ipoint_t *i, const ray_t *r, const shape_t *pln)
 	return false;
 }
 
-void plane(const coord_t *loc, const coord_t *norm)
+void plane(const struct coord *loc, const struct coord *norm)
 {	
 	float p;
-	plane_t *pln = malloc(sizeof(plane_t));
+	struct plane *pln = malloc(sizeof(struct plane));
 
 	unit(&pln->ccs.j, norm);
 	pln->ccs.o = *loc;

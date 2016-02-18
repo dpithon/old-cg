@@ -1,17 +1,16 @@
 #include "fatal.h"
-#include "color.h"
+#include "rgb.h"
 #include "ipoint.h"
+#include "renderer.h"
 
 static void no_renderer()
 {
 	fatal("no renderer!");
 }
-	
-
-void (*rendering)(rgb_t*, ipoint_t*) = no_renderer;
+renderer rendering = no_renderer;
 
 
-void set_renderer(void (*f)(rgb_t*, ipoint_t*))
+void set_renderer(renderer f)
 {
 	rendering = f;
 }

@@ -1,13 +1,13 @@
-#ifndef _SURFACES_H
-#define _SURFACES_H
+#ifndef SURFACES_H
+#define SURFACES_H
 
 #include "ipoint.h"
 #include "shape.h"
 
-typedef struct plane {
+struct plane {
 	SHAPE_INF;
-} plane_t;
+};
 
-extern void plane(const coord_t*, const coord_t*);
+extern void plane(const struct coord*, const struct coord*);
 
-#endif /* _SURFACES_H */
+#endif /* SURFACES_H */

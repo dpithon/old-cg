@@ -1,10 +1,11 @@
 #include <assert.h>
 #include "scene.h"
 
-coord_t Location = {100.F, 100.F, 100.F, 1.F};
-coord_t Target   = POINT_O;
+struct coord Location = {100.F, 100.F, 100.F, 1.F};
+struct coord Target   = POINT_O;
 
-static shape_t *shapes;
+static struct shape *shapes;
+
 
 void set_location(float x, float y, float z)
 {
@@ -24,9 +25,9 @@ void set_target(float x, float y, float z)
 }
 
 
-bool intersect(ipoint_t *i, const ray_t *r)
+bool intersect(struct ipoint *i, const struct ray *r)
 {
-	shape_t *s = shapes;
+	struct shape *s = shapes;
 
 	RESET_IPOINT(i);
 
@@ -39,7 +40,7 @@ bool intersect(ipoint_t *i, const ray_t *r)
 }
 
 
-void add_shape(shape_t *shp)
+void add_shape(struct shape *shp)
 {
 	shp->next = 0;
 	if (shapes)
@@ -49,9 +50,9 @@ void add_shape(shape_t *shp)
 }
 
 
-void prepare_shape_matrices(const ccs_t *cam_ccs)
+void prepare_shape_matrices(const struct coord_system *cam_ccs)
 {
-	shape_t *s = shapes;
+	struct shape *s = shapes;
 	/* matrix_t id; */
 
 	while (s) {

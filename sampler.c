@@ -1,15 +1,15 @@
 #include "fatal.h"
+#include "sampler.h"
+
 
 static void no_sampler()
 {
 	fatal("no sampler!");
 }
-	
-
-void (*sampling)(int, int) = no_sampler;
+sampler sampling = no_sampler;
 
 
-void set_sampler(void (*f)(int, int))
+void set_sampler(sampler f)
 {
 	sampling = f;
 }

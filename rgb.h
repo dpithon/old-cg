@@ -1,11 +1,11 @@
-#ifndef _COLOR_H
-#define _COLOR_H
+#ifndef RGB_H
+#define RGB_H
 
-typedef struct rgb {
+struct rgb {
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
-} rgb_t;
+};
 
 #define RGBWhite	{ 0xFF, 0xFF, 0xFF }
 #define RGBBlack	{ 0x00, 0x00, 0x00 }
@@ -18,4 +18,4 @@ typedef struct rgb {
 #define RGBLightGray	{ 0xCC, 0xCC, 0xCC }
 #define RGBDarkGray	{ 0x33, 0x33, 0x33 }
 
-#endif /* _COLOR_H*/
+#endif /* RGB_H*/

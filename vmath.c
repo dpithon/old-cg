@@ -1,11 +1,10 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define _MATH_INTERNALS
-
-#include "core.h"
-#include "settings.p"
+#include "vmath.h"
 
 #define DOT(u,v) 	 ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
 #define E(m, r, c)	 ((m)->cell[r][c])
@@ -16,13 +15,15 @@
 
 
 const matrix_t MatrixId = MATRIX_ID;
-const coord_t  VectorI  = VECTOR_I;
-const coord_t  VectorJ  = VECTOR_J;
-const coord_t  VectorK  = VECTOR_K;
-const coord_t  PointO   = POINT_O;
+const struct coord  VectorI  = VECTOR_I;
+const struct coord  VectorJ  = VECTOR_J;
+const struct coord  VectorK  = VECTOR_K;
+const struct coord  PointO   = POINT_O;
+
+static float vmset_eps   = 0.001F;
 
 
-static bool float_equals(float a, float b)
+bool float_equals(float a, float b)
 {
 	float absA = fabsf(a);
         float absB = fabsf(b);
@@ -41,19 +42,19 @@ static bool float_equals(float a, float b)
 }
 
 
-bool is_point(const coord_t *c)
+bool is_point(const struct coord *c)
 {
 	return c->w != 0.F;
 }
 
 
-bool is_vector(const coord_t *c)
+bool is_vector(const struct coord *c)
 {
 	return c->w == 0.F;
 }
 
 
-bool is_vzero(const coord_t *v)
+bool is_vzero(const struct coord *v)
 {
 	assert(is_vector(v));
 
@@ -62,7 +63,7 @@ bool is_vzero(const coord_t *v)
 }
 
 
-bool is_vunit(const coord_t *v)
+bool is_vunit(const struct coord *v)
 {
 	assert(is_vector(v));
 
@@ -70,7 +71,7 @@ bool is_vunit(const coord_t *v)
 }
 
 
-bool is_vortho(const coord_t *u, const coord_t *v)
+bool is_vortho(const struct coord *u, const struct coord *v)
 {
 	assert(is_vector(u)); /* u, w are vectors */
 	assert(is_vector(v));
@@ -79,7 +80,7 @@ bool is_vortho(const coord_t *u, const coord_t *v)
 }
 
 
-bool is_vequal(const coord_t *u, const coord_t *v)
+bool is_vequal(const struct coord *u, const struct coord *v)
 {
 	assert(is_vector(u)); /* u, w are vectors */
 	assert(is_vector(v));
@@ -89,7 +90,7 @@ bool is_vequal(const coord_t *u, const coord_t *v)
 }
 
 
-bool is_pequal(const coord_t *u, const coord_t *v)
+bool is_pequal(const struct coord *u, const struct coord *v)
 {
 	assert(is_point(u)); /* u, w are points */
 	assert(is_point(v));
@@ -111,9 +112,9 @@ bool is_mequal(const matrix_t *m, const matrix_t *n)
 }
 
 
-bool is_collinear(const coord_t *u, const coord_t *v, float *k)
+bool is_collinear(const struct coord *u, const struct coord *v, float *k)
 {
-	coord_t w;
+	struct coord w;
 	float tmp;
 
 	if (k == NULL)
@@ -137,9 +138,10 @@ bool is_collinear(const coord_t *u, const coord_t *v, float *k)
 }
 
 
-bool is_pccs(const coord_t *i, const coord_t *j, const coord_t *k)
+bool is_cartesian_coord_system(const struct coord *i, const struct coord *j,
+			       const struct coord *k)
 {
-	coord_t t;
+	struct coord t;
 
 	return is_vunit(i) && is_vunit(j) && is_vunit(k) &&
 	       is_vequal(i, cross(&t, j, k)) &&
@@ -148,7 +150,7 @@ bool is_pccs(const coord_t *i, const coord_t *j, const coord_t *k)
 }
 
 
-float len(const coord_t *v)
+float len(const struct coord *v)
 {
 	assert(is_vector(v));
 
@@ -156,7 +158,7 @@ float len(const coord_t *v)
 }
 
 
-float dot(const coord_t *v, const coord_t *u)
+float dot(const struct coord *v, const struct coord *u)
 {
 	assert(is_vector(u));
 	assert(is_vector(v));
@@ -165,7 +167,7 @@ float dot(const coord_t *v, const coord_t *u)
 }
 
 
-coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
+struct coord *vector(struct coord *v, const struct coord *p, const struct coord *q)
 {
 	assert(is_point(p));
 	assert(is_point(q));
@@ -179,13 +181,13 @@ coord_t *vector(coord_t *v, const coord_t *p, const coord_t *q)
 }
 
 
-coord_t *unit_vector(coord_t *v, const coord_t *p, const coord_t *q)
+struct coord *unit_vector(struct coord *v, const struct coord *p, const struct coord *q)
 {
 	return unit_me(vector(v, p, q));
 }
 
 
-coord_t *scale(coord_t *v, const coord_t *u, float k)
+struct coord *scale(struct coord *v, const struct coord *u, float k)
 {
 	v->x = u->x * k;
 	v->y = u->y * k;
@@ -196,7 +198,7 @@ coord_t *scale(coord_t *v, const coord_t *u, float k)
 }
 
 
-coord_t *scale_me(coord_t *v, float k)
+struct coord *scale_me(struct coord *v, float k)
 {
 	v->x *= k;
 	v->y *= k;
@@ -206,7 +208,7 @@ coord_t *scale_me(coord_t *v, float k)
 }
 
 
-coord_t *unit(coord_t *v, const coord_t *u)
+struct coord *unit(struct coord *v, const struct coord *u)
 {
 	assert(is_vector(u));
 	assert(! is_vzero(u));
@@ -222,7 +224,7 @@ coord_t *unit(coord_t *v, const coord_t *u)
 }
 
 
-coord_t *unit_me(coord_t *v)
+struct coord *unit_me(struct coord *v)
 {
 	assert(is_vector(v));
 	assert(! is_vzero(v));
@@ -238,7 +240,7 @@ coord_t *unit_me(coord_t *v)
 }
 
 
-coord_t *add(coord_t *v, const coord_t *u, const coord_t *w)
+struct coord *add(struct coord *v, const struct coord *u, const struct coord *w)
 {
 	v->x = u->x + w->x;
 	v->y = u->y + w->y;
@@ -248,7 +250,7 @@ coord_t *add(coord_t *v, const coord_t *u, const coord_t *w)
 }
 
 
-coord_t *add_me(coord_t *v, const coord_t *u)
+struct coord *add_me(struct coord *v, const struct coord *u)
 {
 	v->x += u->x;
 	v->y += u->y;
@@ -258,7 +260,7 @@ coord_t *add_me(coord_t *v, const coord_t *u)
 }
 
 
-coord_t *sub(coord_t *v, const coord_t *u, const coord_t *w)
+struct coord *sub(struct coord *v, const struct coord *u, const struct coord *w)
 {
 	v->x = u->x - w->x;
 	v->y = u->y - w->y;
@@ -268,7 +270,7 @@ coord_t *sub(coord_t *v, const coord_t *u, const coord_t *w)
 }
 
 
-coord_t *sub_me(coord_t *v, const coord_t *u)
+struct coord *sub_me(struct coord *v, const struct coord *u)
 {
 	v->x -= u->x;
 	v->y -= u->y;
@@ -278,7 +280,7 @@ coord_t *sub_me(coord_t *v, const coord_t *u)
 }
 
 
-coord_t *cross(coord_t *v, const coord_t *u, const coord_t *w)
+struct coord *cross(struct coord *v, const struct coord *u, const struct coord *w)
 {
 	assert(is_vector(u));
 	assert(is_vector(w));
@@ -292,20 +294,7 @@ coord_t *cross(coord_t *v, const coord_t *u, const coord_t *w)
 }
 
 
-coord_t *matcol_me(coord_t *v, const matrix_t *m)
-{
-	coord_t u = *v;
-
-	v->x = ROW_MUL(m, 0, &u);
-	v->y = ROW_MUL(m, 1, &u);
-	v->z = ROW_MUL(m, 2, &u);
-	v->w = ROW_MUL(m, 3, &u);
-
-	return v;
-}
-
-
-coord_t *matcol(coord_t *v, const matrix_t *m, const coord_t *u)
+struct coord *matcol(struct coord *v, const matrix_t *m, const struct coord *u)
 {
 	v->x = ROW_MUL(m, 0, u);
 	v->y = ROW_MUL(m, 1, u);
@@ -316,7 +305,20 @@ coord_t *matcol(coord_t *v, const matrix_t *m, const coord_t *u)
 }
 
 
-coord_t *homogeneize(coord_t *p, const coord_t *q)
+struct coord *matcol_me(struct coord *v, const matrix_t *m)
+{
+	struct coord u = *v;
+
+	v->x = ROW_MUL(m, 0, &u);
+	v->y = ROW_MUL(m, 1, &u);
+	v->z = ROW_MUL(m, 2, &u);
+	v->w = ROW_MUL(m, 3, &u);
+
+	return v;
+}
+
+
+struct coord *homogeneize(struct coord *p, const struct coord *q)
 {
 	assert(is_point(q));
 
@@ -329,7 +331,7 @@ coord_t *homogeneize(coord_t *p, const coord_t *q)
 }
 
 
-coord_t *homogeneize_me(coord_t *p)
+struct coord *homogeneize_me(struct coord *p)
 {
 	assert(is_point(p));
 
@@ -342,8 +344,8 @@ coord_t *homogeneize_me(coord_t *p)
 }
 
 
-matrix_t *matrix(matrix_t *m, const coord_t *i, const coord_t *j,
-		 const coord_t *k, const coord_t *o)
+matrix_t *matrix(matrix_t *m, const struct coord *i, const struct coord *j,
+		 const struct coord *k, const struct coord *o)
 {
 	m->cell[0][0] = i->x;
 	m->cell[1][0] = i->y;
@@ -369,8 +371,8 @@ matrix_t *matrix(matrix_t *m, const coord_t *i, const coord_t *j,
 }
 
 
-matrix_t *matrixr(matrix_t *m, const coord_t *i, const coord_t *j,
-		  const coord_t *k, const coord_t *o)
+matrix_t *matrixr(matrix_t *m, const struct coord *i, const struct coord *j,
+		  const struct coord *k, const struct coord *o)
 {
 	m->cell[0][0] = i->x;
 	m->cell[0][1] = i->y;
@@ -531,7 +533,7 @@ matrix_t *rotationz(matrix_t *m, float a)
 }
 
 
-matrix_t *rotation(matrix_t *m, const coord_t *v, float a)
+matrix_t *rotation(matrix_t *m, const struct coord *v, float a)
 {
 	assert(is_vunit(v));
 
@@ -571,7 +573,7 @@ matrix_t *rotation(matrix_t *m, const coord_t *v, float a)
 }
 
 
-matrix_t *translation(matrix_t *m, coord_t *v)
+matrix_t *translation(matrix_t *m, struct coord *v)
 {
 	E(m, 0, 0) = 1.F;
         E(m, 0, 1) = 0.F;
@@ -597,10 +599,10 @@ matrix_t *translation(matrix_t *m, coord_t *v)
 }
 
 
-bool change_of_coord_mat(ccs_t *ccs)
+bool change_of_coord_mat(struct coord_system *ccs)
 {
 	matrix_t rot, tsl;
-	coord_t minus_os;
+	struct coord minus_os;
 
 	matrix(&ccs->m, &ccs->i, &ccs->j, &ccs->k, &ccs->o);
 
@@ -608,5 +610,41 @@ bool change_of_coord_mat(ccs_t *ccs)
 	matrixr(&rot, &ccs->i, &ccs->j, &ccs->k, &PointO);
 	matmat(&ccs->mi, &rot, &tsl);
 
-	return is_pccs(&ccs->i, &ccs->j, &ccs->k);
+	return is_cartesian_coord_system(&ccs->i, &ccs->j, &ccs->k);
+}
+
+#define FACTOR  1000.F
+
+static int first = 1;
+
+static void random_coord(struct coord *c)
+{
+	int sx, sy, sz;
+
+	if (first) {
+		sranddev();
+		first = 0;
+	}
+
+	sx = ((float)rand()/(float)(RAND_MAX)) > .5F? 1.F : -1.F;
+	sy = ((float)rand()/(float)(RAND_MAX)) > .5F? 1.F : -1.F;
+	sz = ((float)rand()/(float)(RAND_MAX)) > .5F? 1.F : -1.F;
+
+	c->x = sx * ((float)rand()/(float)(RAND_MAX)) * FACTOR;
+	c->y = sy * ((float)rand()/(float)(RAND_MAX)) * FACTOR;
+	c->z = sz * ((float)rand()/(float)(RAND_MAX)) * FACTOR;
+}
+
+
+void random_point(struct coord *p)
+{
+	random_coord(p);
+	p->w = 1.F;
+}
+
+
+void random_vector(struct coord *p)
+{
+	random_coord(p);
+	p->w = 0.F;
 }

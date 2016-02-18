@@ -5,16 +5,16 @@
 #include "picture.h"
 #include "surfaces.h"
 
-void renderer_nil(rgb_t *rgb)
+void renderer_nil(struct rgb *rgb)
 {
-	static rgb_t yellow = RGBYellow;
+	static struct rgb yellow = RGBYellow;
 	*rgb = yellow;
 }
 
 #define W	320
 #define H	240
 
-static rgb_t gray = RGBLightGray;
+static struct rgb gray = RGBLightGray;
 
 int main()
 {
