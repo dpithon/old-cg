@@ -4,12 +4,10 @@
 #include <math.h>
 #include "types.h"
 
-/*** Homogeneous coordinates (w == 0: vector, w != 0: point) */
 struct coord {
 	float x, y, z, w;
 };
 
-/*** Matrix (4x4) */
 struct matrix {
 	float cell[4][4];
 };
@@ -20,8 +18,8 @@ struct coord_system {
 	struct coord j;
 	struct coord k;
 
-	struct matrix m;
-	struct matrix mi;
+	struct matrix m;  /* local to standard */
+	struct matrix mi; /* standard to local */
 };
 
 #define MATROW(m, i) ((struct coord*) &(m->cell[i]))
@@ -30,14 +28,14 @@ struct coord_system {
 #define VECTOR_I    { 1.F, 0.F, 0.F, 0.F }
 #define VECTOR_J    { 0.F, 1.F, 0.F, 0.F }
 #define VECTOR_K    { 0.F, 0.F, 1.F, 0.F }
-#define POINT_O    { 0.F, 0.F, 0.F, 1.F }
+#define POINT_O     { 0.F, 0.F, 0.F, 1.F }
 #define MATRIX_ID   { .cell = { VECTOR_I, VECTOR_J, VECTOR_K, POINT_O } }
-#define CCS 	 { .o = POINT_O,\
-		   .i = VECTOR_I,\
-		   .j = VECTOR_J,\
-		   .k = VECTOR_K,\
-		   .m = MATRIX_ID,\
-		   .mi = MATRIX_ID\
+#define STANDARD_CS { .o = POINT_O,\
+		      .i = VECTOR_I,\
+		      .j = VECTOR_J,\
+		      .k = VECTOR_K,\
+		      .m = MATRIX_ID,\
+		      .mi = MATRIX_ID\
 		 }
 
 extern bool float_equals(float a, float b);
@@ -109,5 +107,7 @@ extern const struct coord  VectorI;
 extern const struct coord  VectorJ;
 extern const struct coord  VectorK;
 extern const struct coord  PointO;
+
+#include "iomath.h"
 
 #endif /* MATH_H */

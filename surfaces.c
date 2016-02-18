@@ -14,8 +14,8 @@ static bool plane_intersect(struct ipoint *i, const struct ray *r,
 	struct ray rr;
 	float k;
 
-	matcol(&rr.s, &pln->mi, &r->s);
-	matcol(&rr.v, &pln->mi, &r->v);
+	matcol(&rr.s, &pln->cam_to_shp, &r->s);
+	matcol(&rr.v, &pln->cam_to_shp, &r->v);
 
 	if (rr.v.y == 0)
 		return false;
@@ -34,29 +34,24 @@ void plane(const struct coord *loc, const struct coord *norm)
 	float p;
 	struct plane *pln = malloc(sizeof(struct plane));
 
-	unit(&pln->ccs.j, norm);
-	pln->ccs.o = *loc;
+	unit(&pln->cs.j, norm);
+	pln->cs.o = *loc;
 
-	if (is_collinear(&pln->ccs.j, &VectorJ, &p)) {
+	if (is_collinear(&pln->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {
-			pln->ccs.i = VectorI;
-			pln->ccs.k = VectorK;
+			pln->cs.i = VectorI;
+			pln->cs.k = VectorK;
 		} else {
-			pln->ccs.i = VectorK;
-			pln->ccs.k = VectorI;
+			pln->cs.i = VectorK;
+			pln->cs.k = VectorI;
 		}
 	} else {
-		cross(&pln->ccs.k, &pln->ccs.j, &VectorJ);
-		unit_me(&pln->ccs.k);
-		cross(&pln->ccs.i, &pln->ccs.j, &pln->ccs.j);
+		cross(&pln->cs.k, &pln->cs.j, &VectorJ);
+		unit_me(&pln->cs.k);
+		cross(&pln->cs.i, &pln->cs.j, &pln->cs.k);
 	}
 
-	struct matrix my;
-	rotationz(&my, 45.F * M_PI / 180.F);
-	matcol_me(&pln->ccs.i, &my);
-	matcol_me(&pln->ccs.j, &my);
-	matcol_me(&pln->ccs.k, &my);
-	change_of_coord_mat(&pln->ccs);
+	change_of_coord_mat(&pln->cs);
 	pln->intersect = plane_intersect;
 	add_shape(CAST_SHAPE(pln));
 }

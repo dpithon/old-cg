@@ -19,16 +19,19 @@ static struct rgb gray = RGBLightGray;
 
 int main()
 {
-	set_location(0.F, 15.F, 0.F);
-	set_target(10000.F, 0.F, 0.F);
-	plane(&PointO, &VectorJ);
+	set_location(5.F, 0.F, 0.F);
+	set_target(8.F, 0.F, -10.F);
+
+	struct coord norm = {1, 1, 0, 0};
+	
+	plane(&PointO, &norm);
 
 	init_pinhole(W, H, 40.F);
 
 	set_renderer(CAST_RENDERER(renderer_nil));
 	set_default_color(&gray);
 
-	prepare_shape_matrices(pinhole_ccs());
+	prepare_shape_matrices(pinhole_coord_system());
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++)
 			sampling(x, y);

@@ -7,9 +7,9 @@
 #define CAST_SHAPE(s) ((struct shape*)(s))
 
 #define SHAPE_INF struct shape *next;\
-		  struct coord_system ccs;\
-		  struct matrix m;\
-		  struct matrix mi;\
+		  struct coord_system cs;\
+		  struct matrix cam_to_shp;\
+		  struct matrix shp_to_cam;\
 		  bool (*intersect)(struct ipoint*, const struct ray*, const struct shape*);\
 		  void (*intrinsic_color)(struct rgb*, struct ipoint*)
 

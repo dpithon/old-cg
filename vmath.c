@@ -599,18 +599,18 @@ struct matrix *translation(struct matrix *m, struct coord *v)
 }
 
 
-bool change_of_coord_mat(struct coord_system *ccs)
+bool change_of_coord_mat(struct coord_system *cs)
 {
 	struct matrix rot, tsl;
 	struct coord minus_os;
 
-	matrix(&ccs->m, &ccs->i, &ccs->j, &ccs->k, &ccs->o);
+	matrix(&cs->m, &cs->i, &cs->j, &cs->k, &cs->o);
 
-	translation(&tsl, scale(&minus_os, &ccs->o, -1.F));
-	matrixr(&rot, &ccs->i, &ccs->j, &ccs->k, &PointO);
-	matmat(&ccs->mi, &rot, &tsl);
+	translation(&tsl, scale(&minus_os, &cs->o, -1.F));
+	matrixr(&rot, &cs->i, &cs->j, &cs->k, &PointO);
+	matmat(&cs->mi, &rot, &tsl);
 
-	return is_cartesian_coord_system(&ccs->i, &ccs->j, &ccs->k);
+	return is_cartesian_coord_system(&cs->i, &cs->j, &cs->k);
 }
 
 #define FACTOR  1000.F

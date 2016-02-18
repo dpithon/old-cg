@@ -17,7 +17,7 @@
 
 
 /* Pinhole cartesian coordinate system */
-static struct coord_system ccs = CCS;
+static struct coord_system coord_system = STANDARD_CS;
 
 /* Focal length and field of view */
 static float focal, fov = 40.F;
@@ -43,24 +43,24 @@ static bool compute_coordsys(void)
 	if (is_pequal(&Location, &Target))
 		return false;
 
-	ccs.o = Location;
+	coord_system.o = Location;
 
-	unit_vector(&ccs.k, &Location, &Target);
-	if (is_collinear(&ccs.k, &VectorJ, &p)) {
+	unit_vector(&coord_system.k, &Location, &Target);
+	if (is_collinear(&coord_system.k, &VectorJ, &p)) {
 		if (p > 0.F) {
-			ccs.i = VectorK;
-			ccs.j = VectorI;
+			coord_system.i = VectorK;
+			coord_system.j = VectorI;
 		} else {
-			ccs.i = VectorI;
-			ccs.j = VectorK;
+			coord_system.i = VectorI;
+			coord_system.j = VectorK;
 		}
 	} else {
-		cross(&ccs.i, &ccs.k, &VectorJ);
-		unit_me(&ccs.i);
-		cross(&ccs.j, &ccs.k, &ccs.i);
+		cross(&coord_system.i, &coord_system.k, &VectorJ);
+		unit_me(&coord_system.i);
+		cross(&coord_system.j, &coord_system.k, &coord_system.i);
 	}
 
-	return change_of_coord_mat(&ccs);
+	return change_of_coord_mat(&coord_system);
 }
 
 
@@ -186,7 +186,7 @@ bool init_pinhole(int w, int h, float fov)
 /**
  *
  */
-const struct coord_system *pinhole_ccs(void)
+const struct coord_system *pinhole_coord_system(void)
 {
-	return &ccs;
+	return &coord_system;
 }

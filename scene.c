@@ -53,16 +53,17 @@ void add_shape(struct shape *shp)
 }
 
 
-void prepare_shape_matrices(const struct coord_system *cam_ccs)
+void prepare_shape_matrices(const struct coord_system *cam_cs)
 {
 	struct shape *s = shapes;
-	/* struct matrix id; */
+	struct matrix id;
 
 	while (s) {
-		matmat(&s->m, &s->ccs.mi, &cam_ccs->m);
-		matmat(&s->mi, &cam_ccs->mi, &s->ccs.m);
-		/* matmat(&id, &s->m, &s->mi);
-		 * assert(is_mequal(&id, &MatrixId)); */
+		matmat(&s->cam_to_shp, &s->cs.mi, &cam_cs->m);
+		matmat(&s->shp_to_cam, &cam_cs->mi, &s->cs.m);
+		matmat(&id, &s->cam_to_shp, &s->shp_to_cam);
+		assert(is_mequal(&id, &MatrixId));
+
 		s = s->next;
 	}
 }
