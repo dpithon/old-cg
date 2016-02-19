@@ -12,5 +12,7 @@ struct plain_color {
 
 extern void set_plain_colors(struct shape*, unsigned char, unsigned char,
 			     unsigned char);
+extern void set_plain_color(struct shape*, int, unsigned char, unsigned char,
+			    unsigned char);
 
 #endif /* PLAIN_COLOR_H */
