@@ -11,7 +11,7 @@
 
 
 static bool plane_intersect(struct ipoint *i, const struct ray *ray,
-			    const struct shape *pln)
+			    const struct shape *s)
 {
 	float k;
 
@@ -20,10 +20,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 
 	k = - (ray->s.y / ray->v.y);
 	if (k > 0 && k < i->k) {
-		if (ray->v.y > 0.F)
-			set_ipoint(i, pln, FLAG_UNDER, k);
-		else
-			set_ipoint(i, pln, FLAG_OVER, k);
+		set_ipoint(i, s, ray->v.y > 0? FLAG_UNDER: FLAG_OVER, k);
 		return true;
 	}
 

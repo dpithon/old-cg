@@ -11,10 +11,10 @@
 
 
 static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
-			     const struct shape *sph)
+			     const struct shape *s)
 {
 	float a, b, c, delta;
-	float r = ((struct sphere*) sph)->radius;
+	float r = ((struct sphere*) s)->radius;
 
 	a = ray->v.x * ray->v.x + ray->v.y * ray->v.y + ray->v.z * ray->v.z;
 	b = 2.F * (ray->v.x * ray->s.x + ray->v.y * ray->s.y + ray->v.z * ray->s.z);
@@ -25,8 +25,10 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 	if (float_equals(delta, 0.F)) {
 		float k = -b / (2.F * a);
 
-		if (k > 0 && k < i->k)
-			return set_ipoint(i, sph, FLAG_OUTSIDE, k);
+		if (k > 0 && k < i->k) {
+			set_ipoint(i, s, FLAG_OUTSIDE, k);
+			return true;
+		}
 	} else if (delta > 0.F) {
 		float k1, k2, sqrt_delta;
 
@@ -34,14 +36,13 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 		k1 = (-b - sqrt_delta) / (2.F * a);
 		k2 = (-b + sqrt_delta) / (2.F * a);
 
-		if (k2 <= 0.F)
-			return false;
-		else if (k1 <= 0.F && k2 < i->k)
-			return set_ipoint(i, sph, FLAG_INSIDE, k2);
-		else if (k1 <= 0.F && k2 > i->k)
-			return false;
-		else if (k1 < i->k)
-			return set_ipoint(i, sph, FLAG_OUTSIDE, k1);
+		if (k1 > 0 && k1 < i->k) {
+			set_ipoint(i, s, FLAG_OUTSIDE, k1);
+			return true;
+		} else if (k2 > 0 && k2 < i->k) {
+			set_ipoint(i, s, FLAG_INSIDE, k2);
+			return true;
+		}
 	}
 
 	return false;

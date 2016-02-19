@@ -29,6 +29,6 @@ struct ipoint {
 };
 
 extern void reset_ipoint(struct ipoint*);
-extern bool set_ipoint(struct ipoint*, const struct shape*, int, float);
+extern void set_ipoint(struct ipoint*, const struct shape*, int, float);
 
 #endif /* IPOINT_H */

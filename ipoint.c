@@ -8,11 +8,9 @@ void reset_ipoint(struct ipoint *i)
 }
 
 
-bool set_ipoint(struct ipoint *i, const struct shape *shp, int flg, float k)
+void set_ipoint(struct ipoint *i, const struct shape *shp, int flg, float k)
 {
 	i->shape = shp;
 	i->flags = FLAG_DEFINED|flg;
 	i->k     = k;
-
-	return true;
 }
