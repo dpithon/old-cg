@@ -1,11 +1,12 @@
 #include "renderer.h"
-#include "fatal.h"
+#include "ipoint.h"
+#include "shape.h"
 
-static void no_renderer()
+static void default_rendering(struct rgb *rgb, const struct ipoint *i)
 {
-	fatal("no renderer!");
+	i->shape->paint(rgb, i);
 }
-renderer rendering = no_renderer;
+renderer rendering = default_rendering;
 
 
 void set_renderer(renderer f)

@@ -1,8 +1,6 @@
 #ifndef IPOINT_H
 #define IPOINT_H
 
-#include <float.h>
-
 #include "types.h"
 #include "vmath.h"
 
@@ -18,14 +16,19 @@
 #define is_under(i)	((i)->flags & FLAG_UNDER)
 #define is_defined(i)	((i)->flags & FLAG_DEFINED)
 
-#define reset_ipoint(i)	(i)->flags = 0;\
-			(i)->k = FLT_MAX
+#define x(i)		(((struct coord*)i)->x)
+#define y(i)		(((struct coord*)i)->y)
+#define w(i)		(((struct coord*)i)->w)
+#define z(i)		(((struct coord*)i)->z)
 
 struct ipoint {
 	struct coord i;
-	float  k;
+	const struct shape *shape;
 	int    flags;
-	struct shape *shape;
+	float  k;
 };
+
+extern void reset_ipoint(struct ipoint*);
+extern bool set_ipoint(struct ipoint*, const struct shape*, int, float);
 
 #endif /* IPOINT_H */

@@ -10,8 +10,9 @@
 		  struct coord_system cs;\
 		  struct matrix cam_to_shp;\
 		  struct matrix shp_to_cam;\
-		  bool (*intersect)(struct ipoint*, const struct ray*, const struct shape*);\
-		  void (*intrinsic_color)(struct rgb*, struct ipoint*)
+		  void  *paint_data;\
+		  intersector intersect;\
+		  painter paint
 
 struct shape {
 	SHAPE_INF;

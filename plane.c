@@ -2,27 +2,28 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "surfaces.h"
+#include "plane.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
+#include "plane.h"
+#include "painter.h"
+
 
 static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 			    const struct shape *pln)
 {
 	float k;
 
-	(void)(pln);
-
-	if (ray->v.y == 0)
+	if (float_equals(ray->v.y, 0.F))
 		return false;
 
 	k = - (ray->s.y / ray->v.y);
 	if (k > 0 && k < i->k) {
 		if (ray->v.y > 0.F)
-			i->flags |= FLAG_DEFINED|FLAG_UNDER;
+			set_ipoint(i, pln, FLAG_UNDER, k);
 		else
-			i->flags |= FLAG_DEFINED|FLAG_OVER;
+			set_ipoint(i, pln, FLAG_OVER, k);
 		return true;
 	}
 
@@ -30,7 +31,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
-void plane(const struct coord *loc, const struct coord *norm)
+struct shape *plane(const struct coord *loc, const struct coord *norm)
 {	
 	float p;
 	struct plane *pln = malloc(sizeof(struct plane));
@@ -53,6 +54,9 @@ void plane(const struct coord *loc, const struct coord *norm)
 	}
 
 	change_of_coord_mat(&pln->cs);
-	pln->intersect = plane_intersect;
-	add_shape(CAST_SHAPE(pln));
+	pln->intersect  = plane_intersect;
+	pln->paint      = default_painter;
+	pln->paint_data = 0;
+
+	return CAST_SHAPE(pln);
 }

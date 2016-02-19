@@ -7,6 +7,6 @@ struct plane {
 	SHAPE_INF;
 };
 
-extern struct plane *plane(const struct coord*, const struct coord*);
+extern struct shape *plane(const struct coord*, const struct coord*);
 
 #endif /* PLANE_H */

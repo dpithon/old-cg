@@ -8,6 +8,6 @@ struct sphere {
 	float radius;
 };
 
-extern struct sphere *sphere(const struct coord*, float);
+extern struct shape *sphere(const struct coord*, float);
 
 #endif /* SPHERE_H */

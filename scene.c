@@ -8,7 +8,8 @@
 struct coord Location = {100.F, 100.F, 100.F, 1.F};
 struct coord Target   = POINT_O;
 
-static struct shape *shapes;
+static struct shape *list_head;
+static struct shape *list_tail;
 
 
 void set_location(float x, float y, float z)
@@ -31,7 +32,7 @@ void set_target(float x, float y, float z)
 
 bool intersect(struct ipoint *i, const struct ray *ray_cam)
 {
-	struct shape *s = shapes;
+	struct shape *s = list_head;
 	struct ray ray_shp;
 
 	while (s) {
@@ -49,16 +50,19 @@ bool intersect(struct ipoint *i, const struct ray *ray_cam)
 void add_shape(struct shape *shp)
 {
 	shp->next = 0;
-	if (shapes)
-		shapes->next = shp;
-	else
-		shapes = shp;
+
+	if (!list_head) {
+		list_head = list_tail = shp;
+	} else {
+		list_tail->next = shp;
+		list_tail = shp;
+	}
 }
 
 
 void prepare_shape_matrices(const struct coord_system *cam_cs)
 {
-	struct shape *s = shapes;
+	struct shape *s = list_head;
 	struct matrix id;
 
 	while (s) {
