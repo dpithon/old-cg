@@ -3,7 +3,7 @@
 #include "rgb.h"
 
 static struct bpix picture;
-static struct rgb def_rgb = RGBBlack;
+static struct rgb def_rgb = Black;
 
 
 bool init_picture(int w, int h)

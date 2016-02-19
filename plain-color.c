@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include "plain-color.h"
 
-void set_plain_color(struct shape *s, struct rgb **rgbs)
+void set_plain_colors(struct shape *s, unsigned char r, unsigned char g,
+		      unsigned char b )
 {
-	s->paint_data = malloc(sizeof(struct plain_color));
+	if (!s->paint_data)
+		s->paint_data = malloc(sizeof(struct plain_color));
 
-	PLAIN_COLOR(s)->inside  = *rgbs[0];
-	PLAIN_COLOR(s)->outside = *rgbs[1];
-	PLAIN_COLOR(s)->over    = *rgbs[2];
-	PLAIN_COLOR(s)->under   = *rgbs[3];
+	PLAIN_COLOR(s)->rgb[0].r = PLAIN_COLOR(s)->rgb[1].r = r;
+	PLAIN_COLOR(s)->rgb[0].g = PLAIN_COLOR(s)->rgb[1].g = g;
+	PLAIN_COLOR(s)->rgb[0].b = PLAIN_COLOR(s)->rgb[1].b = b;
 }

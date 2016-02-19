@@ -7,12 +7,10 @@
 #define PLAIN_COLOR(s)	((struct plain_color*)((s)->paint_data))
 
 struct plain_color {
-	struct rgb inside;
-	struct rgb outside;
-	struct rgb over;
-	struct rgb under;
+	struct rgb rgb[2];
 };
 
-extern void set_plain_color(struct shape*, struct rgb**);
+extern void set_plain_colors(struct shape*, unsigned char, unsigned char,
+			     unsigned char);
 
 #endif /* PLAIN_COLOR_H */
