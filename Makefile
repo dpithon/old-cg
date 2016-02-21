@@ -7,7 +7,8 @@ LDFLAGS=-L./bpix -lbpix -lm
 CC=gcc
 LD=gcc
 OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o fatal.o renderer.o\
-     plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o
+     plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
+     paraboloid.o
 
 all: raycaster
 

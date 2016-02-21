@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "picture.h"
 #include "sphere.h"
+#include "paraboloid.h"
 #include "plane.h"
 #include "rgb.h"
 #include "ipoint.h"
@@ -15,32 +16,23 @@
 int main()
 {
 	struct shape *s;
-	struct shape *t;
-	struct shape *p, *q;
-	struct coord c = {-50.F, 0.F, -50.F, 1.F };
-	struct coord mi = {-1,0,0,0};
+	struct shape *p1, *p2;
 
-	set_location(90.F, 30.F, 90.F);
-	set_target(-50.F, 0.F, -50.F);
-	init_pinhole(W, H, 40.F);
+	set_location(90.F, 45.F, 90.F);
+	set_target(0.F, 0.F, 0.F);
+	init_pinhole(W, H, 30.F);
 
-	p = plane(&PointO, &VectorJ);
-	set_plain_color(p, FLAG_OVER, RGBRed);
-
-	q = plane(&c, &mi);
-	set_plain_color(q, FLAG_OVER, RGBCyan);
-	set_plain_color(q, FLAG_UNDER, RGBWhite);
-
-	s = sphere(&PointO, 180.F);
-	set_plain_color(s, FLAG_INSIDE, RGBGreen);
-
-	t = sphere(&c, 35.F);
-	set_plain_color(t, FLAG_OUTSIDE, RGBBlue);
-
-	add_shape(p);
-	add_shape(q);
+	s = paraboloid(&PointO, &VectorJ, 6, 3, 1, 15);
+	set_plain_color(s, FLAG_INSIDE, RGBWhite);
+	set_plain_color(s, FLAG_OUTSIDE, RGBBlue);
 	add_shape(s);
-	add_shape(t);
+
+	p1 = plane(&PointO, &VectorJ);
+	p2 = plane(&PointO, &VectorI);
+	set_plain_colors(p1, RGBRed);
+	set_plain_colors(p2, RGBYellow);
+	add_shape(p1);
+	add_shape(p2);
 
 	prepare_shape_matrices(pinhole_coord_system());
 	for (int x = 0; x < W; x++)
