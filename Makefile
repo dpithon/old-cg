@@ -1,7 +1,6 @@
 .PHONY: all clean purge deps 
 
 DEBUG=-O0 -g
-CFLAGS+=-I/usr/local/include
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG)
 LDFLAGS=-L./bpix -lbpix -lm
 CC=gcc
@@ -27,6 +26,6 @@ bpix/libbpix.a: bpix/*.[ch]
 	$(MAKE) -C bpix all
 
 raycaster: bpix/libbpix.a $(OBJS) 
-	$(LD) $(LDFLAGS) $(OBJS) -o $@
+	$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 
 include Makefile.deps
