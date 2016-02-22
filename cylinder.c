@@ -10,8 +10,8 @@
 #include "cylinder.h"
 #include "painter.h"
 
-#define H(s) ((struct cylinder*)s)->h
-#define RADIUS(s) ((struct cylinder*)s)->radius
+#define H(s)		((struct cylinder*) s)->h
+#define RADIUS(s)	((struct cylinder*) s)->radius
 
 
 static bool check(float k, struct ipoint *i, const struct ray *ray,
@@ -19,7 +19,7 @@ static bool check(float k, struct ipoint *i, const struct ray *ray,
 {
 	if (k > 0 && k < i->k) {
 		float y = k * ray->v.y + ray->s.y;
-		if (y > 0 && y < H(s))
+		if (y >= 0 && y <= H(s))
 			return true;
 	}
 	return false;
@@ -59,6 +59,7 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 		}
 
 		if (check(k2, i, ray, s)) {
+			/* TODO useless test 'k2 > 0' */
 			set_ipoint(i, s, FLAG_INSIDE, k2);
 			return true;
 		}
