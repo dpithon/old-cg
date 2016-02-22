@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "vmath.h"
 #include "types.h"
@@ -13,20 +14,10 @@
 #define A(s) ((struct paraboloid*)s)->a
 #define B(s) ((struct paraboloid*)s)->b
 #define C(s) ((struct paraboloid*)s)->c
-#define MAX_Y(s) ((struct paraboloid*)s)->max_y
+#define H(s) ((struct paraboloid*)s)->h
 
 
-static bool check(float k, struct ipoint *i, const struct ray *ray, const struct shape *s)
-{
-	if (k > 0 && k < i->k) {
-		if ((k * ray->v.y + ray->s.y) < MAX_Y(s))
-			return true;
-	}
-	return false;
-}
-
-
-#include <stdio.h>
+#define Y(k)	fabsf(k * ray->v.y + ray->s.y)
 static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
@@ -46,43 +37,35 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 
 	delta = b * b - 4 * a * c;
 
+	if (delta < 0.F)
+		return false;
+
 	if (float_equals(delta, 0.F)) {
 		float k = -b / (2.F * a);
-		if (check(k, i, ray, s)) {
+		if (k > 0 && k < i->k && Y(k) < H(s)) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k);
 			return true;
 		}
-	} else if (delta > 0.F) {
-		float k1, k2, sqrt_delta;
+		return false;
+	}
 
-		sqrt_delta = sqrtf(delta);
-		k1 = (-b - sqrt_delta) / (2.F * a);
-		k2 = (-b + sqrt_delta) / (2.F * a);
+	float k1, k2, sqrt_delta;
 
-		if (k1 > 0) {
-			if (k1 < i->k) {
-				float y = k1 * ray->v.y + ray->s.y;
-				if (y < MAX_Y(s)) {
-					set_ipoint(i, s, FLAG_OUTSIDE, k1);
-					return true;
-				} else if (k2 < i->k) {
-					y = k2 * ray->v.y + ray->s.y;
-					if (y < MAX_Y(s)) {
-						set_ipoint(i, s, FLAG_INSIDE, k2);
-						return true;
-					}
-				}
-			}
-		} else if (k2 > 0) {
-			printf("!!!!\n");
-			if (k2 < i->k) {
-				float y = k2 * ray->v.y + ray->s.y;
-				if (y < MAX_Y(s)) {
-					set_ipoint(i, s, FLAG_INSIDE, k2);
-					return true;
-				}
-			}
-		}
+	sqrt_delta = sqrtf(delta);
+	k1 = (-b - sqrt_delta) / (2.F * a);
+	k2 = (-b + sqrt_delta) / (2.F * a);
+
+	if (k2 <= 0 || i->k < k1)
+		return false;
+
+	if (k1 > 0 && Y(k1) < H(s)) {
+		set_ipoint(i, s, FLAG_OUTSIDE, k1);
+		return true;
+	}
+
+	if (k2 < i->k && Y(k2) < H(s)) {
+		set_ipoint(i, s, FLAG_INSIDE, k2);
+		return true;
 	}
 
 	return false;
@@ -90,7 +73,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
-			 float a, float b, float c, float max_y)
+			 float a, float b, float c, float h)
 {	
 	float p;
 	struct paraboloid *pb = malloc(sizeof(struct paraboloid));
@@ -122,7 +105,7 @@ struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 	pb->a          = a;
 	pb->b          = b;
 	pb->c          = c;
-	pb->max_y      = max_y;
+	pb->h          = h;
 	pb->intersect  = paraboloid_intersect;
 	pb->paint      = default_painter;
 	pb->paint_data = 0;

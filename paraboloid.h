@@ -6,7 +6,7 @@
 struct paraboloid {
 	SHAPE_INF;
 	float a, b, c;
-	float max_y;
+	float h;
 };
 
 extern struct shape *paraboloid(const struct coord*, const struct coord*,
