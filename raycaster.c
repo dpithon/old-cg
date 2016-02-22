@@ -4,7 +4,7 @@
 #include "scene.h"
 #include "picture.h"
 #include "sphere.h"
-#include "paraboloid.h"
+#include "cylinder.h"
 #include "plane.h"
 #include "rgb.h"
 #include "ipoint.h"
@@ -18,11 +18,11 @@ int main()
 	struct shape *s;
 	struct shape *p1, *p2;
 
-	set_location(90.F, 45.F, 90.F);
+	set_location(10.F, 45.F, 10.F);
 	set_target(0.F, 0.F, 0.F);
-	init_pinhole(W, H, 30.F);
+	init_pinhole(W, H, 40.F);
 
-	s = paraboloid(&PointO, &VectorJ, 6, 3, 1, 15);
+	s = cylinder(&PointO, &VectorJ, 25, 15);
 	set_plain_color(s, FLAG_INSIDE, RGBWhite);
 	set_plain_color(s, FLAG_OUTSIDE, RGBBlue);
 	add_shape(s);
@@ -32,7 +32,7 @@ int main()
 	set_plain_colors(p1, RGBRed);
 	set_plain_colors(p2, RGBYellow);
 	add_shape(p1);
-	add_shape(p2);
+	//add_shape(p2);
 
 	prepare_shape_matrices(pinhole_coord_system());
 	for (int x = 0; x < W; x++)
