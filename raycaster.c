@@ -21,6 +21,7 @@ int main()
 	set_location(90.F, 45.F, 90.F);
 	set_target(0.F, 0.F, 0.F);
 	init_pinhole(W, H, 30.F);
+	init_picture(W, H);
 
 	s = paraboloid(&PointO, &VectorJ, 6, 3, 1, 15);
 	set_plain_color(s, FLAG_INSIDE, RGBWhite);

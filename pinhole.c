@@ -30,7 +30,7 @@ static float sqr_edge, fac_xy, off_x, off_y;
 /**
  * compute_coordsys - compute pinhole camera coordinate system and
  *                    change-of-coordinates matrices.
- * 
+ *
  * Any changes on Location and/or Target implies new change-of-coordinate
  * matrices.
  *
@@ -123,7 +123,7 @@ static void map_pixel(struct coord *c, int x, int y)
 }
 
 
-/** 
+/**
  * sampling_center - shoot ray from center of sampling surface.
  *
  * px:   pixel x coordinate
@@ -137,7 +137,7 @@ static void sampling_center(int px, int py)
 	struct rgb rgb;
 
 	ray.s = PointO;
-	
+
 	map_pixel(&center, px, py);
 	center.x += sqr_edge / 2.F;
 	center.y += sqr_edge / 2.F;
@@ -155,7 +155,7 @@ static void sampling_center(int px, int py)
 
 #define DEFAULT_SAMPLER 0
 static void (*samplers[])(int, int) = { sampling_center, 0 };
-	
+
 /**
  * init_pinhole - initialize pinhole camera.
  *
@@ -173,9 +173,6 @@ bool init_pinhole(int w, int h, float fov)
 		return false;
 
 	if (!init_mapping(w, h))
-		return false;
-
-	if (init_picture(w, h))
 		return false;
 
 	set_sampler(samplers[DEFAULT_SAMPLER]);
