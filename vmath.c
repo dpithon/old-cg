@@ -3,6 +3,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 
 #include "vmath.h"
 
@@ -622,7 +624,7 @@ static void random_coord(struct coord *c)
 	int sx, sy, sz;
 
 	if (first) {
-		sranddev();
+		srand(time(NULL));
 		first = 0;
 	}
 

@@ -16,7 +16,7 @@ plain-color.o: plain-color.c plain-color.h shape.h types.h vmath.h \
 plane.o: plane.c vmath.h types.h iomath.h plane.h shape.h scene.h \
  ipoint.h ray.h painter.h
 raycaster.o: raycaster.c pinhole.h types.h sampler.h renderer.h scene.h \
- picture.h sphere.h shape.h vmath.h iomath.h cylinder.h plane.h rgb.h \
+ picture.h sphere.h shape.h vmath.h iomath.h paraboloid.h plane.h rgb.h \
  ipoint.h plain-color.h
 renderer.o: renderer.c renderer.h types.h ipoint.h vmath.h iomath.h \
  shape.h
