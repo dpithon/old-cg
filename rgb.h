@@ -2,23 +2,26 @@
 #define RGB_H
 
 struct rgb {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
+	float r;
+	float g;
+	float b;
 };
 
-#define RGBWhite	0xFF, 0xFF, 0xFF
-#define RGBBlack	0x00, 0x00, 0x00
-#define RGBRed		0xFF, 0x00, 0x00
-#define RGBGreen	0x00, 0xFF, 0x00
-#define RGBBlue		0x00, 0x00, 0xFF
-#define RGBYellow	0xFF, 0xFF, 0x00
-#define RGBMagenta	0xFF, 0x00, 0xFF
-#define RGBCyan		0x00, 0xFF, 0xFF
-#define RGBLightGray	0xCC, 0xCC, 0xCC
-#define RGBDarkGray	0x33, 0x33, 0x33
-#define RGBLightBlue	0x11, 0x11, 0xDD
-#define RGBDarkBlue	0x11, 0x11, 0x55
+#define RGBWhite	1.00F, 1.00F, 1.00F
+#define RGBBlack	0.00F, 0.00F, 0.00F
+
+#define RGBRed		1.00F, 0.00F, 0.00F
+#define RGBGreen	0.00F, 1.00F, 0.00F
+#define RGBBlue		0.00F, 0.00F, 1.00F
+
+#define RGBYellow	1.00F, 1.00F, 0.00F
+#define RGBMagenta	1.00F, 0.00F, 1.00F
+#define RGBCyan		0.00F, 1.00F, 1.00F
+
+#define RGBLightGray	0.80F, 0.80F, 0.80F
+#define RGBDarkGray	0.20F, 0.20F, 0.20F
+#define RGBLightBlue	0.06F, 0.06F, 0.86F
+#define RGBDarkBlue	0.06F, 0.06F, 0.33F
 
 #define White		{ RGBWhite	 }
 #define Black		{ RGBBlack	 }

@@ -2,8 +2,7 @@
 #include "plain-color.h"
 #include "ipoint.h"
 
-void set_plain_colors(struct shape *s, unsigned char r, unsigned char g,
-		      unsigned char b)
+void set_plain_colors(struct shape *s, float r, float g, float b)
 {
 	if (!s->paint_data)
 		s->paint_data = malloc(sizeof(struct plain_color));
@@ -14,8 +13,7 @@ void set_plain_colors(struct shape *s, unsigned char r, unsigned char g,
 }
 
 
-void set_plain_color(struct shape *s, int side, unsigned char r,
-		     unsigned char g, unsigned char b)
+void set_plain_color(struct shape *s, int side, float r, float g, float b)
 {
 	int c = 0;
 

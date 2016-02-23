@@ -1,3 +1,4 @@
+#include <math.h>
 #include "picture.h"
 #include "bpix/bpix.h"
 #include "rgb.h"
@@ -20,10 +21,16 @@ void set_default_color(const struct rgb *rgb)
 
 void set_pixel(int x, int y, const struct rgb *rgb)
 {
-	if (rgb)
-		bpix_set(&picture, x, y, rgb->r, rgb->g, rgb->b);
-	else
-		bpix_set(&picture, x, y, def_rgb.r, def_rgb.g, def_rgb.b);
+	unsigned char r, g, b;
+
+	if (!rgb)
+		rgb = &def_rgb;
+
+	r = (unsigned char) roundf(255.F * rgb->r);
+	g = (unsigned char) roundf(255.F * rgb->g);
+	b = (unsigned char) roundf(255.F * rgb->b);
+
+	bpix_set(&picture, x, y, r, g, b);
 }
 
 
