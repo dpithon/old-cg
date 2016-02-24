@@ -4,3 +4,4 @@
 *.png
 *.gch
 *.a
+Makefile.deps
