@@ -1,15 +1,14 @@
 #include <math.h>
 #include "picture.h"
-#include "bpix/bpix.h"
+#include "pixmap.h"
 #include "rgb.h"
 
-static struct bpix picture;
 static struct rgb def_rgb = Black;
 
 
 bool init_picture(int w, int h)
 {
-	return bpix_init(&picture, w, h);
+	return pixmap_init(w, h);
 }
 
 
@@ -30,11 +29,11 @@ void set_pixel(int x, int y, const struct rgb *rgb)
 	g = (unsigned char) roundf(255.F * rgb->g);
 	b = (unsigned char) roundf(255.F * rgb->b);
 
-	bpix_set(&picture, x, y, r, g, b);
+	pixmap_set(x, y, r, g, b);
 }
 
 
 bool save_picture(const char *fname)
 {
-	return bpix_pnm_write_to_file(&picture, fname);
+	return pixmap_write(FORMAT_PPM, fname);
 }

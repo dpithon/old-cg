@@ -1,128 +1,91 @@
 #include <assert.h>
-#include <fcntl.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include "pixmap.h"
+#include "log.h"
 
 
-struct bpix {
-	int w, h;    /* width and height of pixmap                      */
-	int stride;  /* row size in bytes, round to upper multiple of 4 */
-	int sz;	     /* size in bytes 				        */
-	cval *data;  /* pointer to pixmap buffer		        */
-};
+static struct {
+	int w, h;    /* width and height of pixmap */
+	int sz;	     /* size in bytes 		   */
+	cval *data;  /* pointer to pixmap buffer   */
+} bp;
 
 
-int bpix_init(struct bpix *bp, int w, int h)
+int pixmap_init(int w, int h)
 {
-	assert(sizeof(int) == 4);
-
-	if (w < 0 || h < 0 || w > BPIX_MAX_W || h > BPIX_MAX_H) {
+	if (w < 0 || h < 0)
 		return 1;
-	}
 
-	bp->w = w;
-	bp->h = h;
-	bp->stride = w << 2;
-	bp->sz = bp->stride * h;
+	bp.w = w;
+	bp.h = h;
 
-	bp->data = calloc(bp->sz >> 2, 4);
-	if (! bp->data) {
+	bp.data = malloc(w * h * 3);
+	if (! bp.data)
 		return 1;
+
+	return 0;
+}
+
+
+int pixmap_cleanup(void)
+{
+	if (bp.data) {
+		free(bp.data);
+		bp.data = (cval*) 0;
 	}
+	return 0;
+}
+
+
+int pixmap_set(int x, int y, cval r, cval g, cval b)
+{
+	int offset = bp.w * y * 3 + x * 3;
+
+	bp.data[offset]     = r; 
+	bp.data[offset + 1] = g; 
+	bp.data[offset + 2] = b; 
 
 	return 0;
 }
 
 
-/**
- * bpix_cleanup: release memory buffer and reset structure.
- */
-int bpix_cleanup(struct bpix *bp)
+int pixmap_get(int x, int y, cval *r, cval *g, cval *b)
 {
-	free(bp->data);
+	int offset = bp.w * y * 3 + x * 3;
+
+	*r = bp.data[offset]; 
+	*g = bp.data[offset + 1]; 
+	*b = bp.data[offset + 2]; 
+
 	return 0;
 }
 
 
-int bpix_set(struct bpix *bp, int x, int y, cval r, cval g, cval b)
+static int write_ppm(const char *fname)
 {
-	int offset = bp->stride * y + (x << 2);
+	FILE *fp;
 
-	/* data[offset + 3] unused */
-	bp->data[offset + 2] = r; 
-	bp->data[offset + 1] = g; 
-	bp->data[offset]     = b; 
-	return 0;
-}
-
-
-int bpix_get(struct bpix *bp, int x, int y, cval *r, cval *g, cval *b)
-{
-	unsigned int offset = bp->stride * y + (x << 2);
-
-	*r = bp->data[offset + 2]; 
-	*g = bp->data[offset + 1]; 
-	*b = bp->data[offset]; 
-	return 0;
-}
-
-
-int bpix_pnm_write_to_file(struct bpix *bp, const char *fname)
-{
-	int fd, i, j, err = 0, int_sz;
-	size_t sz;
-	char header[256]; 
-	cval *buffer = 0;
-
-	if ((fd = creat(fname, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0) {
+	if (!(fp = fopen(fname, "w")))
 		return 1;
-	}
 
-	sz = sprintf(header, "P6\n# Created by bpix-pnm\n%d %d\n255\n", 
-		bp->w, bp->h);
+	fprintf(fp, "P6\n# Created by Cg\n%d %d\n255\n", bp.w, bp.h);
+	fwrite(bp.data, bp.w * bp.h * 3, 1, fp);
+	fclose(fp);
 
-	if (write(fd, header, sz) < 0) {
-		goto on_error_exit;
-	}
-
-	sz = bp->w * bp->h * 3;
-	if ((buffer = malloc(sz)) == 0) {
-		goto on_error_exit;
-	}
-
-	int_sz = bp->sz >> 2;
-	for (i = j = 0; i < int_sz; i++) {
-		buffer[j++] = bp->data[(i << 2) + 2];
-		buffer[j++] = bp->data[(i << 2) + 1];
-		buffer[j++] = bp->data[(i << 2)];
-	}
-
-	i = 0; /* i: buffer[] index */
-	while (sz > 0) {
-		/* j: amount of data to write */
-		j = sz > SIZE_MAX ? SIZE_MAX : sz; 
-		if (write(fd, &buffer[i], j) < 0) {
-			goto on_error_exit;
-		}
-		i  += j;
-		sz -= j;
-	}
-	goto no_error_exit;
-
-on_error_exit:
-	err = 1;
-	unlink(fname);
-
-no_error_exit:
-	close(fd);
-	if (buffer) {
-		free(buffer);
-	}
-
-	return err;
+	return 0;
 }
+
+
+int pixmap_write(int fmt, const char *fname)
+{
+	switch (fmt) {
+	case FORMAT_PPM:
+		return write_ppm(fname);
+	default:
+		warning("unknown file format (default to ppm)");
+		return write_ppm(fname);
+	}
+}
+	
+

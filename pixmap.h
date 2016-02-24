@@ -8,19 +8,16 @@
 
 #include "types.h"
 
+#define FORMAT_PPM 1
+
 typedef unsigned char cval; /* color component: from 0 to 255 */
 
-#define BPIX_MAX_W	8192
-#define BPIX_MAX_H	8192
 
-#define bpix_get_width(ptr)	((ptr)->w)
-#define bpix_get_height(ptr)	((ptr)->h)
+int pixmap_init(int, int);
+int pixmap_cleanup(void);
+int pixmap_set(int, int, cval, cval, cval);
+int pixmap_get(int, int, cval*, cval*, cval*);
 
-int bpix_init(struct bpix*, int, int);
-int bpix_cleanup(struct bpix*);
-int bpix_set(struct bpix*, int, int, cval, cval, cval);
-int bpix_get(struct bpix*, int, int, cval*, cval*, cval*);
-
-int bpix_pnm_write_to_file(struct bpix*, const char*);
+int pixmap_write(int, const char*);
 
 #endif /* PIXMAP_H */

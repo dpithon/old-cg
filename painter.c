@@ -1,4 +1,4 @@
-#include "fatal.h"
+#include "log.h"
 #include "shape.h"
 #include "ipoint.h"
 #include "plain-color.h"

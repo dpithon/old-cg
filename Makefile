@@ -5,7 +5,7 @@ CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) --coverage
 LDFLAGS=-lm --coverage
 CC=gcc
 LD=gcc
-OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o fatal.o renderer.o\
+OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o log.o renderer.o\
      plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
      paraboloid.o cylinder.o pixmap.o
 
