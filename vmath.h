@@ -4,7 +4,9 @@
 #include <math.h>
 #include "types.h"
 
+#ifndef M_PI
 #define M_PI 3.141592653589793238462643383
+#endif /* M_PI */
 
 struct coord {
 	float x, y, z, w;
