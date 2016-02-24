@@ -1,16 +1,21 @@
-.PHONY: all clean purge deps
+.PHONY: all clean purge deps cov
 
 CC=gcc
 LD=gcc
 
 DEBUG=-O0 -g
-CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG)
-LDFLAGS=-lm
+CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG) --coverage
+LDFLAGS=-lm --coverage
 OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o log.o renderer.o\
      plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
      paraboloid.o cylinder.o pixmap.o
 
 all: raycaster
+
+cov: all
+	./raycaster &&\
+	lcov --capture --directory . --output-file coverage.info &&\
+	genhtml coverage.info --output-directory html
 
 clean:
 	rm -rf *.o *.gch unit/*.o *.a raycaster *.pnm *.gcda *.gcno *.info

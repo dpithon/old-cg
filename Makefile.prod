@@ -1,10 +1,10 @@
-.PHONY: all clean purge deps
+.PHONY: all clean purge deps 
 
 CC=gcc
 LD=gcc
 
-DEBUG=-O0 -g
-CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG)
+OPTS=-O2 -g0 -DNDEBUG
+CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(OPTS)
 LDFLAGS=-lm
 OBJS=pinhole.o raycaster.o sampler.o scene.o picture.o log.o renderer.o\
      plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
@@ -16,7 +16,6 @@ clean:
 	rm -rf *.o *.gch unit/*.o *.a raycaster *.pnm *.gcda *.gcno *.info
 
 purge: clean
-	rm -rf html
 
 deps:
 	$(CC) -MM *.c >Makefile.deps
