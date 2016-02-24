@@ -11,6 +11,7 @@ picture.o: picture.c picture.h types.h bpix/bpix.h bpix/bpix-core.h \
  bpix/bpix-error.h bpix/bpix-drawing.h bpix/bpix-pnm.h rgb.h
 pinhole.o: pinhole.c pinhole.h types.h vmath.h iomath.h scene.h ray.h \
  rgb.h ipoint.h picture.h sampler.h renderer.h
+pixmap.o: pixmap.c pixmap.h
 plain-color.o: plain-color.c plain-color.h shape.h types.h vmath.h \
  iomath.h rgb.h ipoint.h
 plane.o: plane.c vmath.h types.h iomath.h plane.h shape.h scene.h \
