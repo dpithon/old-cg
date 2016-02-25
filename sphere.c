@@ -66,4 +66,3 @@ struct shape *sphere(const struct coord *loc, float radius)
 
 	return CAST_SHAPE(sph);
 }
-	

@@ -17,5 +17,5 @@
 struct shape {
 	SHAPE_INF;
 };
-	
+
 #endif /* SHAPE_H */
