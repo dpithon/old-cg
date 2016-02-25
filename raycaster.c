@@ -2,7 +2,7 @@
 #include "sampler.h"
 #include "renderer.h"
 #include "scene.h"
-#include "picture.h"
+#include "pixmap.h"
 #include "sphere.h"
 #include "paraboloid.h"
 #include "plane.h"
@@ -21,7 +21,7 @@ int main()
 	set_location(90.F, 45.F, 90.F);
 	set_target(0.F, 0.F, 0.F);
 	init_pinhole(W, H, 30.F);
-	init_picture(W, H);
+	init_pixmap(W, H);
 
 	s = paraboloid(&PointO, &VectorJ, 6, 3, 1, 15);
 	set_plain_color(s, FLAG_INSIDE, RGBWhite);
@@ -39,6 +39,6 @@ int main()
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++)
 			sampling(x, y);
-	
-	return save_picture("a.pnm");
+
+	return write_pixmap(FORMAT_PPM, "a.pnm");
 }

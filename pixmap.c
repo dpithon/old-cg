@@ -1,18 +1,22 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "pixmap.h"
+#include "rgb.h"
 #include "log.h"
+
+static struct rgb def_rgb = Black;
 
 
 static struct {
 	int w, h;    /* width and height of pixmap */
 	int sz;	     /* size in bytes 		   */
-	cval *data;  /* pointer to pixmap buffer   */
+	unsigned char *data;  /* pointer to pixmap buffer   */
 } bp;
 
 
-int pixmap_init(int w, int h)
+int init_pixmap(int w, int h)
 {
 	if (w < 0 || h < 0)
 		return 1;
@@ -28,35 +32,16 @@ int pixmap_init(int w, int h)
 }
 
 
-int pixmap_cleanup(void)
-{
-	if (bp.data) {
-		free(bp.data);
-		bp.data = (cval*) 0;
-	}
-	return 0;
-}
-
-
-int pixmap_set(int x, int y, cval r, cval g, cval b)
+int set_pixel(int x, int y, struct rgb *rgb)
 {
 	int offset = bp.w * y * 3 + x * 3;
 
-	bp.data[offset]     = r; 
-	bp.data[offset + 1] = g; 
-	bp.data[offset + 2] = b; 
+	if (!rgb)
+		rgb = &def_rgb;
 
-	return 0;
-}
-
-
-int pixmap_get(int x, int y, cval *r, cval *g, cval *b)
-{
-	int offset = bp.w * y * 3 + x * 3;
-
-	*r = bp.data[offset]; 
-	*g = bp.data[offset + 1]; 
-	*b = bp.data[offset + 2]; 
+	bp.data[offset]     = (unsigned char) roundf(255.F * rgb->r);
+	bp.data[offset + 1] = (unsigned char) roundf(255.F * rgb->g);
+	bp.data[offset + 2] = (unsigned char) roundf(255.F * rgb->b);
 
 	return 0;
 }
@@ -77,7 +62,7 @@ static int write_ppm(const char *fname)
 }
 
 
-int pixmap_write(int fmt, const char *fname)
+int write_pixmap(int fmt, const char *fname)
 {
 	switch (fmt) {
 	case FORMAT_PPM:
@@ -87,5 +72,3 @@ int pixmap_write(int fmt, const char *fname)
 		return write_ppm(fname);
 	}
 }
-	
-
