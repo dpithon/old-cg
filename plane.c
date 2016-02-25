@@ -29,7 +29,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *plane(const struct coord *loc, const struct coord *norm)
-{	
+{
 	float p;
 	struct plane *pln = malloc(sizeof(struct plane));
 

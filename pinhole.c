@@ -11,7 +11,7 @@
 #include "ray.h"
 #include "rgb.h"
 #include "ipoint.h"
-#include "picture.h"
+#include "pixmap.h"
 #include "sampler.h"
 #include "renderer.h"
 

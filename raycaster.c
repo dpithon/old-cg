@@ -2,7 +2,7 @@
 #include "sampler.h"
 #include "renderer.h"
 #include "scene.h"
-#include "picture.h"
+#include "pixmap.h"
 #include "sphere.h"
 #include "cone.h"
 #include "paraboloid.h"
@@ -23,7 +23,7 @@ int main()
 	set_location(50, -10, 0);
 	set_target(0, 10, 0);
 	init_pinhole(W, H, 40.F);
-	init_picture(W, H);
+	init_pixmap(W, H);
 
 	s = cone(&cone_o, &VectorJ, 5.F, 10.F);
 	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
@@ -48,6 +48,6 @@ int main()
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++)
 			sampling(x, y);
-	
-	return save_picture("a.pnm");
+
+	return write_pixmap(FORMAT_PPM, "a.pnm");
 }

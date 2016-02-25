@@ -74,7 +74,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 
 struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 			 float a, float b, float c, float h)
-{	
+{
 	float p;
 	struct paraboloid *pb = malloc(sizeof(struct paraboloid));
 
