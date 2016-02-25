@@ -7,11 +7,11 @@
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "cylinder.h"
+#include "cone.h"
 #include "painter.h"
 
-#define H(s)		((struct cylinder*) s)->h
-#define RADIUS(s)	((struct cylinder*) s)->radius
+#define H(s)	((struct cone*) s)->h
+#define R(s)	((struct cone*) s)->r
 
 
 static bool check(float k, struct ipoint *i, const struct ray *ray,
@@ -26,14 +26,22 @@ static bool check(float k, struct ipoint *i, const struct ray *ray,
 }
 
 
-static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
+static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
 	float a, b, c, delta;
 
-	a = ray->v.x * ray->v.x + ray->v.z * ray->v.z;
-	b = 2.F * (ray->v.x * ray->s.x + ray->v.z * ray->s.z);
-	c = ray->s.x * ray->s.x + ray->s.z * ray->s.z - RADIUS(s) * RADIUS(s);;
+	float f = (H(s) * H(s)) / (R(s) * R(s));
+	float g = ray->s.y - H(s);
+
+	a = f * (ray->v.x * ray->v.x + ray->v.z * ray->v.z) -
+	    ray->v.y * ray->v.y;
+
+	b = 2.F * (f * (ray->v.x * ray->s.x + ray->v.z * ray->s.z) +
+	    ray->v.y * (H(s) - ray->s.y));
+
+	c = f * (ray->s.x * ray->s.x + ray->s.z * ray->s.z) -
+	    g * g;
 
 	delta = b * b - 4 * a * c;
 
@@ -69,41 +77,41 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
-struct shape *cylinder(const struct coord *loc, const struct coord *norm,
-			float radius, float h)
+struct shape *cone(const struct coord *loc, const struct coord *norm,
+		   float r, float h)
 {
 	float p;
-	struct cylinder *cy = malloc(sizeof(struct cylinder));
+	struct cone *co = malloc(sizeof(struct cone));
 
 	assert(is_point(loc));
 	assert(is_vector(norm));
 
-	unit(&cy->cs.j, norm);
-	cy->cs.o = *loc;
+	unit(&co->cs.j, norm);
+	co->cs.o = *loc;
 
-	if (is_collinear(&cy->cs.j, &VectorJ, &p)) {
+	if (is_collinear(&co->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {
-			cy->cs.i = VectorI;
-			cy->cs.k = VectorK;
+			co->cs.i = VectorI;
+			co->cs.k = VectorK;
 		} else {
-			cy->cs.i = VectorK;
-			cy->cs.k = VectorI;
+			co->cs.i = VectorK;
+			co->cs.k = VectorI;
 		}
 	} else {
-		cross(&cy->cs.k, &cy->cs.j, &VectorJ);
-		unit_me(&cy->cs.k);
-		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
+		cross(&co->cs.k, &co->cs.j, &VectorJ);
+		unit_me(&co->cs.k);
+		cross(&co->cs.i, &co->cs.j, &co->cs.k);
 	}
 
-	assert(is_cartesian_coord_system(&cy->cs.i, &cy->cs.j, &cy->cs.k));
+	assert(is_cartesian_coord_system(&co->cs.i, &co->cs.j, &co->cs.k));
 
-	change_of_coord_mat(&cy->cs);
+	change_of_coord_mat(&co->cs);
 
-	cy->h          = h;
-	cy->radius     = radius;
-	cy->intersect  = cylinder_intersect;
-	cy->paint      = default_painter;
-	cy->paint_data = 0;
+	co->h          = h;
+	co->r          = r;
+	co->intersect  = cone_intersect;
+	co->paint      = default_painter;
+	co->paint_data = 0;
 
-	return CAST_SHAPE(cy);
+	return CAST_SHAPE(co);
 }
