@@ -8,6 +8,7 @@
 #include "ray.h"
 #include "plane.h"
 #include "painter.h"
+#include "stack.h"
 
 
 static bool plane_intersect(struct ipoint *i, const struct ray *ray,
@@ -35,6 +36,9 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 
 	unit(&pln->cs.j, norm);
 	pln->cs.o = *loc;
+
+	transform(&pln->cs.j);
+	transform(&pln->cs.o);
 
 	if (is_collinear(&pln->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {

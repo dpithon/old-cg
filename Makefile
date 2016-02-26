@@ -8,7 +8,7 @@ CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(DEBUG)
 LDFLAGS=-lm
 OBJS=pinhole.o raycaster.o sampler.o scene.o log.o renderer.o\
      plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
-     paraboloid.o cylinder.o pixmap.o cone.o
+     paraboloid.o cylinder.o pixmap.o cone.o stack.o
 
 all: raycaster
 

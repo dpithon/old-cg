@@ -11,6 +11,7 @@
 #include "rgb.h"
 #include "ipoint.h"
 #include "plain-color.h"
+#include "stack.h"
 
 #define W	640
 #define H	480
@@ -35,12 +36,16 @@ int main()
 	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 	add_shape(s);
 
+	rotate_z(-15);
+	translate(0, -3, 0);
 	s = plane(&PointO, &VectorJ);
 	set_plain_colors(s, RGBRed);
-	//add_shape(s);
+	add_shape(s);
+
+	reset();
 
 	s = sphere(&PointO, 5.F);
-	set_plain_colors(s, RGBRed);
+	set_plain_colors(s, RGBBlue);
 	add_shape(s);
 
 	prepare_shape_matrices(pinhole_coord_system());
