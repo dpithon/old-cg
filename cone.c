@@ -14,18 +14,6 @@
 #define R(s)	((struct cone*) s)->r
 
 
-static bool check(float k, struct ipoint *i, const struct ray *ray,
-		  const struct shape *s)
-{
-	if (k > 0 && k < i->k) {
-		float y = k * ray->v.y + ray->s.y;
-		if (y >= 0 && y <= H(s))
-			return true;
-	}
-	return false;
-}
-
-
 static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
@@ -47,28 +35,63 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 
 	if (float_equals(delta, 0.F)) {
 		float k = -b / (2.F * a);
-		if (check(k, i, ray, s)) {
-			set_ipoint(i, s, FLAG_OUTSIDE, k);
-			return true;
-		}
-	} else if (delta > 0.F) {
-		float k1, k2, sqrt_delta;
-
-		sqrt_delta = sqrtf(delta);
-		k1 = (-b - sqrt_delta) / (2.F * a);
-		k2 = (-b + sqrt_delta) / (2.F * a);
-
-		if (k2 <= 0 || i->k <= k1)
+		if (k <= 0 || k > i->k)
 			return false;
 
-		if (check(k1, i, ray, s)) {
+		float y = k * ray->v.y + ray->s.y;
+		if (y < 0 || y > H(s)) 
+			return false;
+
+		if (ray->v.y > 0)
+			set_ipoint(i, s, FLAG_INSIDE, k);
+		else
+			set_ipoint(i, s, FLAG_OUTSIDE, k);
+		return true;
+
+	} else if (delta > 0.F) {
+		float ka, kb, k1, k2, sqrt_delta;
+		float y1, y2;
+
+		sqrt_delta = sqrtf(delta);
+		ka = (-b - sqrt_delta) / (2.F * a);
+		kb = (-b + sqrt_delta) / (2.F * a);
+		k1 = (ka < kb)? ka: kb;
+		k2 = (ka > kb)? ka: kb;
+
+		if (k2 <= 0 || k1 >= i->k)
+			return false;
+
+		y1 = k1 * ray->v.y + ray->s.y;
+		y2 = k2 * ray->v.y + ray->s.y;
+
+		bool e1 = (y1 >= 0) && (y1 <= H(s));
+		bool s1 = k1 > 0;
+		bool e2M = y2 <= H(s);
+		if (e1 && s1 && e2M) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
 
-		if (check(k2, i, ray, s)) {
-			/* TODO useless test 'k2 > 0' */
+		bool e2 = (y2 >= 0) && (y2 <= H(s));
+		bool e1p = y1 > H(s);
+		if (e2 && e1p) {
+			if (k2 >= i->k)
+				return false;
+			set_ipoint(i, s, FLAG_OUTSIDE, k2);
+			return true;
+		}
+
+		bool e1m = y1 < 0;
+		if (e2 && ((e1 && (!s1)) || e1m)) {
+			if (k2 >= i->k)
+				return false;
 			set_ipoint(i, s, FLAG_INSIDE, k2);
+			return true;
+		}
+
+		bool e2p = y2 > H(s);
+		if (e1 && e2p && s1) {
+			set_ipoint(i, s, FLAG_INSIDE, k1);
 			return true;
 		}
 	}
