@@ -10,25 +10,34 @@
 #include "cone.h"
 #include "painter.h"
 
+struct cone {
+	SHAPE_INF;
+	float r;
+	float h;
+	float h2r2;
+};
+
+
 #define H(s)	((struct cone*) s)->h
 #define R(s)	((struct cone*) s)->r
+#define H2R2(s)	((struct cone*) s)->h2r2
 
+#define V(a)    (ray->v.a)
 
 static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
 	float a, b, c, delta;
 
-	float f = (H(s) * H(s)) / (R(s) * R(s));
 	float g = ray->s.y - H(s);
 
-	a = f * (ray->v.x * ray->v.x + ray->v.z * ray->v.z) -
+	a = H2R2(s) * (V(x) * ray->v.x + ray->v.z * ray->v.z) -
 	    ray->v.y * ray->v.y;
 
-	b = 2.F * (f * (ray->v.x * ray->s.x + ray->v.z * ray->s.z) +
+	b = 2.F * (H2R2(s) * (ray->v.x * ray->s.x + ray->v.z * ray->s.z) +
 	    ray->v.y * (H(s) - ray->s.y));
 
-	c = f * (ray->s.x * ray->s.x + ray->s.z * ray->s.z) -
+	c = H2R2(s) * (ray->s.x * ray->s.x + ray->s.z * ray->s.z) -
 	    g * g;
 
 	delta = b * b - 4 * a * c;
@@ -132,6 +141,7 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
 
 	co->h          = h;
 	co->r          = r;
+	co->h2r2       = (h * h) / (r * r);
 	co->intersect  = cone_intersect;
 	co->paint      = default_painter;
 	co->paint_data = 0;
