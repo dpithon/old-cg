@@ -9,6 +9,8 @@
 #include "ray.h"
 #include "cone.h"
 #include "painter.h"
+#include "stack.h"
+#include "misc.h"
 
 struct cone {
 	SHAPE_INF;
@@ -23,86 +25,62 @@ struct cone {
 #define H2R2(s)	((struct cone*) s)->h2r2
 
 #define V(a)    (ray->v.a)
+#define S(a)    (ray->s.a)
+
+#define IN_RANGE(v) ((v) >= 0 && (v) <= H(s))
 
 static bool cone_intersect(struct ipoint *i, const struct ray *ray,
-				 const struct shape *s)
+			   const struct shape *s)
 {
-	float a, b, c, delta;
+	float f =  H(s) - S(y);
+	float a = H2R2(s) * (V(x) * V(x) + V(z) * V(z)) - V(y) * V(y);
+	float b = 2.F * (H2R2(s) * (V(x) * S(x) + V(z) * S(z)) + V(y) * f);
+	float c = H2R2(s) * (S(x) * S(x) + S(z) * S(z)) - f * f;
+	float delta = b * b - 4 * a * c;
 
-	float g = ray->s.y - H(s);
-
-	a = H2R2(s) * (V(x) * ray->v.x + ray->v.z * ray->v.z) -
-	    ray->v.y * ray->v.y;
-
-	b = 2.F * (H2R2(s) * (ray->v.x * ray->s.x + ray->v.z * ray->s.z) +
-	    ray->v.y * (H(s) - ray->s.y));
-
-	c = H2R2(s) * (ray->s.x * ray->s.x + ray->s.z * ray->s.z) -
-	    g * g;
-
-	delta = b * b - 4 * a * c;
+	if (delta < 0.)
+		return false;
 
 	if (float_equals(delta, 0.F)) {
 		float k = -b / (2.F * a);
 		if (k <= 0 || k > i->k)
 			return false;
 
-		float y = k * ray->v.y + ray->s.y;
-		if (y < 0 || y > H(s)) 
+		float y = k * V(y) + S(y);
+		if (!IN_RANGE(y)) 
 			return false;
 
-		if (ray->v.y > 0)
-			set_ipoint(i, s, FLAG_INSIDE, k);
-		else
-			set_ipoint(i, s, FLAG_OUTSIDE, k);
+		set_ipoint(i, s, (V(y) > 0)? FLAG_INSIDE: FLAG_OUTSIDE, k);
 		return true;
+	}
 
-	} else if (delta > 0.F) {
-		float ka, kb, k1, k2, sqrt_delta;
-		float y1, y2;
+	float sqrt_delta = sqrtf(delta);
+	float k1 = (-b - sqrt_delta) / (2.F * a);
+	float k2 = (-b + sqrt_delta) / (2.F * a);
 
-		sqrt_delta = sqrtf(delta);
-		ka = (-b - sqrt_delta) / (2.F * a);
-		kb = (-b + sqrt_delta) / (2.F * a);
-		k1 = (ka < kb)? ka: kb;
-		k2 = (ka > kb)? ka: kb;
+	ORDER_FLOAT(k1, k2);
+	if (k2 <= 0 || k1 >= i->k)
+		return false;
 
-		if (k2 <= 0 || k1 >= i->k)
-			return false;
+	float y1 = k1 * V(y) + S(y);
+	float y2 = k2 * V(y) + S(y);
 
-		y1 = k1 * ray->v.y + ray->s.y;
-		y2 = k2 * ray->v.y + ray->s.y;
+	if (IN_RANGE(y1) && k1 > 0) {
+		set_ipoint(i, s, y2 > H(s)? FLAG_INSIDE: FLAG_OUTSIDE, k1);
+		return true;
+	}
 
-		bool e1 = (y1 >= 0) && (y1 <= H(s));
-		bool s1 = k1 > 0;
-		bool e2M = y2 <= H(s);
-		if (e1 && s1 && e2M) {
-			set_ipoint(i, s, FLAG_OUTSIDE, k1);
-			return true;
-		}
+	if (k2 >= i->k)
+		return false;
 
-		bool e2p = y2 > H(s);
-		if (e1 && e2p && s1) {
-			set_ipoint(i, s, FLAG_INSIDE, k1);
-			return true;
-		}
+	if (IN_RANGE(y2) && y1 > H(s)) {
+		set_ipoint(i, s, FLAG_OUTSIDE, k2);
+		return true;
+	}
 
-		if (k2 >= i->k)
-			return false;
-
-		bool e2 = (y2 >= 0) && (y2 <= H(s));
-		bool e1p = y1 > H(s);
-		if (e2 && e1p) {
-			set_ipoint(i, s, FLAG_OUTSIDE, k2);
-			return true;
-		}
-
-		bool e1m = y1 < 0;
-		if (e2 && ((e1 && (!s1)) || e1m)) {
-			set_ipoint(i, s, FLAG_INSIDE, k2);
-			return true;
-		}
-
+	if (IN_RANGE(y2) && ((IN_RANGE(y1) && k1 <= 0) || y1 < 0)) {
+		set_ipoint(i, s, FLAG_INSIDE, k2);
+		return true;
 	}
 
 	return false;
@@ -121,6 +99,8 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
 	unit(&co->cs.j, norm);
 	co->cs.o = *loc;
 
+        transform(&co->cs.j);
+        transform(&co->cs.o);
 	if (is_collinear(&co->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {
 			co->cs.i = VectorI;

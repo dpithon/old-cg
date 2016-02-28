@@ -13,19 +13,51 @@
 #include "plain-color.h"
 #include "stack.h"
 
-#define W	640
-#define H	480
+#define W	500
+#define H	500
 
+void axes(void)
+{
+	struct shape *s;
+
+	s = cylinder(&PointO, &VectorI, .3F, 100.F);
+	set_plain_colors(s, RGBRed);
+	add_shape(s);
+
+	s = cylinder(&PointO, &VectorJ, .3F, 100.F);
+	set_plain_colors(s, RGBGreen);
+	add_shape(s);
+
+	s = cylinder(&PointO, &VectorK, .3F, 100.F);
+	set_plain_colors(s, RGBBlue);
+	add_shape(s);
+}
+	
 int main()
 {
 	struct shape *s;
-	struct coord cone_o = {0, 10, 10, 1};
 
-	set_location(50, -10, 0);
+	axes();
+
+	for (int a = 0.F; a < 360.F; a += 30.F) {
+		rotate_y(-1.F * a);
+		translate(25, 0, 0);
+		rotate_z(a);
+		s = cone(&PointO, &VectorI, 5, 10);
+		//s = paraboloid(&PointO, &VectorI, 2, 2, 2, 10);
+		//s = sphere(&PointO, 5);
+		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
+		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+		add_shape(s);
+		reset();
+	}
+
+	set_location(20, 90, 30);
 	set_target(0, 10, 0);
-	init_pinhole(W, H, 40.F);
+	init_pinhole(W, H, 50.F);
 	init_pixmap(W, H);
 
+	/*
 	s = cone(&cone_o, &VectorJ, 5.F, 10.F);
 	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
@@ -43,10 +75,11 @@ int main()
 	add_shape(s);
 
 	reset();
-
 	s = sphere(&PointO, 5.F);
 	set_plain_colors(s, RGBBlue);
 	add_shape(s);
+
+*/
 
 	prepare_shape_matrices(pinhole_coord_system());
 
