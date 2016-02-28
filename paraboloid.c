@@ -9,6 +9,7 @@
 #include "ray.h"
 #include "surfaces.h"
 #include "painter.h"
+#include "stack.h"
 
 
 struct paraboloid {
@@ -90,6 +91,9 @@ struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 
 	unit(&pb->cs.j, norm);
 	pb->cs.o = *loc;
+
+	transform(&pb->cs.j);
+	transform(&pb->cs.o);
 
 	if (is_collinear(&pb->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {

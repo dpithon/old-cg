@@ -9,8 +9,8 @@
 #include "stack.h"
 #include "surfaces.h"
 
-#define W	500
-#define H	500
+#define W	400
+#define H	400
 
 void axes(void)
 {
@@ -29,7 +29,7 @@ void axes(void)
 	add_shape(s);
 }
 	
-int main()
+void cones()
 {
 	struct shape *s;
 
@@ -48,9 +48,48 @@ int main()
 		reset();
 	}
 
-	set_location(20, 90, 30);
-	set_target(0, 10, 0);
-	init_pinhole(W, H, 50.F);
+	//set_location(20, 90, 30);
+	//set_target(0, 10, 0);
+}
+
+int main()
+{
+	struct shape *s;
+
+	s = plane(&PointO, &VectorJ);
+	set_plain_colors(s, RGBLightBlue);
+	add_shape(s);
+	
+	//axes();
+
+	translate(15, 0, 0);
+	s = cylinder(&PointO, &VectorJ, 4, 10);
+	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
+	add_shape(s);
+
+	reset();
+	s = cone(&PointO, &VectorJ, 5, 10);
+	set_plain_color(s, FLAG_OUTSIDE, RGBGreen);
+	set_plain_color(s, FLAG_INSIDE, RGBCyan);
+	add_shape(s);
+
+	reset();
+	translate(14, 5, 15);
+	s = sphere(&PointO, 4);
+	set_plain_colors(s, RGBYellow);
+	add_shape(s);
+
+	reset();
+	translate(3, 0, 13);
+	s = paraboloid(&PointO, &VectorJ, 2, 2, 1, 5);
+	set_plain_color(s, FLAG_OUTSIDE, RGBMagenta);
+	set_plain_color(s, FLAG_INSIDE, RGBRed);
+	add_shape(s);
+
+	set_location(25, 20, 50);
+	set_target(9, 8, 7);
+	init_pinhole(W, H, 40.F);
 	init_pixmap(W, H);
 
 	/*

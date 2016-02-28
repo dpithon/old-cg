@@ -8,6 +8,7 @@
 #include "ray.h"
 #include "surfaces.h"
 #include "painter.h"
+#include "stack.h"
 
 
 struct cylinder {
@@ -87,6 +88,9 @@ struct shape *cylinder(const struct coord *loc, const struct coord *norm,
 
 	unit(&cy->cs.j, norm);
 	cy->cs.o = *loc;
+
+	transform(&cy->cs.j);
+	transform(&cy->cs.o);
 
 	if (is_collinear(&cy->cs.j, &VectorJ, &p)) {
 		if (p > 0.F) {

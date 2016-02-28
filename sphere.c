@@ -8,6 +8,7 @@
 #include "ipoint.h"
 #include "ray.h"
 #include "painter.h"
+#include "stack.h"
 
 
 struct sphere {
@@ -64,6 +65,8 @@ struct shape *sphere(const struct coord *loc, float radius)
 	sph->cs.i   = VectorI;
 	sph->cs.j   = VectorJ;
 	sph->cs.k   = VectorK;
+
+	transform(&sph->cs.o);
 
 	change_of_coord_mat(&sph->cs);
 	sph->intersect  = sphere_intersect;
