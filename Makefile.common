@@ -1,0 +1,24 @@
+.PHONY: clean purge deps all
+
+CC=gcc
+LD=gcc
+
+OBJS=pinhole.o raycaster.o sampler.o scene.o log.o renderer.o\
+     plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
+     paraboloid.o cylinder.o pixmap.o cone.o stack.o
+
+clean:
+	rm -rf *.o *.gcda *.gcno
+
+purge: clean
+	rm -rf raycaster *.pnm html
+
+deps:
+	$(CC) -MM *.c >Makefile.deps
+
+raycaster: $(OBJS) 
+	$(LD) $(OBJS) -o $@ $(LDFLAGS) 
+
+all: raycaster
+
+include Makefile.deps
