@@ -4,12 +4,19 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "plane.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "paraboloid.h"
+#include "surfaces.h"
 #include "painter.h"
+
+
+struct paraboloid {
+	SHAPE_INF;
+	float a, b, c;
+	float h;
+};
+
 
 #define A(s) ((struct paraboloid*)s)->a
 #define B(s) ((struct paraboloid*)s)->b

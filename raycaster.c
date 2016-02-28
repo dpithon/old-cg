@@ -3,15 +3,11 @@
 #include "renderer.h"
 #include "scene.h"
 #include "pixmap.h"
-#include "sphere.h"
-#include "cone.h"
-#include "paraboloid.h"
-#include "cylinder.h"
-#include "plane.h"
 #include "rgb.h"
 #include "ipoint.h"
 #include "plain-color.h"
 #include "stack.h"
+#include "surfaces.h"
 
 #define W	500
 #define H	500

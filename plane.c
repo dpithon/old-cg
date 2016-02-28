@@ -2,13 +2,17 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "plane.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "plane.h"
+#include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
+
+
+struct plane {
+	SHAPE_INF;
+};
 
 
 static bool plane_intersect(struct ipoint *i, const struct ray *ray,

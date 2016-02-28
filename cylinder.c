@@ -3,12 +3,19 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "plane.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "cylinder.h"
+#include "surfaces.h"
 #include "painter.h"
+
+
+struct cylinder {
+	SHAPE_INF;
+	float radius;
+	float h;
+};
+
 
 #define H(s)		((struct cylinder*) s)->h
 #define RADIUS(s)	((struct cylinder*) s)->radius

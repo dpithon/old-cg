@@ -3,11 +3,17 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "sphere.h"
+#include "surfaces.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
 #include "painter.h"
+
+
+struct sphere {
+	SHAPE_INF;
+	float radius;
+};
 
 
 static bool sphere_intersect(struct ipoint *i, const struct ray *ray,

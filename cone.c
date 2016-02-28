@@ -3,11 +3,10 @@
 
 #include "vmath.h"
 #include "types.h"
-#include "plane.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "cone.h"
+#include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
 #include "misc.h"
