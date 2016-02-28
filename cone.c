@@ -72,28 +72,28 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 			return true;
 		}
 
+		bool e2p = y2 > H(s);
+		if (e1 && e2p && s1) {
+			set_ipoint(i, s, FLAG_INSIDE, k1);
+			return true;
+		}
+
+		if (k2 >= i->k)
+			return false;
+
 		bool e2 = (y2 >= 0) && (y2 <= H(s));
 		bool e1p = y1 > H(s);
 		if (e2 && e1p) {
-			if (k2 >= i->k)
-				return false;
 			set_ipoint(i, s, FLAG_OUTSIDE, k2);
 			return true;
 		}
 
 		bool e1m = y1 < 0;
 		if (e2 && ((e1 && (!s1)) || e1m)) {
-			if (k2 >= i->k)
-				return false;
 			set_ipoint(i, s, FLAG_INSIDE, k2);
 			return true;
 		}
 
-		bool e2p = y2 > H(s);
-		if (e1 && e2p && s1) {
-			set_ipoint(i, s, FLAG_INSIDE, k1);
-			return true;
-		}
 	}
 
 	return false;
