@@ -8,7 +8,7 @@ OBJS=pinhole.o raycaster.o sampler.o scene.o log.o renderer.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o
 
 clean:
-	rm -rf *.o *.gcda *.gcno
+	rm -rf *.o *.gcda *.gcno *.info
 
 purge: clean
 	rm -rf raycaster *.pnm html
