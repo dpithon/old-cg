@@ -7,6 +7,8 @@ OBJS=pinhole.o raycaster.o sampler.o scene.o log.o renderer.o\
      plane.o sphere.o vmath.o iomath.o painter.o ipoint.o plain-color.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o
 
+all: raycaster
+
 clean:
 	rm -rf *.o *.gcda *.gcno *.info
 
