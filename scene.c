@@ -5,28 +5,28 @@
 #include "ipoint.h"
 #include "ray.h"
 
-struct coord Location = {100.F, 100.F, 100.F, 1.F};
+struct coord Location = {100., 100., 100., 1.};
 struct coord Target   = POINT_O;
 
 static struct shape *list_head;
 static struct shape *list_tail;
 
 
-void set_location(float x, float y, float z)
+void set_location(double x, double y, double z)
 {
 	Location.x = x;
 	Location.y = y;
 	Location.z = z;
-	Location.w = 1.F;
+	Location.w = 1.;
 }
 
 
-void set_target(float x, float y, float z)
+void set_target(double x, double y, double z)
 {
 	Target.x = x;
 	Target.y = y;
 	Target.z = z;
-	Target.w = 1.F;
+	Target.w = 1.;
 }
 
 

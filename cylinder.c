@@ -13,8 +13,8 @@
 
 struct cylinder {
 	SHAPE_INF;
-	float radius;
-	float h;
+	double radius;
+	double h;
 };
 
 
@@ -22,11 +22,11 @@ struct cylinder {
 #define RADIUS(s)	((struct cylinder*) s)->radius
 
 
-static bool check(float k, struct ipoint *i, const struct ray *ray,
+static bool check(double k, struct ipoint *i, const struct ray *ray,
 		  const struct shape *s)
 {
 	if (k > 0 && k < i->k) {
-		float y = k * ray->v.y + ray->s.y;
+		double y = k * ray->v.y + ray->s.y;
 		if (y >= 0 && y <= H(s))
 			return true;
 	}
@@ -37,26 +37,26 @@ static bool check(float k, struct ipoint *i, const struct ray *ray,
 static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
-	float a, b, c, delta;
+	double a, b, c, delta;
 
 	a = ray->v.x * ray->v.x + ray->v.z * ray->v.z;
-	b = 2.F * (ray->v.x * ray->s.x + ray->v.z * ray->s.z);
+	b = 2. * (ray->v.x * ray->s.x + ray->v.z * ray->s.z);
 	c = ray->s.x * ray->s.x + ray->s.z * ray->s.z - RADIUS(s) * RADIUS(s);;
 
 	delta = b * b - 4 * a * c;
 
-	if (float_equals(delta, 0.F)) {
-		float k = -b / (2.F * a);
+	if (double_equals(delta, 0.)) {
+		double k = -b / (2. * a);
 		if (check(k, i, ray, s)) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k);
 			return true;
 		}
-	} else if (delta > 0.F) {
-		float k1, k2, sqrt_delta;
+	} else if (delta > 0.) {
+		double k1, k2, sqrt_delta;
 
 		sqrt_delta = sqrtf(delta);
-		k1 = (-b - sqrt_delta) / (2.F * a);
-		k2 = (-b + sqrt_delta) / (2.F * a);
+		k1 = (-b - sqrt_delta) / (2. * a);
+		k2 = (-b + sqrt_delta) / (2. * a);
 
 		if (k2 <= 0 || i->k <= k1)
 			return false;
@@ -78,9 +78,9 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *cylinder(const struct coord *loc, const struct coord *norm,
-			float radius, float h)
+			double radius, double h)
 {
-	float p;
+	double p;
 	struct cylinder *cy = malloc(sizeof(struct cylinder));
 
 	assert(is_point(loc));
@@ -93,7 +93,7 @@ struct shape *cylinder(const struct coord *loc, const struct coord *norm,
 	transform(&cy->cs.o);
 
 	if (is_collinear(&cy->cs.j, &VectorJ, &p)) {
-		if (p > 0.F) {
+		if (p > 0.) {
 			cy->cs.i = VectorI;
 			cy->cs.k = VectorK;
 		} else {

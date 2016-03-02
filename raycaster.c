@@ -16,15 +16,15 @@ void axes(void)
 {
 	struct shape *s;
 
-	s = cylinder(&PointO, &VectorI, .3F, 100.F);
+	s = cylinder(&PointO, &VectorI, .3, 100.);
 	set_plain_colors(s, RGBRed);
 	add_shape(s);
 
-	s = cylinder(&PointO, &VectorJ, .3F, 100.F);
+	s = cylinder(&PointO, &VectorJ, .3, 100.);
 	set_plain_colors(s, RGBGreen);
 	add_shape(s);
 
-	s = cylinder(&PointO, &VectorK, .3F, 100.F);
+	s = cylinder(&PointO, &VectorK, .3, 100.);
 	set_plain_colors(s, RGBBlue);
 	add_shape(s);
 }
@@ -35,8 +35,8 @@ void cones()
 
 	axes();
 
-	for (int a = 0.F; a < 360.F; a += 30.F) {
-		rotate_y(-1.F * a);
+	for (int a = 0.; a < 360.; a += 30.) {
+		rotate_y(-1. * a);
 		translate(25, 0, 0);
 		rotate_z(a);
 		s = cone(&PointO, &VectorI, 5, 10);
@@ -62,6 +62,8 @@ int main()
 	
 	//axes();
 
+
+	reset();
 	translate(15, 0, 0);
 	s = cylinder(&PointO, &VectorJ, 4, 10);
 	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
@@ -75,30 +77,37 @@ int main()
 	add_shape(s);
 
 	reset();
-	translate(14, 5, 15);
+	translate(14, 4, 15);
 	s = sphere(&PointO, 4);
 	set_plain_colors(s, RGBYellow);
 	add_shape(s);
 
 	reset();
 	translate(3, 0, 13);
-	s = paraboloid(&PointO, &VectorJ, 2, 2, 1, 5);
+	s = paraboloid(&PointO, &VectorJ, 5, 5, 5., 5.);
 	set_plain_color(s, FLAG_OUTSIDE, RGBMagenta);
 	set_plain_color(s, FLAG_INSIDE, RGBRed);
 	add_shape(s);
 
-	set_location(25, 20, 50);
-	set_target(9, 8, 7);
-	init_pinhole(W, H, 40.F);
-	init_pixmap(W, H);
-
-	/*
-	s = cone(&cone_o, &VectorJ, 5.F, 10.F);
+	reset();
+	translate(3, 5, 13);
+	s = cylinder(&PointO, &VectorJ, 5, 5);
 	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 	add_shape(s);
 
-	s = cylinder(&PointO, &VectorJ, 5.F, 10.F);
+	set_location(3, 30, 13);
+	set_target(3, 8, 13);
+	init_pinhole(W, H, 40.);
+	init_pixmap(W, H);
+
+	/*
+	s = cone(&cone_o, &VectorJ, 5., 10.);
+	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
+	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+	add_shape(s);
+
+	s = cylinder(&PointO, &VectorJ, 5., 10.);
 	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 	add_shape(s);
@@ -110,7 +119,7 @@ int main()
 	add_shape(s);
 
 	reset();
-	s = sphere(&PointO, 5.F);
+	s = sphere(&PointO, 5.);
 	set_plain_colors(s, RGBBlue);
 	add_shape(s);
 

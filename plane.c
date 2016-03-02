@@ -18,9 +18,9 @@ struct plane {
 static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 			    const struct shape *s)
 {
-	float k;
+	double k;
 
-	if (float_equals(ray->v.y, 0.F))
+	if (double_equals(ray->v.y, 0.))
 		return false;
 
 	k = - (ray->s.y / ray->v.y);
@@ -35,7 +35,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 
 struct shape *plane(const struct coord *loc, const struct coord *norm)
 {
-	float p;
+	double p;
 	struct plane *pln = malloc(sizeof(struct plane));
 
 	unit(&pln->cs.j, norm);
@@ -45,7 +45,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	transform(&pln->cs.o);
 
 	if (is_collinear(&pln->cs.j, &VectorJ, &p)) {
-		if (p > 0.F) {
+		if (p > 0.) {
 			pln->cs.i = VectorI;
 			pln->cs.k = VectorK;
 		} else {

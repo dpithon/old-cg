@@ -1,9 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#ifndef bool
-typedef enum { false = 0, true = 1 } bool;
-#endif /* bool */
+#include <stdbool.h>
 
 struct ipoint;
 struct ray;

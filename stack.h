@@ -1,10 +1,10 @@
 #ifndef STACK_H
 #define STACK_H
 
-void translate(float, float, float);
-void rotate_x(float);
-void rotate_y(float);
-void rotate_z(float);
+void translate(double, double, double);
+void rotate_x(double);
+void rotate_y(double);
+void rotate_z(double);
 
 void pop(void);
 void reset(void);

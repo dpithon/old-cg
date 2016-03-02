@@ -10,7 +10,7 @@ static struct matrix stack[STACK_SIZE] = { MATRIX_ID };
 static struct matrix mat;
 
 
-void translate(float x, float y, float z)
+void translate(double x, double y, double z)
 {
 	static struct coord t = POINT_O;
 
@@ -27,10 +27,10 @@ void translate(float x, float y, float z)
 }
 
 
-void rotate_x(float deg)
+void rotate_x(double deg)
 {
 	if (index < MAX_INDEX) {
-		rotationx(&mat, deg * M_PI / 180.F);
+		rotationx(&mat, deg * M_PI / 180.);
 		matmat(&stack[index + 1], &stack[index], &mat);
 		index ++;
 	} else {
@@ -39,10 +39,10 @@ void rotate_x(float deg)
 }
 
 
-void rotate_y(float deg)
+void rotate_y(double deg)
 {
 	if (index < MAX_INDEX) {
-		rotationy(&mat, deg * M_PI / 180.F);
+		rotationy(&mat, deg * M_PI / 180.);
 		matmat(&stack[index + 1], &stack[index], &mat);
 		index ++;
 	} else {
@@ -51,10 +51,10 @@ void rotate_y(float deg)
 }
 
 
-void rotate_z(float deg)
+void rotate_z(double deg)
 {
 	if (index < MAX_INDEX) {
-		rotationz(&mat, deg * M_PI / 180.F);
+		rotationz(&mat, deg * M_PI / 180.);
 		matmat(&stack[index + 1], &stack[index], &mat);
 		index ++;
 	} else {

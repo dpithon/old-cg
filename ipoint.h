@@ -25,10 +25,10 @@ struct ipoint {
 	struct coord i;
 	const struct shape *shape;
 	int    flags;
-	float  k;
+	double  k;
 };
 
 extern void reset_ipoint(struct ipoint*);
-extern void set_ipoint(struct ipoint*, const struct shape*, int, float);
+extern void set_ipoint(struct ipoint*, const struct shape*, int, double);
 
 #endif /* IPOINT_H */

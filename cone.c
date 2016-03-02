@@ -13,9 +13,9 @@
 
 struct cone {
 	SHAPE_INF;
-	float r;
-	float h;
-	float h2r2;
+	double r;
+	double h;
+	double h2r2;
 };
 
 
@@ -31,21 +31,21 @@ struct cone {
 static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 			   const struct shape *s)
 {
-	float f =  H(s) - S(y);
-	float a = H2R2(s) * (V(x) * V(x) + V(z) * V(z)) - V(y) * V(y);
-	float b = 2.F * (H2R2(s) * (V(x) * S(x) + V(z) * S(z)) + V(y) * f);
-	float c = H2R2(s) * (S(x) * S(x) + S(z) * S(z)) - f * f;
-	float delta = b * b - 4 * a * c;
+	double f =  H(s) - S(y);
+	double a = H2R2(s) * (V(x) * V(x) + V(z) * V(z)) - V(y) * V(y);
+	double b = 2. * (H2R2(s) * (V(x) * S(x) + V(z) * S(z)) + V(y) * f);
+	double c = H2R2(s) * (S(x) * S(x) + S(z) * S(z)) - f * f;
+	double delta = b * b - 4 * a * c;
 
 	if (delta < 0.)
 		return false;
 
-	if (float_equals(delta, 0.F)) {
-		float k = -b / (2.F * a);
+	if (double_equals(delta, 0.)) {
+		double k = -b / (2. * a);
 		if (k <= 0 || k > i->k)
 			return false;
 
-		float y = k * V(y) + S(y);
+		double y = k * V(y) + S(y);
 		if (!IN_RANGE(y)) 
 			return false;
 
@@ -53,16 +53,16 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 		return true;
 	}
 
-	float sqrt_delta = sqrtf(delta);
-	float k1 = (-b - sqrt_delta) / (2.F * a);
-	float k2 = (-b + sqrt_delta) / (2.F * a);
+	double sqrt_delta = sqrtf(delta);
+	double k1 = (-b - sqrt_delta) / (2. * a);
+	double k2 = (-b + sqrt_delta) / (2. * a);
 
 	ORDER_FLOAT(k1, k2);
 	if (k2 <= 0 || k1 >= i->k)
 		return false;
 
-	float y1 = k1 * V(y) + S(y);
-	float y2 = k2 * V(y) + S(y);
+	double y1 = k1 * V(y) + S(y);
+	double y2 = k2 * V(y) + S(y);
 
 	if (IN_RANGE(y1) && k1 > 0) {
 		set_ipoint(i, s, y2 > H(s)? FLAG_INSIDE: FLAG_OUTSIDE, k1);
@@ -87,9 +87,9 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *cone(const struct coord *loc, const struct coord *norm,
-		   float r, float h)
+		   double r, double h)
 {
-	float p;
+	double p;
 	struct cone *co = malloc(sizeof(struct cone));
 
 	assert(is_point(loc));
@@ -101,7 +101,7 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
         transform(&co->cs.j);
         transform(&co->cs.o);
 	if (is_collinear(&co->cs.j, &VectorJ, &p)) {
-		if (p > 0.F) {
+		if (p > 0.) {
 			co->cs.i = VectorI;
 			co->cs.k = VectorK;
 		} else {

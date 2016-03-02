@@ -20,11 +20,11 @@
 static struct coord_system coord_system = STANDARD_CS;
 
 /* Focal length and field of view */
-static float focal, fov = 40.F;
+static double focal, fov = 40.;
 
 /* Pinhole camera sensor width and height and mapping constants */
 static int width, height;
-static float sqr_edge, fac_xy, off_x, off_y;
+static double sqr_edge, fac_xy, off_x, off_y;
 
 
 /**
@@ -38,7 +38,7 @@ static float sqr_edge, fac_xy, off_x, off_y;
  */
 static bool compute_coordsys(void)
 {
-	float p;
+	double p;
 
 	if (is_pequal(&Location, &Target))
 		return false;
@@ -47,7 +47,7 @@ static bool compute_coordsys(void)
 
 	unit_vector(&coord_system.k, &Location, &Target);
 	if (is_collinear(&coord_system.k, &VectorJ, &p)) {
-		if (p > 0.F) {
+		if (p > 0.) {
 			coord_system.i = VectorK;
 			coord_system.j = VectorI;
 		} else {
@@ -70,13 +70,13 @@ static bool compute_coordsys(void)
  *
  * return false if field of view is invalid.
  */
-static bool set_fov(float f)
+static bool set_fov(double f)
 {
-	if (f <= 0.F || f >= 180.F)
+	if (f <= 0. || f >= 180.)
 		return false;
 
 	fov = f;
-	focal = 1.F / (2.F * tanf(f * M_PI / 360.F));
+	focal = 1. / (2. * tan(f * M_PI / 360.));
 	return true;
 }
 
@@ -97,10 +97,10 @@ static bool init_mapping(int w, int h)
 	width  = w;
 	height = h;
 
-	sqr_edge = 1.F / ((float) width);
+	sqr_edge = 1. / ((double) width);
 	fac_xy   = - sqr_edge;
-	off_x    = 0.5F - sqr_edge;
-	off_y    = ((float) height) / ((float) (2 * width)) - sqr_edge;
+	off_x    = 0.5 - sqr_edge;
+	off_y    = ((double) height) / ((double) (2 * width)) - sqr_edge;
 
 	return true;
 }
@@ -116,10 +116,10 @@ static bool init_mapping(int w, int h)
  */
 static void map_pixel(struct coord *c, int x, int y)
 {
-	c->x = ((float) x) * fac_xy + off_x;
-	c->y = ((float) y) * fac_xy + off_y;
+	c->x = ((double) x) * fac_xy + off_x;
+	c->y = ((double) y) * fac_xy + off_y;
 	c->z = - focal;
-	c->w = 1.F;
+	c->w = 1.;
 }
 
 
@@ -139,8 +139,8 @@ static void sampling_center(int px, int py)
 	ray.s = PointO;
 
 	map_pixel(&center, px, py);
-	center.x += sqr_edge / 2.F;
-	center.y += sqr_edge / 2.F;
+	center.x += sqr_edge / 2.;
+	center.y += sqr_edge / 2.;
 
 	unit_vector(&ray.v, &center, &PointO);
 	reset_ipoint(&i);
@@ -164,7 +164,7 @@ static void (*samplers[])(int, int) = { sampling_center, 0 };
  * fov: field of view
  *
  */
-bool init_pinhole(int w, int h, float fov)
+bool init_pinhole(int w, int h, double fov)
 {
 	if (!set_fov(fov))
 		return false;

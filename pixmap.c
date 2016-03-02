@@ -39,9 +39,9 @@ int set_pixel(int x, int y, struct rgb *rgb)
 	if (!rgb)
 		rgb = &def_rgb;
 
-	bp.data[offset]     = (unsigned char) roundf(255.F * rgb->r);
-	bp.data[offset + 1] = (unsigned char) roundf(255.F * rgb->g);
-	bp.data[offset + 2] = (unsigned char) roundf(255.F * rgb->b);
+	bp.data[offset]     = (unsigned char) roundf(255. * rgb->r);
+	bp.data[offset + 1] = (unsigned char) roundf(255. * rgb->g);
+	bp.data[offset + 2] = (unsigned char) roundf(255. * rgb->b);
 
 	return 0;
 }

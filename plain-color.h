@@ -10,7 +10,7 @@ struct plain_color {
 	struct rgb rgb[2];
 };
 
-extern void set_plain_colors(struct shape*, float, float, float);
-extern void set_plain_color(struct shape*, int, float, float, float);
+extern void set_plain_colors(struct shape*, double, double, double);
+extern void set_plain_color(struct shape*, int, double, double, double);
 
 #endif /* PLAIN_COLOR_H */
