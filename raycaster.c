@@ -87,6 +87,15 @@ int main()
 	set_plain_color(s, FLAG_INSIDE, RGBRed);
 	add_shape(s);
 
+	reset();
+	struct coord mj;
+	scale(&mj, &VectorJ, -1.);
+	translate(-5, 10, 5);
+	s = cone(&PointO, &mj, 5, 10);
+	set_plain_color(s, FLAG_OUTSIDE, RGBGreen);
+	set_plain_color(s, FLAG_INSIDE, RGBCyan);
+	add_shape(s);
+
 	set_location(33, 17, 40);
 	set_target(10, 5, 9);
 	init_pinhole(W, H, 40.);
