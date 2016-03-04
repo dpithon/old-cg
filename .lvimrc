@@ -1,2 +1,2 @@
-map <A-r> :silent exec "!raycaster 2>&1 >>raycaster.log"<CR>
+map <A-r> :silent exec "!raycaster &>>raycaster.log"<CR>
 map <A-m> :w<CR>:silent exec "!make &>>make.log"<CR>
