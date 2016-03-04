@@ -18,6 +18,8 @@ struct rgb {
 #define RGBMagenta	1.00, 0.00, 1.00
 #define RGBCyan		0.00, 1.00, 1.00
 
+#define RGBOrange       1.00, 0.50, 0.00
+
 #define RGBLightGray	0.80, 0.80, 0.80
 #define RGBDarkGray	0.20, 0.20, 0.20
 #define RGBLightBlue	0.06, 0.06, 0.86
@@ -31,6 +33,7 @@ struct rgb {
 #define Yellow		{ RGBYellow	 }
 #define Magenta		{ RGBMagenta	 }
 #define Cyan		{ RGBCyan	 }
+#define Orange		{ RGBOrange	 }
 #define LightGray	{ RGBLightGray	 }
 #define DarkGray	{ RGBDarkGray	 }
 #define LightBlue	{ RGBLightBlue	 }
