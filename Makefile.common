@@ -19,7 +19,7 @@ conf:
 
 run: raycaster
 	@echo -e "\033[32mRUN\033[0m"
-	@./raycaster &>>raytracer.log
+	@./raycaster &>>raycaster.log
 
 clean:
 	@rm -rf *.o *.gcda *.gcno *.info
