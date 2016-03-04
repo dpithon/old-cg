@@ -1,2 +1,3 @@
 map <A-r> :silent exec "!raycaster &>>raycaster.log"<CR>
 map <A-m> :w<CR>:silent exec "!make &>>make.log"<CR>
+map <A-x> :w<CR>:silent exec "!make purge deps &>>make.log"<CR>
