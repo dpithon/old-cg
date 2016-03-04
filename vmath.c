@@ -22,7 +22,7 @@ const struct coord  VectorJ  = VECTOR_J;
 const struct coord  VectorK  = VECTOR_K;
 const struct coord  PointO   = POINT_O;
 
-static double vmset_eps   = 1e-12;
+static double vmset_eps   = 1e-4;
 
 
 bool double_equals(double a, double b)

@@ -9,7 +9,7 @@ void print_matrix(const char *pfx, const struct matrix *m)
 
 	for (int r = 0; r < 4; r++) {
 		for (int c = 0; c < 4; c++) {
-			printf("%6.2f ", m->cell[r][c]);
+			printf("%15.11f ", m->cell[r][c]);
 		}
 		printf("\n");
 	}

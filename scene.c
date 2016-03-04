@@ -4,6 +4,7 @@
 #include "shape.h"
 #include "ipoint.h"
 #include "ray.h"
+#include "log.h"
 
 struct coord Location = {100., 100., 100., 1.};
 struct coord Target   = POINT_O;
@@ -69,7 +70,10 @@ void prepare_shape_matrices(const struct coord_system *cam_cs)
 		matmat(&s->cam_to_shp, &s->cs.mi, &cam_cs->m);
 		matmat(&s->shp_to_cam, &cam_cs->mi, &s->cs.m);
 		matmat(&id, &s->cam_to_shp, &s->shp_to_cam);
-		assert(is_mequal(&id, &MatrixId));
+		if (!is_mequal(&id, &MatrixId)) {
+			print_matrix("id:", &id);
+			fatal("matrix is not id!");
+		}
 
 		s = s->next;
 	}

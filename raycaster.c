@@ -28,7 +28,7 @@ void axes(void)
 	set_plain_colors(s, RGBBlue);
 	add_shape(s);
 }
-	
+
 void cones()
 {
 	struct shape *s;
@@ -56,12 +56,10 @@ int main()
 {
 	struct shape *s;
 
+	translate(0, -0.01, 0);
 	s = plane(&PointO, &VectorJ);
 	set_plain_colors(s, RGBLightBlue);
 	add_shape(s);
-	
-	//axes();
-
 
 	reset();
 	translate(15, 0, 0);
@@ -89,41 +87,11 @@ int main()
 	set_plain_color(s, FLAG_INSIDE, RGBRed);
 	add_shape(s);
 
-	reset();
-	translate(3, 5, 13);
-	s = cylinder(&PointO, &VectorJ, 5, 5);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-	add_shape(s);
-
-	set_location(3, 30, 13);
-	set_target(3, 8, 13);
+	set_location(33, 17, 40);
+	set_target(10, 5, 9);
 	init_pinhole(W, H, 40.);
 	init_pixmap(W, H);
 
-	/*
-	s = cone(&cone_o, &VectorJ, 5., 10.);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-	add_shape(s);
-
-	s = cylinder(&PointO, &VectorJ, 5., 10.);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-	add_shape(s);
-
-	rotate_z(-15);
-	translate(0, -3, 0);
-	s = plane(&PointO, &VectorJ);
-	set_plain_colors(s, RGBRed);
-	add_shape(s);
-
-	reset();
-	s = sphere(&PointO, 5.);
-	set_plain_colors(s, RGBBlue);
-	add_shape(s);
-
-*/
 
 	prepare_shape_matrices(pinhole_coord_system());
 

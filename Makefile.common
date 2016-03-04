@@ -23,4 +23,7 @@ raycaster: $(OBJS)
 
 all: raycaster
 
+tags:
+	ctags -R --exclude='.git' .
+
 include Makefile.deps

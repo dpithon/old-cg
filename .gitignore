@@ -5,3 +5,5 @@
 *.gch
 *.a
 Makefile.deps
+tags
+*.log
