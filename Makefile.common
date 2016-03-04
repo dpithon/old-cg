@@ -1,4 +1,4 @@
-.PHONY: clean purge deps all tags
+.PHONY: clean purge deps all tags conf
 
 CC=gcc
 LD=gcc
@@ -7,19 +7,29 @@ OBJS=pinhole.o raycaster.o sampler.o scene.o debug.o renderer.o\
      plane.o sphere.o vmath.o painter.o ipoint.o plain-color.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o
 
-all: raycaster
+all: conf raycaster
+
+conf:
+	@echo "-----------------------------"
+	@echo "CFLAGS  :" $(CFLAGS)
+	@echo "LDFLAGS :" $(LDFLAGS)
+	@echo
 
 clean:
-	rm -rf *.o *.gcda *.gcno *.info
+	@rm -rf *.o *.gcda *.gcno *.info
+	@echo -e "\033[31mCLEAN\033[0m"
 
 purge: clean
-	rm -rf raycaster *.pnm html
+	@rm -rf raycaster *.pnm html
+	@echo -e "\033[31mPURGE\033[0m"
 
 deps:
-	$(CC) -MM *.c >Makefile.deps
+	@$(CC) -MM *.c >Makefile.deps
+	@echo -e "\033[32mDEPS\033[0m"
 
 raycaster: $(OBJS) 
-	$(LD) $(OBJS) -o $@ $(LDFLAGS) 
+	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
+	@echo -e "\033[33mLD\033[0m $@"
 
 all: raycaster
 
@@ -28,3 +38,7 @@ tags:
 	ctags -R --exclude='.git' .
 
 include Makefile.deps
+
+%.o: %.c
+	@$(CC) $(CFLAGS) -c -o $@ $<
+	@echo -e "\033[33mCC\033[0m $<"
