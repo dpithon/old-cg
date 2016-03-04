@@ -194,7 +194,7 @@ struct coord *scale(struct coord *v, const struct coord *u, double k)
 	v->x = u->x * k;
 	v->y = u->y * k;
 	v->z = u->z * k;
-	v->w = u->w * k;
+	v->w = u->w;
 
 	return v;
 }
