@@ -64,16 +64,16 @@ void add_shape(struct shape *shp)
 void prepare_shape_matrices(const struct coord_system *cam_cs)
 {
 	struct shape *s = list_head;
-	struct matrix id;
 
 	while (s) {
 		matmat(&s->cam_to_shp, &s->cs.mi, &cam_cs->m);
 		matmat(&s->shp_to_cam, &cam_cs->mi, &s->cs.m);
+
+		#ifndef NDEBUG
+		struct matrix id;
 		matmat(&id, &s->cam_to_shp, &s->shp_to_cam);
-		if (!is_mequal(&id, &MatrixId)) {
-			print_matrix("id:", &id);
-			fatal("matrix is not id!");
-		}
+		assert_is_mequal(&id, &MatrixId);
+		#endif /* NDEBUG */
 
 		s = s->next;
 	}
