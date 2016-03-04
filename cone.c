@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 
 #include "vmath.h"
@@ -10,6 +9,7 @@
 #include "painter.h"
 #include "stack.h"
 #include "misc.h"
+#include "debug.h"
 
 struct cone {
 	SHAPE_INF;
@@ -92,8 +92,8 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
 	double p;
 	struct cone *co = malloc(sizeof(struct cone));
 
-	assert(is_point(loc));
-	assert(is_vector(norm));
+	assert_is_point(loc);
+	assert_is_vector(norm);
 
 	unit(&co->cs.j, norm);
 	co->cs.o = *loc;
@@ -114,7 +114,7 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
 		cross(&co->cs.i, &co->cs.j, &co->cs.k);
 	}
 
-	assert(is_cartesian_coord_system(&co->cs.i, &co->cs.j, &co->cs.k));
+	assert_is_cartesian_coord_system(&co->cs.i, &co->cs.j, &co->cs.k);
 
 	change_of_coord_mat(&co->cs);
 

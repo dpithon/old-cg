@@ -92,7 +92,6 @@ int main()
 	init_pinhole(W, H, 40.);
 	init_pixmap(W, H);
 
-
 	prepare_shape_matrices(pinhole_coord_system());
 
 	for (int x = 0; x < W; x++)

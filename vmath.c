@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
@@ -6,6 +5,7 @@
 #include <time.h>
 
 
+#include "debug.h"
 #include "vmath.h"
 
 #define DOT(u,v) 	 ((u)->x * (v)->x + (u)->y * (v)->y + (u)->z * (v)->z)
@@ -58,7 +58,7 @@ bool is_vector(const struct coord *c)
 
 bool is_vzero(const struct coord *v)
 {
-	assert(is_vector(v));
+	assert_is_vector(v);
 
 	return double_equals(v->x, 0.) && double_equals(v->y, 0.) &&
 		double_equals(v->z, 0.);
@@ -67,7 +67,7 @@ bool is_vzero(const struct coord *v)
 
 bool is_vunit(const struct coord *v)
 {
-	assert(is_vector(v));
+	assert_is_vector(v);
 
 	return double_equals(len(v), 1.);
 }
@@ -75,8 +75,8 @@ bool is_vunit(const struct coord *v)
 
 bool is_vortho(const struct coord *u, const struct coord *v)
 {
-	assert(is_vector(u)); /* u, w are vectors */
-	assert(is_vector(v));
+	assert_is_vector(u); /* u, w are vectors */
+	assert_is_vector(v);
 
 	return double_equals(DOT(u, v), 0.);
 }
@@ -84,8 +84,8 @@ bool is_vortho(const struct coord *u, const struct coord *v)
 
 bool is_vequal(const struct coord *u, const struct coord *v)
 {
-	assert(is_vector(u)); /* u, w are vectors */
-	assert(is_vector(v));
+	assert_is_vector(u); /* u, w are vectors */
+	assert_is_vector(v);
 
 	return double_equals(u->x, v->x) && double_equals(u->y, v->y) &&
 	       double_equals(u->z, v->z) && double_equals(u->w, v->w);
@@ -94,8 +94,8 @@ bool is_vequal(const struct coord *u, const struct coord *v)
 
 bool is_pequal(const struct coord *u, const struct coord *v)
 {
-	assert(is_point(u)); /* u, w are points */
-	assert(is_point(v));
+	assert_is_point(u); /* u, w are points */
+	assert_is_point(v);
 
 	return double_equals(u->x, v->x) && double_equals(u->y, v->y) &&
 	       double_equals(u->z, v->z) && double_equals(u->w, v->w);
@@ -119,11 +119,11 @@ bool is_collinear(const struct coord *u, const struct coord *v, double *k)
 	struct coord w;
 	double tmp;
 
+	assert_is_vector(u);
+	assert_is_vector(v);
+
 	if (k == NULL)
 		k = &tmp;
-
-	assert(is_vector(u));
-	assert(is_vector(v));
 
 	if (is_vzero(u) || is_vzero(v))
 		return true;
@@ -154,7 +154,7 @@ bool is_cartesian_coord_system(const struct coord *i, const struct coord *j,
 
 double len(const struct coord *v)
 {
-	assert(is_vector(v));
+	assert_is_vector(v);
 
 	return sqrtf(DOT(v, v));
 }
@@ -162,8 +162,8 @@ double len(const struct coord *v)
 
 double dot(const struct coord *v, const struct coord *u)
 {
-	assert(is_vector(u));
-	assert(is_vector(v));
+	assert_is_vector(u);
+	assert_is_vector(v);
 
 	return DOT(u, v);
 }
@@ -171,8 +171,8 @@ double dot(const struct coord *v, const struct coord *u)
 
 struct coord *vector(struct coord *v, const struct coord *p, const struct coord *q)
 {
-	assert(is_point(p));
-	assert(is_point(q));
+	assert_is_point(p);
+	assert_is_point(q);
 
 	v->x = q->x / q->w - p->x / p->w;
 	v->y = q->y / q->w - p->y / p->w;
@@ -212,8 +212,8 @@ struct coord *scale_me(struct coord *v, double k)
 
 struct coord *unit(struct coord *v, const struct coord *u)
 {
-	assert(is_vector(u));
-	assert(! is_vzero(u));
+	assert_is_vector(u);
+	assert_is_not_vzero(u);
 
 	double l = sqrtf(DOT(u, u));
 
@@ -228,8 +228,8 @@ struct coord *unit(struct coord *v, const struct coord *u)
 
 struct coord *unit_me(struct coord *v)
 {
-	assert(is_vector(v));
-	assert(! is_vzero(v));
+	assert_is_vector(v);
+	assert_is_not_vzero(v);
 
 	double l = sqrtf(DOT(v, v));
 
@@ -284,8 +284,8 @@ struct coord *sub_me(struct coord *v, const struct coord *u)
 
 struct coord *cross(struct coord *v, const struct coord *u, const struct coord *w)
 {
-	assert(is_vector(u));
-	assert(is_vector(w));
+	assert_is_vector(u);
+	assert_is_vector(w);
 
 	v->x = u->y * w->z  -  u->z * w->y;
 	v->y = u->z * w->x  -  u->x * w->z;
@@ -322,7 +322,7 @@ struct coord *matcol_me(struct coord *v, const struct matrix *m)
 
 struct coord *homogeneize(struct coord *p, const struct coord *q)
 {
-	assert(is_point(q));
+	assert_is_point(q);
 
 	p->x = q->x / q->w;
 	p->y = q->y / q->w;
@@ -335,7 +335,7 @@ struct coord *homogeneize(struct coord *p, const struct coord *q)
 
 struct coord *homogeneize_me(struct coord *p)
 {
-	assert(is_point(p));
+	assert_is_point(p);
 
 	p->x /= p->w;
 	p->y /= p->w;
@@ -537,7 +537,7 @@ struct matrix *rotationz(struct matrix *m, double a)
 
 struct matrix *rotation(struct matrix *m, const struct coord *v, double a)
 {
-	assert(is_vunit(v));
+	assert_is_vunit(v);
 
 	double c = cos(a);
 	double s = sin(a);

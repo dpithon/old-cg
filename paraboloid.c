@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -10,6 +9,7 @@
 #include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
+#include "debug.h"
 
 
 struct paraboloid {
@@ -86,8 +86,8 @@ struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 	double p;
 	struct paraboloid *pb = malloc(sizeof(struct paraboloid));
 
-	assert(is_point(loc));
-	assert(is_vector(norm));
+	assert_is_point(loc);
+	assert_is_vector(norm);
 
 	unit(&pb->cs.j, norm);
 	pb->cs.o = *loc;
@@ -109,7 +109,7 @@ struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 		cross(&pb->cs.i, &pb->cs.j, &pb->cs.k);
 	}
 
-	assert(is_cartesian_coord_system(&pb->cs.i, &pb->cs.j, &pb->cs.k));
+	assert_is_cartesian_coord_system(&pb->cs.i, &pb->cs.j, &pb->cs.k);
 
 	change_of_coord_mat(&pb->cs);
 

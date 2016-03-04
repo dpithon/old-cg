@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 
 #include "vmath.h"
@@ -9,6 +8,7 @@
 #include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
+#include "debug.h"
 
 
 struct cylinder {
@@ -83,8 +83,8 @@ struct shape *cylinder(const struct coord *loc, const struct coord *norm,
 	double p;
 	struct cylinder *cy = malloc(sizeof(struct cylinder));
 
-	assert(is_point(loc));
-	assert(is_vector(norm));
+	assert_is_point(loc);
+	assert_is_vector(norm);
 
 	unit(&cy->cs.j, norm);
 	cy->cs.o = *loc;
@@ -106,7 +106,7 @@ struct shape *cylinder(const struct coord *loc, const struct coord *norm,
 		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
 	}
 
-	assert(is_cartesian_coord_system(&cy->cs.i, &cy->cs.j, &cy->cs.k));
+	assert_is_cartesian_coord_system(&cy->cs.i, &cy->cs.j, &cy->cs.k);
 
 	change_of_coord_mat(&cy->cs);
 

@@ -9,6 +9,7 @@
 #include "ray.h"
 #include "painter.h"
 #include "stack.h"
+#include "debug.h"
 
 
 struct sphere {
@@ -59,6 +60,8 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 struct shape *sphere(const struct coord *loc, double radius)
 {
 	struct sphere *sph = malloc(sizeof(struct sphere));
+
+	assert_is_point(loc);
 
 	sph->radius = radius;
 	sph->cs.o   = *loc;

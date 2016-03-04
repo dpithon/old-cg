@@ -8,6 +8,7 @@
 #include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
+#include "debug.h"
 
 
 struct plane {
@@ -37,6 +38,9 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 {
 	double p;
 	struct plane *pln = malloc(sizeof(struct plane));
+
+	assert_is_point(loc);
+	assert_is_vector(norm);
 
 	unit(&pln->cs.j, norm);
 	pln->cs.o = *loc;

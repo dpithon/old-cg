@@ -1,5 +1,3 @@
-#include <assert.h>
-#include "scene.h"
 #include "vmath.h"
 #include "shape.h"
 #include "ipoint.h"
