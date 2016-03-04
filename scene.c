@@ -4,7 +4,7 @@
 #include "shape.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "log.h"
+#include "debug.h"
 
 struct coord Location = {100., 100., 100., 1.};
 struct coord Target   = POINT_O;

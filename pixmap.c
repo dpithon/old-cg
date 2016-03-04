@@ -4,7 +4,7 @@
 #include <math.h>
 #include "pixmap.h"
 #include "rgb.h"
-#include "log.h"
+#include "debug.h"
 
 static struct rgb def_rgb = Black;
 
