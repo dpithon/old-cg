@@ -8,6 +8,7 @@
 #include "plain-color.h"
 #include "stack.h"
 #include "surfaces.h"
+#include "debug.h"
 
 #define W	400
 #define H	400
@@ -29,75 +30,52 @@ void axes(void)
 	add_shape(s);
 }
 
-void cones()
-{
-	struct shape *s;
-
-	axes();
-
-	for (int a = 0.; a < 360.; a += 30.) {
-		rotate_y(-1. * a);
-		translate(25, 0, 0);
-		rotate_z(a);
-		s = cone(&PointO, &VectorI, 5, 10);
-		//s = paraboloid(&PointO, &VectorI, 2, 2, 2, 10);
-		//s = sphere(&PointO, 5);
-		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-		add_shape(s);
-		reset();
-	}
-
-	//set_location(20, 90, 30);
-	//set_target(0, 10, 0);
-}
-
+#define CONES	20
+#define RADIUS 15
 int main()
 {
 	struct shape *s;
+	struct coord loc1 = POINT_O, loc2 = POINT_O, loc3 = POINT_O, vec1, vec2;
+	double angle = (2. * M_PI) / (double) CONES;
 
-	translate(0, -0.01, 0);
 	s = plane(&PointO, &VectorJ);
 	set_plain_colors(s, RGBLightBlue);
-	add_shape(s);
+	//add_shape(s);
 
-	reset();
-	translate(15, 0, 0);
-	s = cylinder(&PointO, &VectorJ, 4, 10);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-	add_shape(s);
+	loc2.y = 1.;
+	for (int n = 0; n < CONES; n++) {
+		double nangle = angle * (double) n;
+		loc1.x = cos(nangle) * RADIUS;
+		loc1.z = sin(nangle) * RADIUS;
+		loc2.x = cos(nangle) * (RADIUS + 1.);
+		loc2.z = sin(nangle) * (RADIUS + 1.);
 
-	reset();
-	s = cone(&PointO, &VectorJ, 5, 10);
-	set_plain_color(s, FLAG_OUTSIDE, RGBGreen);
-	set_plain_color(s, FLAG_INSIDE, RGBCyan);
-	add_shape(s);
+		unit_vector(&vec1, &loc2, &loc1);
+		scale_me(&vec1, 4.);
+		sub(&loc3, &loc2, &vec1);
+		s = cone(&loc3, &vec1, 2., 4.);
+		set_plain_color(s, FLAG_OUTSIDE, RGBYellow);
+		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+		add_shape(s);
 
-	reset();
-	translate(14, 4, 15);
-	s = sphere(&PointO, 4);
-	set_plain_colors(s, RGBYellow);
-	add_shape(s);
+		loc3.x = cos(nangle) * (RADIUS - 1);
+		loc3.z = sin(nangle) * (RADIUS - 1);
+		loc3.y = 0.;
+		unit_vector(&vec2, &loc3, &loc1);
+		scale_me(&vec2, 4.);
+		loc3 = loc2;
+		add_me(&loc3, &vec1);
+		print_coord("loc1", &loc1);
+		print_coord("loc3", &loc3);
+		sub_me(&loc3, &vec2);
+		s = cone(&loc3, &vec2, 2., 4.);
+		set_plain_color(s, FLAG_OUTSIDE, RGBOrange);
+		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+		add_shape(s);
+	}
 
-	reset();
-	translate(3, 0, 13);
-	s = paraboloid(&PointO, &VectorJ, 5, 5, 5., 5.);
-	set_plain_color(s, FLAG_OUTSIDE, RGBMagenta);
-	set_plain_color(s, FLAG_INSIDE, RGBRed);
-	add_shape(s);
-
-	reset();
-	struct coord mj;
-	scale(&mj, &VectorJ, -1.);
-	translate(-5, 10, 5);
-	s = cone(&PointO, &mj, 5, 10);
-	set_plain_color(s, FLAG_OUTSIDE, RGBGreen);
-	set_plain_color(s, FLAG_INSIDE, RGBCyan);
-	add_shape(s);
-
-	set_location(33, 17, 40);
-	set_target(10, 5, 9);
+	set_location(40, 0, 40);
+	set_target(0, 0, 0);
 	init_pinhole(W, H, 40.);
 	init_pixmap(W, H);
 
