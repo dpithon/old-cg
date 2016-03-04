@@ -1,4 +1,4 @@
-.PHONY: clean purge deps all tags conf
+.PHONY: clean purge deps all tags run conf
 
 CC=gcc
 LD=gcc
@@ -10,17 +10,23 @@ OBJS=pinhole.o raycaster.o sampler.o scene.o debug.o renderer.o\
 all: conf raycaster
 
 conf:
-	@echo "-----------------------------"
-	@echo "CFLAGS  :" $(CFLAGS)
-	@echo "LDFLAGS :" $(LDFLAGS)
 	@echo
+	@echo "###############################################################"
+	@echo -e "\033[32mCFLAGS\033[0m  :" $(CFLAGS)
+	@echo -e "\033[32mLDFLAGS\033[0m :" $(LDFLAGS)
+	@echo "###############################################################"
+	@echo
+
+run: raycaster
+	@echo -e "\033[32mRUN\033[0m"
+	@./raycaster &>>raytracer.log
 
 clean:
 	@rm -rf *.o *.gcda *.gcno *.info
 	@echo -e "\033[31mCLEAN\033[0m"
 
 purge: clean
-	@rm -rf raycaster *.pnm html
+	@rm -rf raycaster html
 	@echo -e "\033[31mPURGE\033[0m"
 
 deps:
@@ -30,8 +36,6 @@ deps:
 raycaster: $(OBJS) 
 	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 	@echo -e "\033[33mLD\033[0m $@"
-
-all: raycaster
 
 tags:
 	rm -f tags
