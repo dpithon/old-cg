@@ -112,6 +112,4 @@ extern const struct coord  VectorJ;
 extern const struct coord  VectorK;
 extern const struct coord  PointO;
 
-#include "iomath.h"
-
 #endif /* MATH_H */

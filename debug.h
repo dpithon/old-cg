@@ -5,6 +5,8 @@
 
 extern void fatal(const char*);
 extern void warning(const char*);
+extern void print_matrix(const char*, const struct matrix*);
+extern void print_coord(const char*, const struct coord*);
 
 #ifndef NDEBUG
 
