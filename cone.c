@@ -1,8 +1,6 @@
 #include <stdlib.h>
 
 #include "vmath.h"
-#include "types.h"
-#include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
 #include "surfaces.h"
@@ -86,17 +84,19 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
-struct shape *cone(const struct coord *loc, const struct coord *norm,
-		   double r, double h)
+struct shape *cone(const struct coord *base, const struct coord *apex,
+		   double r)
 {
+	assert_is_point(base);
+	assert_is_point(apex);
+
 	double p;
+	struct coord vec;
 	struct cone *co = malloc(sizeof(struct cone));
 
-	assert_is_point(loc);
-	assert_is_vector(norm);
-
-	unit(&co->cs.j, norm);
-	co->cs.o = *loc;
+	vector(&vec, base, apex);
+	unit(&co->cs.j, &vec);
+	co->cs.o = *base;
 
         transform(&co->cs.j);
         transform(&co->cs.o);
@@ -118,9 +118,9 @@ struct shape *cone(const struct coord *loc, const struct coord *norm,
 
 	change_of_coord_mat(&co->cs);
 
-	co->h          = h;
+	co->h          = len(&vec);
 	co->r          = r;
-	co->h2r2       = (h * h) / (r * r);
+	co->h2r2       = (co->h * co->h) / (r * r);
 	co->intersect  = cone_intersect;
 	co->paint      = default_painter;
 	co->paint_data = 0;

@@ -50,12 +50,12 @@ static void build_scene(void)
 		loc3.x = cos(nangle) * (RADIUS - 4.);
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
-		s = cone2(&loc2, &loc1, 2.);
+		s = cone(&loc2, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBYellow);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
 
-		s = cone2(&loc3, &loc1, 2.);
+		s = cone(&loc3, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBOrange);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
