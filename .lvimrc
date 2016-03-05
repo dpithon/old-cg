@@ -1,3 +1,0 @@
-map <A-m> :w<CR>:silent exec "!make &>>make.log"<CR>
-map <A-r> :w<CR>:silent exec "!make run &>>make.log"<CR>
-map <A-x> :w<CR>:silent exec "!make purge deps &>>make.log"<CR>
