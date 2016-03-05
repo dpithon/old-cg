@@ -5,6 +5,6 @@
 
 void set_sampler(sampler);
 
-extern sampler sampling;
+extern sampler pixel_sampling;
 
 #endif /* SAMPLER_H */
