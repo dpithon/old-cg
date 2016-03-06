@@ -67,7 +67,11 @@ int main()
 {
 	set_location(30, 30, 30);
 	set_target(0, 10, 0);
-	init_pinhole(W, H, 45.);
+	if (!init_pinhole(W, H, 45.)) {
+		fatal("failed to initialize pinhole camera");
+		return 1;
+	}
+
 	init_pixmap(W, H);
 
 	build_scene();
