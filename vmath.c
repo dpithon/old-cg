@@ -601,7 +601,7 @@ struct matrix *translation(struct matrix *m, struct coord *v)
 }
 
 
-bool change_of_coord_mat(struct coord_system *cs)
+void change_of_coord_mat(struct coord_system *cs)
 {
 	struct matrix rot, tsl;
 	struct coord minus_os;
@@ -611,8 +611,6 @@ bool change_of_coord_mat(struct coord_system *cs)
 	translation(&tsl, scale(&minus_os, &cs->o, -1.));
 	matrixr(&rot, &cs->i, &cs->j, &cs->k, &PointO);
 	matmat(&cs->mi, &rot, &tsl);
-
-	return is_cartesian_coord_system(&cs->i, &cs->j, &cs->k);
 }
 
 #define FACTOR  1000.

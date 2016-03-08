@@ -100,7 +100,7 @@ extern struct matrix *rotation(struct matrix*, const struct coord*, double);
 extern struct matrix *scaling(struct matrix*, double, double, double);
 extern struct matrix *translation(struct matrix*, struct coord*);
 
-extern bool change_of_coord_mat(struct coord_system*);
+extern void change_of_coord_mat(struct coord_system*);
 
 extern void random_point(struct coord*);
 extern void random_vector(struct coord*);
