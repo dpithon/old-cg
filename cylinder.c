@@ -77,17 +77,20 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
-struct shape *cylinder(const struct coord *loc, const struct coord *norm,
-			double radius, double h)
+struct shape *cylinder(const struct coord *base, const struct coord *apex,
+			double radius)
 {
 	double p;
+	struct coord vec;
 	struct cylinder *cy = malloc(sizeof(struct cylinder));
 
-	assert_is_point(loc);
-	assert_is_vector(norm);
+	assert_is_point(base);
+	assert_is_point(apex);
 
-	unit(&cy->cs.j, norm);
-	cy->cs.o = *loc;
+	vector(&vec, base, apex);
+
+	unit(&cy->cs.j, &vec);
+	cy->cs.o = *base;
 
 	transform(&cy->cs.j);
 	transform(&cy->cs.o);
@@ -110,7 +113,7 @@ struct shape *cylinder(const struct coord *loc, const struct coord *norm,
 
 	change_of_coord_mat(&cy->cs);
 
-	cy->h          = h;
+	cy->h          = len(&vec);
 	cy->radius     = radius;
 	cy->intersect  = cylinder_intersect;
 	cy->paint      = default_painter;
