@@ -13,27 +13,10 @@
 #define W	500
 #define H	500
 
-void axes(void)
-{
-	struct shape *s;
-
-	s = cylinder(&PointO, &VectorI, .3, 100.);
-	set_plain_colors(s, RGBRed);
-	add_shape(s);
-
-	s = cylinder(&PointO, &VectorJ, .3, 100.);
-	set_plain_colors(s, RGBGreen);
-	add_shape(s);
-
-	s = cylinder(&PointO, &VectorK, .3, 100.);
-	set_plain_colors(s, RGBBlue);
-	add_shape(s);
-}
-
 
 #define CONES	12
 #define RADIUS 15
-static void build_scene(void)
+void build_scene(void)
 {
 	struct shape *s;
 	struct coord loc1 = POINT_O, loc2 = POINT_O, loc3 = POINT_O;
@@ -50,12 +33,12 @@ static void build_scene(void)
 		loc3.x = cos(nangle) * (RADIUS - 4.);
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
-		s = cone(&loc2, &loc1, 2.);
+		s = cylinder(&loc2, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBYellow);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
 
-		s = cone(&loc3, &loc1, 2.);
+		s = cylinder(&loc3, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBOrange);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
@@ -65,8 +48,10 @@ static void build_scene(void)
 
 int main()
 {
-	set_location(30, 30, 30);
+	set_location(30, -30, 30);
 	set_target(0, 10, 0);
+	set_location(0, 120, 0);
+	set_target(100, 100, 100);
 	if (!init_pinhole(W, H, 45.)) {
 		fatal("failed to initialize pinhole camera");
 		return 1;
@@ -74,7 +59,13 @@ int main()
 
 	init_pixmap(W, H);
 
-	build_scene();
+	// build_scene();
+	struct coord base = {100, 0, 100, 1};
+	struct coord apex = {80, 100, 80, 1};
+	struct shape *s = cylinder(&base, &apex, 10.);
+	set_plain_color(s, FLAG_INSIDE, RGBWhite);
+	set_plain_color(s, FLAG_OUTSIDE, RGBBlue);
+	add_shape(s);
 	prepare_shape_matrices(pinhole_coord_system());
 
 	for (int x = 0; x < W; x++)
