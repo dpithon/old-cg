@@ -5,11 +5,13 @@
 
 extern void fatal(const char*);
 extern void warning(const char*);
+extern int  error(const char*, int);
 extern void print_matrix(const char*, const struct matrix*);
 extern void print_coord(const char*, const struct coord*);
 
 #ifndef NDEBUG
 
+#define debug(m)		 debug_(m)
 #define assert_is_mequal(m1, m2) assert__is_mequal(m1, m2, __LINE__, __FILE__)
 #define assert_is_vector(c)	 assert__is_vector(c, __LINE__, __FILE__)
 #define assert_is_point(c)	 assert__is_point(c, __LINE__, __FILE__)
@@ -19,6 +21,7 @@ extern void print_coord(const char*, const struct coord*);
 		assert__is_cartesian_coord_system(i, j, k, __LINE__, __FILE__)
 
 
+extern void debug_(const char*);
 extern void assert__is_mequal(const struct matrix*, const struct matrix*,
 			      int, char*);
 extern void assert__is_vector(const struct coord*, int, char*);
@@ -33,6 +36,7 @@ extern void assert__is_cartesian_coord_system(const struct coord*,
 #else  /* ! NDEBUG */
 #define NOOP ((void)0)
 
+#define debug(m)		 NOOP
 #define assert_is_mequal(m1, m2) NOOP
 #define assert_is_vector(c)	 NOOP
 #define assert_is_point(c)	 NOOP
