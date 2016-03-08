@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -15,17 +16,26 @@ static struct {
 } bp;
 
 
+/** init_pixmap - initialize pixmap
+ * 
+ * w: width of pixmap
+ * h: height of pixmap
+ *
+ * return 0 on success
+ */
 int init_pixmap(int w, int h)
 {
+	debug("entering init_pixmap");
+
 	if (w < 0 || h < 0)
-		return 1;
+		return error("bad width or size", 1);
 
 	bp.w = w;
 	bp.h = h;
 
 	bp.data = malloc(w * h * 3);
 	if (! bp.data)
-		return 1;
+		return error("failed to allocate memory", 2);
 
 	return 0;
 }
@@ -33,6 +43,9 @@ int init_pixmap(int w, int h)
 
 int set_pixel(int x, int y, struct rgb *rgb)
 {
+	assert(x >= 0 && x < bp.w);
+	assert(y >= 0 && y < bp.h);
+
 	int offset = bp.w * y * 3 + x * 3;
 
 	if (!rgb)
@@ -50,8 +63,10 @@ static int write_ppm(const char *fname)
 {
 	FILE *fp;
 
+	debug("entering write_ppm");
+
 	if (!(fp = fopen(fname, "w")))
-		return 1;
+		return error("failed to open file in write mode", 1);
 
 	fprintf(fp, "P6\n# Created by Cg\n%d %d\n255\n", bp.w, bp.h);
 	fwrite(bp.data, bp.w * bp.h * 3, 1, fp);
