@@ -3,8 +3,10 @@
  *
  */
 
+#include <assert.h>
 #include <math.h>
 
+#include "debug.h"
 #include "pinhole.h"
 #include "vmath.h"
 #include "scene.h"
@@ -41,7 +43,7 @@ static bool compute_coordsys(void)
 	double p;
 
 	if (is_pequal(&Location, &Target))
-		return false;
+		return error("Location and target points coincide", false);
 
 	coord_system.o = Location;
 
@@ -60,7 +62,14 @@ static bool compute_coordsys(void)
 		cross(&coord_system.j, &coord_system.k, &coord_system.i);
 	}
 
-	return change_of_coord_mat(&coord_system);
+	assert_is_cartesian_coord_system(
+		&coord_system.i,
+		&coord_system.j,
+		&coord_system.k
+	);
+
+	change_of_coord_mat(&coord_system);
+	return true;
 }
 
 
@@ -73,7 +82,7 @@ static bool compute_coordsys(void)
 static bool set_fov(double f)
 {
 	if (f <= 0. || f >= 180.)
-		return false;
+		return error("fov is out of range", false);
 
 	fov = f;
 	focal = 1. / (2. * tan(f * M_PI / 360.));
@@ -84,25 +93,15 @@ static bool set_fov(double f)
 /**
  * init_mapping - compute constants to map pixel on "sensor" surface.
  *
- * w: horizontal resolution (width of final picture)
- * h: vertical resolution (height of final picture)
- *
- * return false if resolution is not valid
  */
-static bool init_mapping(int w, int h)
+static void init_mapping(void)
 {
-	if (h > w || w <= 0 || h <= 0)
-		return false;
-
-	width  = w;
-	height = h;
+	assert(width >= height);
 
 	sqr_edge = 1. / ((double) width);
 	fac_xy   = - sqr_edge;
 	off_x    = 0.5 - sqr_edge;
-	off_y    = ((double) height) / ((double) (2 * width)) - sqr_edge;
-
-	return true;
+	off_y    = ((double) height) / ((double) (2. * width)) - sqr_edge;
 }
 
 
@@ -166,13 +165,17 @@ static void (*samplers[])(int, int) = { sampling_center, 0 };
  */
 bool init_pinhole(int w, int h, double fov)
 {
+	if (h > w || w <= 0 || h <= 0)
+		return false;
+
+	width  = w;
+	height = h;
+	init_mapping();
+
 	if (!set_fov(fov))
 		return false;
 
 	if (!compute_coordsys())
-		return false;
-
-	if (!init_mapping(w, h))
 		return false;
 
 	set_sampler(samplers[DEFAULT_SAMPLER]);
