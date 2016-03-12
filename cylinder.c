@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 
 #include "vmath.h"
@@ -13,62 +14,58 @@
 
 struct cylinder {
 	SHAPE_INF;
-	double radius;
+	double r;
+	double r2;
 	double h;
 };
 
 
-#define H(s)		((struct cylinder*) s)->h
-#define RADIUS(s)	((struct cylinder*) s)->radius
+#define H	((struct cylinder*) s)->h
+#define R2	((struct cylinder*) s)->r2
 
 
-static bool check(double k, struct ipoint *i, const struct ray *ray,
-		  const struct shape *s)
+static bool in_range(double k, const struct shape *s, const struct ray *ray)
 {
-	if (k > 0 && k < i->k) {
-		double y = k * ray->v.y + ray->s.y;
-		if (y >= 0 && y <= H(s))
-			return true;
-	}
-	return false;
+		double y = k * Vy + Sy;
+		return (y >= 0. && y <= H);
 }
 
 
 static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
-				 const struct shape *s)
+			       const struct shape *s)
 {
-	double a, b, c, delta;
+	double a, b, c, delta, k1, k2, sqrt_delta;
 
-	a = ray->v.x * ray->v.x + ray->v.z * ray->v.z;
-	b = 2. * (ray->v.x * ray->s.x + ray->v.z * ray->s.z);
-	c = ray->s.x * ray->s.x + ray->s.z * ray->s.z - RADIUS(s) * RADIUS(s);;
-
+	a = Vx * Vx + Vz * Vz;
+	b = 2. * (Vx * Sx + Vz * Sz);
+	c = Sx * Sx + Sz * Sz - R2;
 	delta = b * b - 4 * a * c;
 
-	if (double_equals(delta, 0.)) {
-		double k = -b / (2. * a);
-		if (check(k, i, ray, s)) {
-			set_ipoint(i, s, FLAG_OUTSIDE, k);
-			return true;
-		}
-	} else if (delta > 0.) {
-		double k1, k2, sqrt_delta;
+	if (delta < 0.) {
+		return false;
 
-		sqrt_delta = sqrtf(delta);
+	} else if (delta > 0.) {
+		sqrt_delta = sqrt(delta);
 		k1 = (-b - sqrt_delta) / (2. * a);
 		k2 = (-b + sqrt_delta) / (2. * a);
 
-		if (k2 <= 0 || i->k <= k1)
+		if (k2 <= 0. || k1 >= i->k)
 			return false;
 
-		if (check(k1, i, ray, s)) {
+		if (k1 > 0. && in_range(k1, s, ray)) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
 
-		if (check(k2, i, ray, s)) {
-			/* TODO useless test 'k2 > 0' */
+		if (k2 < i->k && in_range(k2, s, ray)) {
 			set_ipoint(i, s, FLAG_INSIDE, k2);
+			return true;
+		}
+
+	} else {
+		k1 = -b / (2. * a);
+		if (k1 > 0. && k1 < i->k && in_range(k1, s, ray)) {
+			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
 	}
@@ -78,14 +75,15 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *cylinder(const struct coord *base, const struct coord *apex,
-			double radius)
+			double r)
 {
-	double p;
-	struct coord vec;
-	struct cylinder *cy = malloc(sizeof(struct cylinder));
-
 	assert_is_point(base);
 	assert_is_point(apex);
+	assert(r > 0.);
+
+	double f;
+	struct coord vec;
+	struct cylinder *cy = malloc(sizeof(struct cylinder));
 
 	vector(&vec, base, apex);
 
@@ -95,8 +93,8 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 	transform(&cy->cs.j);
 	transform(&cy->cs.o);
 
-	if (is_collinear(&cy->cs.j, &VectorJ, &p)) {
-		if (p > 0.) {
+	if (is_collinear(&cy->cs.j, &VectorJ, &f)) {
+		if (f > 0.) {
 			cy->cs.i = VectorI;
 			cy->cs.k = VectorK;
 		} else {
@@ -113,8 +111,9 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 
 	change_of_coord_mat(&cy->cs);
 
-	cy->h          = len(&vec);
-	cy->radius     = radius;
+	cy->h  = len(&vec);
+	cy->r  = r;
+	cy->r2 = r * r;
 	cy->intersect  = cylinder_intersect;
 	cy->paint      = default_painter;
 	cy->paint_data = 0;
