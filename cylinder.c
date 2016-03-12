@@ -26,8 +26,8 @@ struct cylinder {
 
 static bool in_range(double k, const struct shape *s, const struct ray *ray)
 {
-		double y = k * Vy + Sy;
-		return (y >= 0. && y <= H);
+	double y = k * Vy + Sy;
+	return (y >= 0. && y <= H);
 }
 
 
