@@ -10,7 +10,7 @@
 #include "surfaces.h"
 #include "debug.h"
 
-#define W	500
+#define W	750
 #define H	500
 
 
@@ -34,12 +34,12 @@ void build_scene(void)
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
 		s = cylinder(&loc2, &loc1, 2.);
-		set_plain_color(s, FLAG_OUTSIDE, RGBYellow);
-		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+		set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
+		set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 		add_shape(s);
 
 		s = cylinder(&loc3, &loc1, 2.);
-		set_plain_color(s, FLAG_OUTSIDE, RGBOrange);
+		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
 	}
@@ -48,10 +48,8 @@ void build_scene(void)
 
 int main()
 {
-	set_location(30, -30, 30);
-	set_target(0, 10, 0);
-	set_location(0, 120, 0);
-	set_target(100, 100, 100);
+	set_location(30, 30, 30);
+	set_target(0, 0, 0);
 	if (!init_pinhole(W, H, 45.)) {
 		fatal("failed to initialize pinhole camera");
 		return 1;
@@ -59,13 +57,7 @@ int main()
 
 	init_pixmap(W, H);
 
-	// build_scene();
-	struct coord base = {100, 0, 100, 1};
-	struct coord apex = {80, 100, 80, 1};
-	struct shape *s = cylinder(&base, &apex, 10.);
-	set_plain_color(s, FLAG_INSIDE, RGBWhite);
-	set_plain_color(s, FLAG_OUTSIDE, RGBBlue);
-	add_shape(s);
+	build_scene();
 	prepare_shape_matrices(pinhole_coord_system());
 
 	for (int x = 0; x < W; x++)
