@@ -37,6 +37,9 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 	double a, b, c, delta, k1, k2, sqrt_delta;
 
 	a = Vx * Vx + Vz * Vz;
+	if (a < epsilon)
+		return false;
+
 	b = 2. * (Vx * Sx + Vz * Sz);
 	c = Sx * Sx + Sz * Sz - R2;
 	delta = b * b - 4 * a * c;
