@@ -22,7 +22,8 @@ const struct coord  VectorJ  = VECTOR_J;
 const struct coord  VectorK  = VECTOR_K;
 const struct coord  PointO   = POINT_O;
 
-static double vmset_eps   = 1e-4;
+
+const double epsilon=1e-4;
 
 
 bool double_equals(double a, double b)
@@ -36,10 +37,10 @@ bool double_equals(double a, double b)
 
         } else if (a * b == 0) { // a or b or both are zero
 		// relative error is not meaningful here
-		return diff < vmset_eps;
+		return diff < epsilon;
 
         } else { // use relative error
-            return diff / (absA + absB) < vmset_eps;
+            return diff / (absA + absB) < epsilon;
         }
 }
 
