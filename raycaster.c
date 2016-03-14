@@ -33,15 +33,15 @@ void build_scene(void)
 		loc3.x = cos(nangle) * (RADIUS - 4.);
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
-		s = cylinder(&loc2, &loc1, 2.);
+		s = paraboloid(&loc2, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 		add_shape(s);
 
-		s = cylinder(&loc3, &loc1, 2.);
+		s = paraboloid(&loc3, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-		add_shape(s);
+		//add_shape(s);
 	}
 }
 
