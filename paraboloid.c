@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -14,89 +15,100 @@
 
 struct paraboloid {
 	SHAPE_INF;
-	double a, b, c;
+	double r;
 	double h;
+	double hr2;
 };
 
 
-#define A(s) ((struct paraboloid*)s)->a
-#define B(s) ((struct paraboloid*)s)->b
-#define C(s) ((struct paraboloid*)s)->c
-#define H(s) ((struct paraboloid*)s)->h
+#define H	((struct paraboloid*) s)->h
+#define HR2	((struct paraboloid*) s)->hr2
 
 
-#define Y(k)	(k * ray->v.y + ray->s.y)
+static bool in_range(double k, const struct shape *s, const struct ray *ray)
+{
+	double y = k * Vy + Sy;
+	return (y >= 0. && y <= H);
+}
+
+
+static bool check1(struct ipoint *i, const struct ray *ray,
+		   const struct shape *s, float k1)
+{
+	if (k1 > 0 && k1 < i->k && in_range(k1, s, ray)) {
+		set_ipoint(i, s, (Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE, k1);
+		return true;
+	}
+	return false;
+}
+
+
 static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
-	double a, b, c, delta;
-	double pbaa, pbbb;
+	double a, b, c, delta, sqrt_delta, k1, k2;
 
-	pbaa = A(s) * A(s);
-	pbbb = B(s) * B(s);
+	a = HR2 * (Vx * Vx + Vz * Vz);
+	if (a < epsilon) {
+		k1 = (HR2 / Vy) * (Sx * Sx + Sz * Sz) - (Sy / Vy);
+		return check1(i, ray, s, k1);
+	}
 
-	a = (ray->v.x * ray->v.x / pbaa) + (ray->v.z * ray->v.z / pbbb);
-	b = (2. * ray->v.x * ray->s.x / pbaa) +
-	    (2. * ray->v.z * ray->s.z / pbbb) -
-	    (ray->v.y / C(s));
-	c = (ray->s.x * ray->s.x / pbaa) +
-	    (ray->s.z * ray->s.z / pbbb) -
-	    (ray->s.y / C(s));
-
+	b = 2. * HR2 * (Vx * Sx + Vz * Sz) - Vy;
+	c = HR2 * (Sx * Sx + Sz * Sz) - Sy;
 	delta = b * b - 4 * a * c;
 
-	if (delta < 0.)
+	if (delta < 0.) {
 		return false;
 
-	if (double_equals(delta, 0.)) {
-		double k = -b / (2. * a);
-		if (k > 0 && k < i->k && Y(k) < H(s)) {
-			set_ipoint(i, s, FLAG_OUTSIDE, k);
+	} else if (delta > 0.) {
+		sqrt_delta = sqrt(delta);
+		k1 = (-b - sqrt_delta) / (2. * a);
+		k2 = (-b + sqrt_delta) / (2. * a);
+
+		if (k2 <= 0 || i->k < k1)
+			return false;
+
+		if (k1 > 0 && in_range(k1, s, ray)) {
+			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
-		return false;
-	}
 
-	double k1, k2, sqrt_delta;
+		if (k2 < i->k && in_range(k2, s, ray)) {
+			set_ipoint(i, s, FLAG_INSIDE, k2);
+			return true;
+		}
 
-	sqrt_delta = sqrtf(delta);
-	k1 = (-b - sqrt_delta) / (2. * a);
-	k2 = (-b + sqrt_delta) / (2. * a);
-
-	if (k2 <= 0 || i->k < k1)
-		return false;
-
-	if (k1 > 0 && Y(k1) < H(s)) {
-		set_ipoint(i, s, FLAG_OUTSIDE, k1);
-		return true;
-	}
-
-	if (k2 < i->k && Y(k2) < H(s)) {
-		set_ipoint(i, s, FLAG_INSIDE, k2);
-		return true;
+	} else {
+		k1 = -b / (2. * a);
+		return check1(i, ray, s, k1);
 	}
 
 	return false;
 }
 
 
-struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
-			 double a, double b, double c, double h)
+struct shape *paraboloid(const struct coord *base, const struct coord *apex,
+			 double r)
 {
-	double p;
+	assert_is_point(base);
+	assert_is_point(apex);
+	assert(r > 0.);
+
+	double f;
+	struct coord vec;
 	struct paraboloid *pb = malloc(sizeof(struct paraboloid));
 
-	assert_is_point(loc);
-	assert_is_vector(norm);
+	vector(&vec, base, apex);
 
-	unit(&pb->cs.j, norm);
-	pb->cs.o = *loc;
+	unit(&pb->cs.j, &vec);
+	pb->cs.o = *base;
 
 	transform(&pb->cs.j);
 	transform(&pb->cs.o);
 
-	if (is_collinear(&pb->cs.j, &VectorJ, &p)) {
-		if (p > 0.) {
+	if (is_collinear(&pb->cs.j, &VectorJ, &f)) {
+		if (f > 0.) {
 			pb->cs.i = VectorI;
 			pb->cs.k = VectorK;
 		} else {
@@ -113,10 +125,9 @@ struct shape *paraboloid(const struct coord *loc, const struct coord *norm,
 
 	change_of_coord_mat(&pb->cs);
 
-	pb->a          = a;
-	pb->b          = b;
-	pb->c          = c;
-	pb->h          = h;
+	pb->r          = r;
+	pb->h          = len(&vec);
+	pb->hr2	       = pb->h / (r * r);
 	pb->intersect  = paraboloid_intersect;
 	pb->paint      = default_painter;
 	pb->paint_data = 0;
