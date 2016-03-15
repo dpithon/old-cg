@@ -55,7 +55,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 		k1 = (-b - sqrt_delta) / (2. * a);
 		k2 = (-b + sqrt_delta) / (2. * a);
 
-		if (k2 <= 0 || i->k < k1)
+		if (k2 <= 0 || i->k <= k1)
 			return false;
 
 		if (k1 > 0 && Y_IN_RANGE(k1)) {
