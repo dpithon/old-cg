@@ -16,11 +16,11 @@
 			 E(m, r, 3) * ((v)->w)
 
 
-const struct matrix MatrixId = MATRIX_ID;
-const struct coord  VectorI  = VECTOR_I;
-const struct coord  VectorJ  = VECTOR_J;
-const struct coord  VectorK  = VECTOR_K;
-const struct coord  PointO   = POINT_O;
+const struct matrix matrix_id = MATRIX_ID;
+const struct coord  vector_i  = VECTOR_I;
+const struct coord  vector_j  = VECTOR_J;
+const struct coord  vector_k  = VECTOR_K;
+const struct coord  point_o   = POINT_O;
 
 
 const double epsilon=1e-4;
@@ -610,7 +610,7 @@ void change_of_coord_mat(struct coord_system *cs)
 	matrix(&cs->m, &cs->i, &cs->j, &cs->k, &cs->o);
 
 	translation(&tsl, scale(&minus_os, &cs->o, -1.));
-	matrixr(&rot, &cs->i, &cs->j, &cs->k, &PointO);
+	matrixr(&rot, &cs->i, &cs->j, &cs->k, &point_o);
 	matmat(&cs->mi, &rot, &tsl);
 }
 

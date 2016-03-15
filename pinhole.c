@@ -33,8 +33,8 @@ static double sqr_edge, fac_xy, off_x, off_y;
  * compute_coordsys - compute pinhole camera coordinate system and
  *                    change-of-coordinates matrices.
  *
- * Any changes on Location and/or Target implies new change-of-coordinate
- * matrices.
+ * Any changes on camera_location and/or camera_target implies new
+ * change-of-coordinate matrices.
  *
  * return false if s and t are the same point.
  */
@@ -42,22 +42,22 @@ static bool compute_coordsys(void)
 {
 	double p;
 
-	if (is_pequal(&Location, &Target))
-		return error("Location and target points coincide", false);
+	if (is_pequal(&camera_location, &camera_target))
+		return error("location and target points coincide", false);
 
-	coord_system.o = Location;
+	coord_system.o = camera_location;
 
-	unit_vector(&coord_system.k, &Location, &Target);
-	if (is_collinear(&coord_system.k, &VectorJ, &p)) {
+	unit_vector(&coord_system.k, &camera_location, &camera_target);
+	if (is_collinear(&coord_system.k, &vector_j, &p)) {
 		if (p > 0.) {
-			coord_system.i = VectorK;
-			coord_system.j = VectorI;
+			coord_system.i = vector_k;
+			coord_system.j = vector_i;
 		} else {
-			coord_system.i = VectorI;
-			coord_system.j = VectorK;
+			coord_system.i = vector_i;
+			coord_system.j = vector_k;
 		}
 	} else {
-		cross(&coord_system.i, &coord_system.k, &VectorJ);
+		cross(&coord_system.i, &coord_system.k, &vector_j);
 		unit_me(&coord_system.i);
 		cross(&coord_system.j, &coord_system.k, &coord_system.i);
 	}
@@ -135,13 +135,13 @@ static void sampling_center(int px, int py)
 	struct ipoint i;
 	struct rgb rgb;
 
-	ray.s = PointO;
+	ray.s = point_o;
 
 	map_pixel(&center, px, py);
 	center.x += sqr_edge / 2.;
 	center.y += sqr_edge / 2.;
 
-	unit_vector(&ray.v, &center, &PointO);
+	unit_vector(&ray.v, &center, &point_o);
 	reset_ipoint(&i);
 	if (intersect(&i, &ray)) {
 		rendering(&rgb, &i);

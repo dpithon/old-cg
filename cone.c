@@ -100,16 +100,16 @@ struct shape *cone(const struct coord *base, const struct coord *apex,
 
         transform(&co->cs.j);
         transform(&co->cs.o);
-	if (is_collinear(&co->cs.j, &VectorJ, &p)) {
+	if (is_collinear(&co->cs.j, &vector_j, &p)) {
 		if (p > 0.) {
-			co->cs.i = VectorI;
-			co->cs.k = VectorK;
+			co->cs.i = vector_i;
+			co->cs.k = vector_k;
 		} else {
-			co->cs.i = VectorK;
-			co->cs.k = VectorI;
+			co->cs.i = vector_k;
+			co->cs.k = vector_i;
 		}
 	} else {
-		cross(&co->cs.k, &co->cs.j, &VectorJ);
+		cross(&co->cs.k, &co->cs.j, &vector_j);
 		unit_me(&co->cs.k);
 		cross(&co->cs.i, &co->cs.j, &co->cs.k);
 	}

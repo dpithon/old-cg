@@ -46,6 +46,19 @@ void build_scene(void)
 }
 
 
+
+void build_scene2(void)
+{
+	struct shape *s;
+	struct coord apex = { 0, 10, 0, 1};
+
+	s = paraboloid(&point_o, &apex, 5.);
+	set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
+	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
+	add_shape(s);
+}
+
+
 int main()
 {
 	set_location(30, 30, 30);

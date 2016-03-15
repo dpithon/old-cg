@@ -96,16 +96,16 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 	transform(&cy->cs.j);
 	transform(&cy->cs.o);
 
-	if (is_collinear(&cy->cs.j, &VectorJ, &f)) {
+	if (is_collinear(&cy->cs.j, &vector_j, &f)) {
 		if (f > 0.) {
-			cy->cs.i = VectorI;
-			cy->cs.k = VectorK;
+			cy->cs.i = vector_i;
+			cy->cs.k = vector_k;
 		} else {
-			cy->cs.i = VectorK;
-			cy->cs.k = VectorI;
+			cy->cs.i = vector_k;
+			cy->cs.k = vector_i;
 		}
 	} else {
-		cross(&cy->cs.k, &cy->cs.j, &VectorJ);
+		cross(&cy->cs.k, &cy->cs.j, &vector_j);
 		unit_me(&cy->cs.k);
 		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
 	}

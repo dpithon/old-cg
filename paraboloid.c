@@ -99,16 +99,16 @@ struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 	transform(&pb->cs.j);
 	transform(&pb->cs.o);
 
-	if (is_collinear(&pb->cs.j, &VectorJ, &f)) {
+	if (is_collinear(&pb->cs.j, &vector_j, &f)) {
 		if (f > 0.) {
-			pb->cs.i = VectorI;
-			pb->cs.k = VectorK;
+			pb->cs.i = vector_i;
+			pb->cs.k = vector_k;
 		} else {
-			pb->cs.i = VectorK;
-			pb->cs.k = VectorI;
+			pb->cs.i = vector_k;
+			pb->cs.k = vector_i;
 		}
 	} else {
-		cross(&pb->cs.k, &pb->cs.j, &VectorJ);
+		cross(&pb->cs.k, &pb->cs.j, &vector_j);
 		unit_me(&pb->cs.k);
 		cross(&pb->cs.i, &pb->cs.j, &pb->cs.k);
 	}

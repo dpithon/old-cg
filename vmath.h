@@ -44,6 +44,12 @@ struct coord_system {
 		      .mi = MATRIX_ID\
 		 }
 
+extern const struct matrix matrix_id;
+extern const struct coord  vector_i;
+extern const struct coord  vector_j;
+extern const struct coord  vector_k;
+extern const struct coord  point_o;
+
 extern bool double_equals(double a, double b);
 extern bool is_point(const struct coord*);
 extern bool is_vector(const struct coord*);
@@ -106,12 +112,5 @@ extern void change_of_coord_mat(struct coord_system*);
 
 extern void random_point(struct coord*);
 extern void random_vector(struct coord*);
-
-
-extern const struct matrix MatrixId;
-extern const struct coord  VectorI;
-extern const struct coord  VectorJ;
-extern const struct coord  VectorK;
-extern const struct coord  PointO;
 
 #endif /* MATH_H */

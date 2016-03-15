@@ -48,16 +48,16 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	transform(&pln->cs.j);
 	transform(&pln->cs.o);
 
-	if (is_collinear(&pln->cs.j, &VectorJ, &f)) {
+	if (is_collinear(&pln->cs.j, &vector_j, &f)) {
 		if (f > 0.) {
-			pln->cs.i = VectorI;
-			pln->cs.k = VectorK;
+			pln->cs.i = vector_i;
+			pln->cs.k = vector_k;
 		} else {
-			pln->cs.i = VectorK;
-			pln->cs.k = VectorI;
+			pln->cs.i = vector_k;
+			pln->cs.k = vector_i;
 		}
 	} else {
-		cross(&pln->cs.k, &pln->cs.j, &VectorJ);
+		cross(&pln->cs.k, &pln->cs.j, &vector_j);
 		unit_me(&pln->cs.k);
 		cross(&pln->cs.i, &pln->cs.j, &pln->cs.k);
 	}

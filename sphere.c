@@ -70,9 +70,9 @@ struct shape *sphere(const struct coord *loc, double r)
 	struct sphere *sph = malloc(sizeof(struct sphere));
 
 	sph->cs.o   = *loc;
-	sph->cs.i   = VectorI;
-	sph->cs.j   = VectorJ;
-	sph->cs.k   = VectorK;
+	sph->cs.i   = vector_i;
+	sph->cs.j   = vector_j;
+	sph->cs.k   = vector_k;
 
 	transform(&sph->cs.o);
 	change_of_coord_mat(&sph->cs);
