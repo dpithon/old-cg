@@ -34,6 +34,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 
 	a = HR2 * (Vx * Vx + Vz * Vz);
 	if (a < epsilon) {
+		assert(fabs(Vy) > epsilon);
 		k1 = (HR2 / Vy) * (Sx * Sx + Sz * Sz) - (Sy / Vy);
 		if (k1 > 0 && k1 < i->k && Y_IN_RANGE(k1)) {
 			set_ipoint(i, s, WHICH_SIDE, k1);
