@@ -21,26 +21,10 @@ struct paraboloid {
 };
 
 
-#define H	((struct paraboloid*) s)->h
-#define HR2	((struct paraboloid*) s)->hr2
-
-
-static bool in_range(double k, const struct shape *s, const struct ray *ray)
-{
-	double y = k * Vy + Sy;
-	return (y >= 0. && y <= H);
-}
-
-
-static bool check1(struct ipoint *i, const struct ray *ray,
-		   const struct shape *s, float k1)
-{
-	if (k1 > 0 && k1 < i->k && in_range(k1, s, ray)) {
-		set_ipoint(i, s, (Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE, k1);
-		return true;
-	}
-	return false;
-}
+#define H		((struct paraboloid*) s)->h
+#define HR2		((struct paraboloid*) s)->hr2
+#define WHICH_SIDE	((Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE)
+#define Y_IN_RANGE(k)	((k * Vy + Sy) <= H)
 
 
 static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
@@ -51,7 +35,11 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 	a = HR2 * (Vx * Vx + Vz * Vz);
 	if (a < epsilon) {
 		k1 = (HR2 / Vy) * (Sx * Sx + Sz * Sz) - (Sy / Vy);
-		return check1(i, ray, s, k1);
+		if (k1 > 0 && k1 < i->k && Y_IN_RANGE(k1)) {
+			set_ipoint(i, s, WHICH_SIDE, k1);
+			return true;
+		}
+		return false;
 	}
 
 	b = 2. * HR2 * (Vx * Sx + Vz * Sz) - Vy;
@@ -69,19 +57,22 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 		if (k2 <= 0 || i->k < k1)
 			return false;
 
-		if (k1 > 0 && in_range(k1, s, ray)) {
+		if (k1 > 0 && Y_IN_RANGE(k1)) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
 
-		if (k2 < i->k && in_range(k2, s, ray)) {
+		if (k2 < i->k && Y_IN_RANGE(k2)) {
 			set_ipoint(i, s, FLAG_INSIDE, k2);
 			return true;
 		}
 
 	} else {
 		k1 = -b / (2. * a);
-		return check1(i, ray, s, k1);
+		if (k1 > 0 && k1 < i->k && Y_IN_RANGE(k1)) {
+			set_ipoint(i, s, WHICH_SIDE, k1);
+			return true;
+		}
 	}
 
 	return false;
