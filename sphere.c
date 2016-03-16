@@ -1,6 +1,6 @@
 #include <assert.h>
-#include <stdlib.h>
 
+#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "surfaces.h"
@@ -67,7 +67,7 @@ struct shape *sphere(const struct coord *loc, double r)
 	assert_is_point(loc);
 	assert(r > 0.);
 
-	struct sphere *sph = malloc(sizeof(struct sphere));
+	struct sphere *sph = alloc_struct(sphere);
 
 	sph->cs.o   = *loc;
 	sph->cs.i   = vector_i;

@@ -1,6 +1,6 @@
 #include <assert.h>
-#include <stdlib.h>
 
+#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
@@ -86,7 +86,7 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 
 	double f;
 	struct coord vec;
-	struct cylinder *cy = malloc(sizeof(struct cylinder));
+	struct cylinder *cy = alloc_struct(cylinder);
 
 	vector(&vec, base, apex);
 

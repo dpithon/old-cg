@@ -1,11 +1,11 @@
-#include <stdlib.h>
+#include "mm.h"
 #include "plain-color.h"
 #include "ipoint.h"
 
 void set_plain_colors(struct shape *s, double r, double g, double b)
 {
 	if (!s->paint_data)
-		s->paint_data = malloc(sizeof(struct plain_color));
+		s->paint_data = alloc_struct(plain_color);
 
 	PLAIN_COLOR(s)->rgb[0].r = PLAIN_COLOR(s)->rgb[1].r = r;
 	PLAIN_COLOR(s)->rgb[0].g = PLAIN_COLOR(s)->rgb[1].g = g;
@@ -18,7 +18,7 @@ void set_plain_color(struct shape *s, int side, double r, double g, double b)
 	int c = 0;
 
 	if (!s->paint_data)
-		s->paint_data = malloc(sizeof(struct plain_color));
+		s->paint_data = alloc_struct(plain_color);
 
 	if (side == FLAG_OUTSIDE || side == FLAG_OVER)
 		c = 1;

@@ -1,5 +1,4 @@
-#include <stdlib.h>
-
+#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
@@ -40,7 +39,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	assert_is_vector(norm);
 
 	double f;
-	struct plane *pln = malloc(sizeof(struct plane));
+	struct plane *pln = alloc_struct(plane);
 
 	unit(&pln->cs.j, norm);
 	pln->cs.o = *loc;

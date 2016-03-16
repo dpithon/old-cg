@@ -1,7 +1,7 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <math.h>
 
+#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
@@ -89,7 +89,7 @@ struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 
 	double f;
 	struct coord vec;
-	struct paraboloid *pb = malloc(sizeof(struct paraboloid));
+	struct paraboloid *pb = alloc_struct(paraboloid);
 
 	vector(&vec, base, apex);
 

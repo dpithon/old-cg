@@ -1,5 +1,4 @@
-#include <stdlib.h>
-
+#include "mm.h"
 #include "vmath.h"
 #include "ipoint.h"
 #include "ray.h"
@@ -92,7 +91,7 @@ struct shape *cone(const struct coord *base, const struct coord *apex,
 
 	double p;
 	struct coord vec;
-	struct cone *co = malloc(sizeof(struct cone));
+	struct cone *co = alloc_struct(cone);
 
 	vector(&vec, base, apex);
 	unit(&co->cs.j, &vec);
