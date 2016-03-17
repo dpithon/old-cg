@@ -4,7 +4,7 @@
 *.png
 *.gch
 *.a
-Makefile.deps
 tags
 *.log
 raycaster
+.DS_Store
