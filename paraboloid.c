@@ -93,7 +93,7 @@ struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 
 	vector(&vec, base, apex);
 
-	unit(&pb->cs.j, &vec);
+	normalize(&pb->cs.j, &vec);
 	pb->cs.o = *base;
 
 	transform(&pb->cs.j);
@@ -109,7 +109,7 @@ struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&pb->cs.k, &pb->cs.j, &vector_j);
-		unit_me(&pb->cs.k);
+		normalize_me(&pb->cs.k);
 		cross(&pb->cs.i, &pb->cs.j, &pb->cs.k);
 	}
 

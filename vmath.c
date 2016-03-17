@@ -170,7 +170,8 @@ double dot(const struct coord *v, const struct coord *u)
 }
 
 
-struct coord *vector(struct coord *v, const struct coord *p, const struct coord *q)
+struct coord *vector(struct coord *v, const struct coord *p,
+		     const struct coord *q)
 {
 	assert_is_point(p);
 	assert_is_point(q);
@@ -184,9 +185,10 @@ struct coord *vector(struct coord *v, const struct coord *p, const struct coord 
 }
 
 
-struct coord *unit_vector(struct coord *v, const struct coord *p, const struct coord *q)
+struct coord *unit_vector(struct coord *v, const struct coord *p,
+			  const struct coord *q)
 {
-	return unit_me(vector(v, p, q));
+	return normalize_me(vector(v, p, q));
 }
 
 
@@ -211,7 +213,7 @@ struct coord *scale_me(struct coord *v, double k)
 }
 
 
-struct coord *unit(struct coord *v, const struct coord *u)
+struct coord *normalize(struct coord *v, const struct coord *u)
 {
 	assert_is_vector(u);
 	assert_is_not_vzero(u);
@@ -227,7 +229,7 @@ struct coord *unit(struct coord *v, const struct coord *u)
 }
 
 
-struct coord *unit_me(struct coord *v)
+struct coord *normalize_me(struct coord *v)
 {
 	assert_is_vector(v);
 	assert_is_not_vzero(v);
@@ -283,7 +285,8 @@ struct coord *sub_me(struct coord *v, const struct coord *u)
 }
 
 
-struct coord *cross(struct coord *v, const struct coord *u, const struct coord *w)
+struct coord *cross(struct coord *v, const struct coord *u,
+		    const struct coord *w)
 {
 	assert_is_vector(u);
 	assert_is_vector(w);
@@ -297,7 +300,8 @@ struct coord *cross(struct coord *v, const struct coord *u, const struct coord *
 }
 
 
-struct coord *matcol(struct coord *v, const struct matrix *m, const struct coord *u)
+struct coord *matcol(struct coord *v, const struct matrix *m,
+		     const struct coord *u)
 {
 	v->x = ROW_MUL(m, 0, u);
 	v->y = ROW_MUL(m, 1, u);
@@ -347,8 +351,9 @@ struct coord *homogeneize_me(struct coord *p)
 }
 
 
-struct matrix *matrix(struct matrix *m, const struct coord *i, const struct coord *j,
-		 const struct coord *k, const struct coord *o)
+struct matrix *matrix(struct matrix *m, const struct coord *i,
+		      const struct coord *j, const struct coord *k,
+		      const struct coord *o)
 {
 	m->cell[0][0] = i->x;
 	m->cell[1][0] = i->y;
@@ -374,8 +379,9 @@ struct matrix *matrix(struct matrix *m, const struct coord *i, const struct coor
 }
 
 
-struct matrix *matrixr(struct matrix *m, const struct coord *i, const struct coord *j,
-		  const struct coord *k, const struct coord *o)
+struct matrix *matrixr(struct matrix *m, const struct coord *i,
+		       const struct coord *j, const struct coord *k,
+		       const struct coord *o)
 {
 	m->cell[0][0] = i->x;
 	m->cell[0][1] = i->y;
@@ -401,7 +407,8 @@ struct matrix *matrixr(struct matrix *m, const struct coord *i, const struct coo
 }
 
 
-struct matrix *matmat(struct matrix *m, const struct matrix *m1, const struct matrix *m2)
+struct matrix *matmat(struct matrix *m, const struct matrix *m1,
+		      const struct matrix *m2)
 {
 	int i, j, k;
 	struct matrix tmp, *old = 0;

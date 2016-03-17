@@ -90,7 +90,7 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 
 	vector(&vec, base, apex);
 
-	unit(&cy->cs.j, &vec);
+	normalize(&cy->cs.j, &vec);
 	cy->cs.o = *base;
 
 	transform(&cy->cs.j);
@@ -106,7 +106,7 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&cy->cs.k, &cy->cs.j, &vector_j);
-		unit_me(&cy->cs.k);
+		normalize_me(&cy->cs.k);
 		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
 	}
 
