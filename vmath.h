@@ -73,8 +73,8 @@ extern struct coord *unit_vector(struct coord*, const struct coord*,
 
 extern struct coord *scale(struct coord*, const struct coord*, double);
 extern struct coord *scale_me(struct coord*, double);
-extern struct coord *unit(struct coord*, const struct coord*);
-extern struct coord *unit_me(struct coord*);
+extern struct coord *normalize(struct coord*, const struct coord*);
+extern struct coord *normalize_me(struct coord*);
 extern struct coord *add(struct coord*, const struct coord*,
 			 const struct coord*);
 extern struct coord *add_me(struct coord*, const struct coord*);

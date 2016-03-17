@@ -94,7 +94,7 @@ struct shape *cone(const struct coord *base, const struct coord *apex,
 	struct cone *co = alloc_struct(cone);
 
 	vector(&vec, base, apex);
-	unit(&co->cs.j, &vec);
+	normalize(&co->cs.j, &vec);
 	co->cs.o = *base;
 
         transform(&co->cs.j);
@@ -109,7 +109,7 @@ struct shape *cone(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&co->cs.k, &co->cs.j, &vector_j);
-		unit_me(&co->cs.k);
+		normalize_me(&co->cs.k);
 		cross(&co->cs.i, &co->cs.j, &co->cs.k);
 	}
 

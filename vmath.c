@@ -188,7 +188,7 @@ struct coord *vector(struct coord *v, const struct coord *p,
 struct coord *unit_vector(struct coord *v, const struct coord *p,
 			  const struct coord *q)
 {
-	return unit_me(vector(v, p, q));
+	return normalize_me(vector(v, p, q));
 }
 
 
@@ -213,7 +213,7 @@ struct coord *scale_me(struct coord *v, double k)
 }
 
 
-struct coord *unit(struct coord *v, const struct coord *u)
+struct coord *normalize(struct coord *v, const struct coord *u)
 {
 	assert_is_vector(u);
 	assert_is_not_vzero(u);
@@ -229,7 +229,7 @@ struct coord *unit(struct coord *v, const struct coord *u)
 }
 
 
-struct coord *unit_me(struct coord *v)
+struct coord *normalize_me(struct coord *v)
 {
 	assert_is_vector(v);
 	assert_is_not_vzero(v);

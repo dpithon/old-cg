@@ -41,7 +41,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	double f;
 	struct plane *pln = alloc_struct(plane);
 
-	unit(&pln->cs.j, norm);
+	normalize(&pln->cs.j, norm);
 	pln->cs.o = *loc;
 
 	transform(&pln->cs.j);
@@ -57,7 +57,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 		}
 	} else {
 		cross(&pln->cs.k, &pln->cs.j, &vector_j);
-		unit_me(&pln->cs.k);
+		normalize_me(&pln->cs.k);
 		cross(&pln->cs.i, &pln->cs.j, &pln->cs.k);
 	}
 
