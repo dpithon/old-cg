@@ -1,0 +1,28 @@
+cone.o: cone.c mm.h vmath.h types.h ipoint.h ray.h surfaces.h shape.h \
+ painter.h stack.h misc.h debug.h
+cylinder.o: cylinder.c mm.h vmath.h types.h scene.h ipoint.h ray.h \
+ surfaces.h shape.h painter.h stack.h debug.h
+debug.o: debug.c vmath.h types.h
+ipoint.o: ipoint.c ipoint.h types.h vmath.h
+mm.o: mm.c debug.h types.h
+painter.o: painter.c debug.h types.h shape.h vmath.h ipoint.h \
+ plain-color.h rgb.h
+paraboloid.o: paraboloid.c mm.h vmath.h types.h scene.h ipoint.h ray.h \
+ surfaces.h shape.h painter.h stack.h debug.h
+pinhole.o: pinhole.c debug.h types.h pinhole.h vmath.h scene.h ray.h \
+ rgb.h ipoint.h pixmap.h sampler.h renderer.h
+pixmap.o: pixmap.c pixmap.h types.h rgb.h debug.h
+plain-color.o: plain-color.c mm.h plain-color.h shape.h types.h vmath.h \
+ rgb.h ipoint.h
+plane.o: plane.c mm.h vmath.h types.h scene.h ipoint.h ray.h surfaces.h \
+ shape.h painter.h stack.h debug.h
+raycaster.o: raycaster.c pinhole.h types.h sampler.h renderer.h scene.h \
+ pixmap.h rgb.h ipoint.h vmath.h plain-color.h shape.h stack.h surfaces.h \
+ debug.h
+renderer.o: renderer.c renderer.h types.h ipoint.h vmath.h shape.h
+sampler.o: sampler.c sampler.h types.h debug.h
+scene.o: scene.c vmath.h types.h shape.h ipoint.h ray.h debug.h
+sphere.o: sphere.c mm.h vmath.h types.h surfaces.h shape.h scene.h \
+ ipoint.h ray.h painter.h stack.h debug.h
+stack.o: stack.c vmath.h types.h stack.h debug.h
+vmath.o: vmath.c debug.h types.h vmath.h
