@@ -1,4 +1,4 @@
-.PHONY: clean purge deps all tags run conf
+.PHONY: clean purge deps all tags run conf push
 
 CC=gcc
 LD=gcc

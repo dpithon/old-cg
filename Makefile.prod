@@ -1,9 +1,5 @@
-.PHONY: all
-
-all: raycaster
-
-include Makefile.common
-
 OPTS=-O2 -g0 -DNDEBUG
 CFLAGS+=-Wall -Wextra -Werror -std=c99 -pedantic -pipe $(OPTS)
 LDFLAGS=-lm
+
+include Makefile.common
