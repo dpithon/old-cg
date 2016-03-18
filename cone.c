@@ -109,7 +109,7 @@ struct shape *cone(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&co->cs.k, &co->cs.j, &vector_j);
-		normalize_me(&co->cs.k);
+		normalize_in_place(&co->cs.k);
 		cross(&co->cs.i, &co->cs.j, &co->cs.k);
 	}
 

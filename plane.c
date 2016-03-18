@@ -57,7 +57,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 		}
 	} else {
 		cross(&pln->cs.k, &pln->cs.j, &vector_j);
-		normalize_me(&pln->cs.k);
+		normalize_in_place(&pln->cs.k);
 		cross(&pln->cs.i, &pln->cs.j, &pln->cs.k);
 	}
 

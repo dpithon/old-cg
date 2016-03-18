@@ -188,7 +188,7 @@ struct coord *vector(struct coord *v, const struct coord *p,
 struct coord *unit_vector(struct coord *v, const struct coord *p,
 			  const struct coord *q)
 {
-	return normalize_me(vector(v, p, q));
+	return normalize_in_place(vector(v, p, q));
 }
 
 
@@ -203,7 +203,7 @@ struct coord *scale(struct coord *v, const struct coord *u, double k)
 }
 
 
-struct coord *scale_me(struct coord *v, double k)
+struct coord *scale_in_place(struct coord *v, double k)
 {
 	v->x *= k;
 	v->y *= k;
@@ -229,7 +229,7 @@ struct coord *normalize(struct coord *v, const struct coord *u)
 }
 
 
-struct coord *normalize_me(struct coord *v)
+struct coord *normalize_in_place(struct coord *v)
 {
 	assert_is_vector(v);
 	assert_is_not_vzero(v);
@@ -255,7 +255,7 @@ struct coord *add(struct coord *v, const struct coord *u, const struct coord *w)
 }
 
 
-struct coord *add_me(struct coord *v, const struct coord *u)
+struct coord *add_in_place(struct coord *v, const struct coord *u)
 {
 	v->x += u->x;
 	v->y += u->y;
@@ -275,7 +275,7 @@ struct coord *sub(struct coord *v, const struct coord *u, const struct coord *w)
 }
 
 
-struct coord *sub_me(struct coord *v, const struct coord *u)
+struct coord *sub_in_place(struct coord *v, const struct coord *u)
 {
 	v->x -= u->x;
 	v->y -= u->y;
@@ -312,7 +312,7 @@ struct coord *matcol(struct coord *v, const struct matrix *m,
 }
 
 
-struct coord *matcol_me(struct coord *v, const struct matrix *m)
+struct coord *matcol_in_place(struct coord *v, const struct matrix *m)
 {
 	struct coord u = *v;
 
@@ -338,7 +338,7 @@ struct coord *homogeneize(struct coord *p, const struct coord *q)
 }
 
 
-struct coord *homogeneize_me(struct coord *p)
+struct coord *homogeneize_in_place(struct coord *p)
 {
 	assert_is_point(p);
 

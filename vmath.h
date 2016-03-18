@@ -72,23 +72,23 @@ extern struct coord *unit_vector(struct coord*, const struct coord*,
 				 const struct coord*);
 
 extern struct coord *scale(struct coord*, const struct coord*, double);
-extern struct coord *scale_me(struct coord*, double);
+extern struct coord *scale_in_place(struct coord*, double);
 extern struct coord *normalize(struct coord*, const struct coord*);
-extern struct coord *normalize_me(struct coord*);
+extern struct coord *normalize_in_place(struct coord*);
 extern struct coord *add(struct coord*, const struct coord*,
 			 const struct coord*);
-extern struct coord *add_me(struct coord*, const struct coord*);
+extern struct coord *add_in_place(struct coord*, const struct coord*);
 extern struct coord *sub(struct coord*, const struct coord*,
 			 const struct coord*);
-extern struct coord *sub_me(struct coord*, const struct coord*);
+extern struct coord *sub_in_place(struct coord*, const struct coord*);
 extern struct coord *cross(struct coord*, const struct coord*,
 			   const struct coord*);
 
 extern struct coord *matcol(struct coord*, const struct matrix*,
 			    const struct coord*);
-extern struct coord *matcol_me(struct coord*, const struct matrix*);
+extern struct coord *matcol_in_place(struct coord*, const struct matrix*);
 extern struct coord *homogeneize(struct coord*, const struct coord*);
-extern struct coord *homogeneize_me(struct coord*);
+extern struct coord *homogeneize_in_place(struct coord*);
 
 extern struct matrix *matrix(struct matrix*,
 			     const struct coord*, const struct coord*,

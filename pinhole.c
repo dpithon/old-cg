@@ -58,7 +58,7 @@ static bool compute_coordsys(void)
 		}
 	} else {
 		cross(&coord_system.i, &coord_system.k, &vector_j);
-		normalize_me(&coord_system.i);
+		normalize_in_place(&coord_system.i);
 		cross(&coord_system.j, &coord_system.k, &coord_system.i);
 	}
 
