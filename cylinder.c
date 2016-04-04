@@ -106,7 +106,7 @@ struct shape *cylinder(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&cy->cs.k, &cy->cs.j, &vector_j);
-		normalize_me(&cy->cs.k);
+		normalize_in_place(&cy->cs.k);
 		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
 	}
 

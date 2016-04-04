@@ -82,5 +82,5 @@ void reset(void)
 
 void transform(struct coord *c)
 {
-	matcol_me(c, &stack[index]);
+	matcol_in_place(c, &stack[index]);
 }

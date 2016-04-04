@@ -109,7 +109,7 @@ struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 		}
 	} else {
 		cross(&pb->cs.k, &pb->cs.j, &vector_j);
-		normalize_me(&pb->cs.k);
+		normalize_in_place(&pb->cs.k);
 		cross(&pb->cs.i, &pb->cs.j, &pb->cs.k);
 	}
 

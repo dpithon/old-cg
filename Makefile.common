@@ -1,4 +1,4 @@
-.PHONY: clean purge deps all tags run conf
+.PHONY: clean purge deps all tags run conf push
 
 CC=gcc
 LD=gcc
@@ -22,7 +22,7 @@ run: raycaster
 	@./raycaster >raycaster.log 2>raycaster.err
 
 clean:
-	@rm -rf *.o *.gcda *.gcno *.info
+	@rm -rf *.o *.gcda *.gcno *.info *.bak
 	@echo "CLEAN"
 
 purge: clean
@@ -40,6 +40,10 @@ raycaster: $(OBJS)
 tags:
 	rm -f tags
 	ctags -R --exclude='.git' .
+
+push:
+	git push
+	git push github master
 
 include Makefile.deps
 
