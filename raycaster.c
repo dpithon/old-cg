@@ -33,7 +33,7 @@ void build_scene(void)
 		loc3.x = cos(nangle) * (RADIUS - 4.);
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
-		s = paraboloid(&loc2, &loc1, 2.);
+		s = cone(&loc2, &loc1, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 		add_shape(s);
@@ -53,6 +53,18 @@ void build_scene2(void)
 	struct coord apex = { 0, 10, 0, 1};
 
 	s = paraboloid(&point_o, &apex, 5.);
+	set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
+	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
+	add_shape(s);
+}
+
+
+void build_scene3(void)
+{
+	struct shape *s;
+	struct coord apex = { 0, 10, 0, 1};
+
+	s = cone(&point_o, &apex, 10.);
 	set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
 	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 	add_shape(s);
