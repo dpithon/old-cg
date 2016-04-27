@@ -38,10 +38,10 @@ void build_scene(void)
 		set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 		add_shape(s);
 
-		s = paraboloid(&loc3, &loc1, 2.);
+		s = paraboloid(&loc1, &loc3, 2.);
 		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
-		//add_shape(s);
+		add_shape(s);
 	}
 }
 
