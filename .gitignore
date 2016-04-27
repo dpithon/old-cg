@@ -6,5 +6,7 @@
 *.a
 tags
 *.log
+*.err
+*.out
 raycaster
 .DS_Store
