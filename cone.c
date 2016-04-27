@@ -1,4 +1,5 @@
-#include "vmath.h"
+#include <math.h>
+
 #include "ipoint.h"
 #include "ray.h"
 #include "misc.h"
@@ -58,8 +59,8 @@ static bool ci_linear(struct ipoint *i, const struct ray *ray,
 {
 	if (b != 0.) {
 		double k = -c/b;
-		if (k > 0 && k < i->k && in_range(k, s, ray)) {
-			int side = (Vy > 0)? FLAG_INSIDE: FLAG_OUTSIDE;
+		if (k > 0. && k < i->k && in_range(k, s, ray)) {
+			int side = (Vy > 0.)? FLAG_INSIDE: FLAG_OUTSIDE;
 			set_ipoint(i, s, side, k);
 			return true;
 		} 
@@ -78,7 +79,8 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 	double c = f * f - H2R2 * (Sx * Sx + Sz * Sz);
 
 	if (a != 0.) { 
-		double delta = b * b - 4 * a * c;
+		double delta = b * b - 4. * a * c;
+
 		if (delta < 0.) {
 			return false;
 		} if (delta > 0.) {
