@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "shape.h"
+#include "ray.h"
 
 struct quadric {
 	SHAPE_INF;
@@ -20,5 +21,13 @@ struct quadric {
 
 struct shape *quadric(const struct coord*, const struct coord*,
 		      double, intersector);
+
+static inline bool in_range(double k, const struct shape *s,
+			    const struct ray *ray)
+{
+	double y = k * Vy + Sy;
+	return (y >= 0. && y <= H);
+}
+
 
 #endif /* QUADRIC_H */

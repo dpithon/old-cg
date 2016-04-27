@@ -11,7 +11,6 @@
 
 
 #define WHICH_SIDE	((Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE)
-#define Y_IN_RANGE(k)	((k * Vy + Sy) <= H)
 
 
 static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
@@ -23,7 +22,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 	if (a < epsilon) {
 		assert(fabs(Vy) > epsilon);
 		k1 = (HR2 / Vy) * (Sx * Sx + Sz * Sz) - (Sy / Vy);
-		if (k1 > 0 && k1 < i->k && Y_IN_RANGE(k1)) {
+		if (k1 > 0 && k1 < i->k && in_range(k1, s, ray)) {
 			set_ipoint(i, s, WHICH_SIDE, k1);
 			return true;
 		}
@@ -45,19 +44,19 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 		if (k2 <= 0 || i->k <= k1)
 			return false;
 
-		if (k1 > 0 && Y_IN_RANGE(k1)) {
+		if (k1 > 0 && in_range(k1, s, ray)) {
 			set_ipoint(i, s, FLAG_OUTSIDE, k1);
 			return true;
 		}
 
-		if (k2 < i->k && Y_IN_RANGE(k2)) {
+		if (k2 < i->k && in_range(k2, s, ray)) {
 			set_ipoint(i, s, FLAG_INSIDE, k2);
 			return true;
 		}
 
 	} else {
 		k1 = -b / (2. * a);
-		if (k1 > 0 && k1 < i->k && Y_IN_RANGE(k1)) {
+		if (k1 > 0 && k1 < i->k && in_range(k1, s, ray)) {
 			set_ipoint(i, s, WHICH_SIDE, k1);
 			return true;
 		}

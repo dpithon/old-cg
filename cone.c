@@ -6,13 +6,6 @@
 #include "quadric.h"
 
 
-static bool in_range(double k, const struct shape *s, const struct ray *ray)
-{
-	double y = k * Vy + Sy;
-	return (y >= 0. && y <= H);
-}
-
-
 static bool ci_main(struct ipoint *i, const struct ray *ray,
 		    const struct shape *s, double k1, double k2)
 {
@@ -79,7 +72,7 @@ static bool ci_linear(struct ipoint *i, const struct ray *ray,
 static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 			   const struct shape *s)
 {
-	double f =  Sy - H;
+	double f = Sy - H;
 	double a = Vy * Vy - H2R2 * (Vx * Vx + Vz * Vz);
 	double b = 2. * (Vy * f - H2R2 * (Vx * Sx + Vz * Sz));
 	double c = f * f - H2R2 * (Sx * Sx + Sz * Sz);

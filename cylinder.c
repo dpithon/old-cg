@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
@@ -7,13 +5,6 @@
 #include "ray.h"
 #include "debug.h"
 #include "quadric.h"
-
-
-static bool in_range(double k, const struct shape *s, const struct ray *ray)
-{
-	double y = k * Vy + Sy;
-	return (y >= 0. && y <= H);
-}
 
 
 static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
