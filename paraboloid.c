@@ -1,28 +1,15 @@
 #include <assert.h>
 #include <math.h>
 
-#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "surfaces.h"
-#include "painter.h"
-#include "stack.h"
 #include "debug.h"
+#include "quadric.h"
 
 
-struct paraboloid {
-	SHAPE_INF;
-	double r;
-	double h;
-	double hr2;
-};
-
-
-#define H		((struct paraboloid*) s)->h
-#define HR2		((struct paraboloid*) s)->hr2
 #define WHICH_SIDE	((Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE)
 #define Y_IN_RANGE(k)	((k * Vy + Sy) <= H)
 
@@ -83,46 +70,5 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 			 double r)
 {
-	assert_is_point(base);
-	assert_is_point(apex);
-	assert(r > 0.);
-
-	double f;
-	struct coord vec;
-	struct paraboloid *pb = alloc_struct(paraboloid);
-
-	vector(&vec, base, apex);
-
-	normalize(&pb->cs.j, &vec);
-	pb->cs.o = *base;
-
-	transform(&pb->cs.j);
-	transform(&pb->cs.o);
-
-	if (is_collinear(&pb->cs.j, &vector_j, &f)) {
-		if (f > 0.) {
-			pb->cs.i = vector_i;
-			pb->cs.k = vector_k;
-		} else {
-			pb->cs.i = vector_k;
-			pb->cs.k = vector_i;
-		}
-	} else {
-		cross(&pb->cs.k, &pb->cs.j, &vector_j);
-		normalize_in_place(&pb->cs.k);
-		cross(&pb->cs.i, &pb->cs.j, &pb->cs.k);
-	}
-
-	assert_is_cartesian_coord_system(&pb->cs.i, &pb->cs.j, &pb->cs.k);
-
-	change_of_coord_mat(&pb->cs);
-
-	pb->r          = r;
-	pb->h          = len(&vec);
-	pb->hr2	       = pb->h / (r * r);
-	pb->intersect  = paraboloid_intersect;
-	pb->paint      = default_painter;
-	pb->paint_data = 0;
-
-	return CAST_SHAPE(pb);
+	return quadric(base, apex, r, paraboloid_intersect);
 }

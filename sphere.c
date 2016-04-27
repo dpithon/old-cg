@@ -1,25 +1,12 @@
 #include <assert.h>
 
-#include "mm.h"
 #include "vmath.h"
 #include "types.h"
-#include "surfaces.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "painter.h"
-#include "stack.h"
 #include "debug.h"
-
-
-struct sphere {
-	SHAPE_INF;
-	double r;
-	double r2;
-};
-
-
-#define R2	((struct sphere*)s)->r2
+#include "quadric.h"
 
 
 static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
@@ -64,24 +51,5 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 
 struct shape *sphere(const struct coord *loc, double r)
 {
-	assert_is_point(loc);
-	assert(r > 0.);
-
-	struct sphere *sph = alloc_struct(sphere);
-
-	sph->cs.o   = *loc;
-	sph->cs.i   = vector_i;
-	sph->cs.j   = vector_j;
-	sph->cs.k   = vector_k;
-
-	transform(&sph->cs.o);
-	change_of_coord_mat(&sph->cs);
-
-	sph->r  = r;
-	sph->r2 = r * r;
-	sph->intersect  = sphere_intersect;
-	sph->paint      = default_painter;
-	sph->paint_data = 0;
-
-	return CAST_SHAPE(sph);
+	return quadric(loc, 0, r, sphere_intersect);
 }

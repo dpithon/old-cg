@@ -1,24 +1,9 @@
-#include "mm.h"
 #include "vmath.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "surfaces.h"
-#include "painter.h"
-#include "stack.h"
 #include "misc.h"
 #include "debug.h"
-
-struct cone {
-	SHAPE_INF;
-	double r;
-	double h;
-	double h2r2;
-};
-
-
-#define H	((struct cone*) s)->h
-#define R	((struct cone*) s)->r
-#define H2R2	((struct cone*) s)->h2r2
+#include "quadric.h"
 
 
 static bool in_range(double k, const struct shape *s, const struct ray *ray)
@@ -123,43 +108,5 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 struct shape *cone(const struct coord *base, const struct coord *apex,
 		   double r)
 {
-	assert_is_point(base);
-	assert_is_point(apex);
-
-	double p;
-	struct coord vec;
-	struct cone *co = alloc_struct(cone);
-
-	vector(&vec, base, apex);
-	normalize(&co->cs.j, &vec);
-	co->cs.o = *base;
-
-        transform(&co->cs.j);
-        transform(&co->cs.o);
-	if (is_collinear(&co->cs.j, &vector_j, &p)) {
-		if (p > 0.) {
-			co->cs.i = vector_i;
-			co->cs.k = vector_k;
-		} else {
-			co->cs.i = vector_k;
-			co->cs.k = vector_i;
-		}
-	} else {
-		cross(&co->cs.k, &co->cs.j, &vector_j);
-		normalize_in_place(&co->cs.k);
-		cross(&co->cs.i, &co->cs.j, &co->cs.k);
-	}
-
-	assert_is_cartesian_coord_system(&co->cs.i, &co->cs.j, &co->cs.k);
-
-	change_of_coord_mat(&co->cs);
-
-	co->h          = len(&vec);
-	co->r          = r;
-	co->h2r2       = (co->h * co->h) / (r * r);
-	co->intersect  = cone_intersect;
-	co->paint      = default_painter;
-	co->paint_data = 0;
-
-	return CAST_SHAPE(co);
+	return quadric(base, apex, r, cone_intersect);
 }

@@ -1,27 +1,12 @@
 #include <assert.h>
 
-#include "mm.h"
 #include "vmath.h"
 #include "types.h"
 #include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "surfaces.h"
-#include "painter.h"
-#include "stack.h"
 #include "debug.h"
-
-
-struct cylinder {
-	SHAPE_INF;
-	double r;
-	double r2;
-	double h;
-};
-
-
-#define H	((struct cylinder*) s)->h
-#define R2	((struct cylinder*) s)->r2
+#include "quadric.h"
 
 
 static bool in_range(double k, const struct shape *s, const struct ray *ray)
@@ -78,48 +63,7 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 
 
 struct shape *cylinder(const struct coord *base, const struct coord *apex,
-			double r)
+		       double r)
 {
-	assert_is_point(base);
-	assert_is_point(apex);
-	assert(r > 0.);
-
-	double f;
-	struct coord vec;
-	struct cylinder *cy = alloc_struct(cylinder);
-
-	vector(&vec, base, apex);
-
-	normalize(&cy->cs.j, &vec);
-	cy->cs.o = *base;
-
-	transform(&cy->cs.j);
-	transform(&cy->cs.o);
-
-	if (is_collinear(&cy->cs.j, &vector_j, &f)) {
-		if (f > 0.) {
-			cy->cs.i = vector_i;
-			cy->cs.k = vector_k;
-		} else {
-			cy->cs.i = vector_k;
-			cy->cs.k = vector_i;
-		}
-	} else {
-		cross(&cy->cs.k, &cy->cs.j, &vector_j);
-		normalize_in_place(&cy->cs.k);
-		cross(&cy->cs.i, &cy->cs.j, &cy->cs.k);
-	}
-
-	assert_is_cartesian_coord_system(&cy->cs.i, &cy->cs.j, &cy->cs.k);
-
-	change_of_coord_mat(&cy->cs);
-
-	cy->h  = len(&vec);
-	cy->r  = r;
-	cy->r2 = r * r;
-	cy->intersect  = cylinder_intersect;
-	cy->paint      = default_painter;
-	cy->paint_data = 0;
-
-	return CAST_SHAPE(cy);
+	return quadric(base, apex, r, cylinder_intersect);
 }
