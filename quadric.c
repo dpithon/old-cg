@@ -59,7 +59,7 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 		assert_is_point(apex);
 		q->h    = set_cs(q, base, apex);
 		q->h2   = q->h * q->h;
-		q->hr2  = q->h * q->r2;
+		q->hr2  = q->h  / q->r2;
 		q->h2r2 = q->h2 / q->r2;
 	} else {
 		q->cs.o = *base;
