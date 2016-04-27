@@ -1,9 +1,7 @@
-#include "vmath.h"
-#include "types.h"
-#include "scene.h"
+#include <math.h>
+
 #include "ipoint.h"
 #include "ray.h"
-#include "debug.h"
 #include "quadric.h"
 
 
@@ -18,7 +16,7 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 
 	b = 2. * (Vx * Sx + Vz * Sz);
 	c = Sx * Sx + Sz * Sz - R2;
-	delta = b * b - 4 * a * c;
+	delta = b * b - 4. * a * c;
 
 	if (delta < 0.) {
 		return false;
