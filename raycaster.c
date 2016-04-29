@@ -43,6 +43,12 @@ void build_scene(void)
 		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
 		add_shape(s);
 	}
+
+	translate(0, 2, 0);
+	s = plane(&point_o, &vector_j);
+	set_plain_color(s, FLAG_OVER,  RGBOrange);
+	set_plain_color(s, FLAG_UNDER, RGBRed);
+	add_shape(s);
 }
 
 
