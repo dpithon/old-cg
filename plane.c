@@ -1,13 +1,11 @@
 #include "mm.h"
 #include "vmath.h"
 #include "types.h"
-#include "scene.h"
 #include "ipoint.h"
 #include "ray.h"
 #include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
-#include "log.h"
 
 
 struct plane {
