@@ -5,7 +5,7 @@
 #include "ipoint.h"
 #include "plain-color.h"
 #include "stack.h"
-#include "surfaces.h"
+#include "shape.h"
 #include "log.h"
 #include "sampler.h"
 

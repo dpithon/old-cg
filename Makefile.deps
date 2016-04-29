@@ -14,13 +14,12 @@ pinhole.o: pinhole.c log.h pinhole.h types.h vmath.h scene.h ray.h rgb.h \
 pixmap.o: pixmap.c pixmap.h types.h rgb.h log.h
 plain-color.o: plain-color.c mm.h plain-color.h shape.h types.h vmath.h \
  rgb.h ipoint.h
-plane.o: plane.c mm.h vmath.h types.h ipoint.h ray.h surfaces.h shape.h \
- painter.h stack.h
+plane.o: plane.c mm.h vmath.h types.h ipoint.h ray.h shape.h painter.h \
+ stack.h
 quadric.o: quadric.c quadric.h types.h shape.h vmath.h ray.h stack.h \
  log.h mm.h painter.h
 raycaster.o: raycaster.c pinhole.h types.h scene.h pixmap.h rgb.h \
- ipoint.h vmath.h plain-color.h shape.h stack.h surfaces.h log.h \
- sampler.h
+ ipoint.h vmath.h plain-color.h shape.h stack.h log.h sampler.h
 render.o: render.c render.h types.h ipoint.h vmath.h shape.h
 sampler.o: sampler.c sampler.h types.h log.h
 scene.o: scene.c vmath.h types.h shape.h ipoint.h ray.h log.h

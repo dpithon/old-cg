@@ -3,7 +3,7 @@
 #include "types.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "surfaces.h"
+#include "shape.h"
 #include "painter.h"
 #include "stack.h"
 
