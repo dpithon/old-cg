@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "debug.h"
+#include "log.h"
 
 void *do_alloc_struct(int sz)
 {

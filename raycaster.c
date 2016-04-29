@@ -8,7 +8,7 @@
 #include "plain-color.h"
 #include "stack.h"
 #include "surfaces.h"
-#include "debug.h"
+#include "log.h"
 
 #define W	750
 #define H	500

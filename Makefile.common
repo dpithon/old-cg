@@ -3,7 +3,7 @@
 CC=gcc
 LD=gcc
 
-OBJS=pinhole.o raycaster.o sampler.o scene.o debug.o renderer.o\
+OBJS=pinhole.o raycaster.o sampler.o scene.o log.o renderer.o\
      plane.o sphere.o vmath.o painter.o ipoint.o plain-color.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o mm.o\
      quadric.o

@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "debug.h"
+#include "log.h"
 #include "pinhole.h"
 #include "vmath.h"
 #include "scene.h"

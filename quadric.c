@@ -2,7 +2,7 @@
 
 #include "quadric.h"
 #include "stack.h"
-#include "debug.h"
+#include "log.h"
 #include "mm.h"
 #include "painter.h"
 

@@ -2,7 +2,7 @@
 #include "shape.h"
 #include "ipoint.h"
 #include "ray.h"
-#include "debug.h"
+#include "log.h"
 
 struct coord camera_location = {100., 100., 100., 1.};
 struct coord camera_target   = POINT_O;

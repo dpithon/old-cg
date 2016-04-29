@@ -1,5 +1,5 @@
 #include "sampler.h"
-#include "debug.h"
+#include "log.h"
 
 
 static void no_sampler()

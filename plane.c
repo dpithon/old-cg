@@ -7,7 +7,7 @@
 #include "surfaces.h"
 #include "painter.h"
 #include "stack.h"
-#include "debug.h"
+#include "log.h"
 
 
 struct plane {

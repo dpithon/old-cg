@@ -3,7 +3,7 @@
 #include "ipoint.h"
 #include "ray.h"
 #include "misc.h"
-#include "debug.h"
+#include "log.h"
 #include "quadric.h"
 
 
