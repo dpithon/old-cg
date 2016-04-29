@@ -1,6 +1,4 @@
 #include "pinhole.h"
-#include "sampler.h"
-#include "renderer.h"
 #include "scene.h"
 #include "pixmap.h"
 #include "rgb.h"
@@ -9,6 +7,7 @@
 #include "stack.h"
 #include "surfaces.h"
 #include "log.h"
+#include "sampler.h"
 
 #define W	750
 #define H	500
@@ -93,7 +92,7 @@ int main()
 
 	for (int x = 0; x < W; x++)
 		for (int y = 0; y < H; y++)
-			pixel_sampling(x, y);
+			sampler(x, y);
 
 	return write_pixmap(FORMAT_PPM, "a.pnm");
 }

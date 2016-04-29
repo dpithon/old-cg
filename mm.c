@@ -3,7 +3,7 @@
 
 #include "log.h"
 
-void *do_alloc_struct(int sz)
+void *alloc_struct_(int sz)
 {
 	assert(sz > 0);
 
@@ -13,6 +13,3 @@ void *do_alloc_struct(int sz)
 
 	return ptr;
 }
-
-
-

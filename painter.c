@@ -16,10 +16,10 @@ static void paint_with_plain_color(struct rgb *rgb, const struct ipoint *i)
 
 	*rgb = PLAIN_COLOR(i->shape)->rgb[c];
 }
-painter default_painter = paint_with_plain_color;
+paint_f default_painter = paint_with_plain_color;
 
 
-void set_painter(struct shape *s, painter paint, void *data)
+void set_painter(struct shape *s, paint_f paint, void *data)
 {
 	s->paint      = paint;
 	s->paint_data = data;

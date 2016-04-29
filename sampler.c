@@ -6,10 +6,10 @@ static void no_sampler()
 {
 	fatal("no pixel sampler!");
 }
-sampler pixel_sampling = no_sampler;
+sample_f sampler = no_sampler;
 
 
-void set_sampler(sampler f)
+void set_sampler(sample_f f)
 {
-	pixel_sampling = f;
+	sampler = f;
 }

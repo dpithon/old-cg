@@ -11,8 +11,8 @@
 		  struct matrix cam_to_shp;\
 		  struct matrix shp_to_cam;\
 		  void  *paint_data;\
-		  intersector intersect;\
-		  painter paint
+		  intersect_f intersect;\
+		  paint_f paint
 
 struct shape {
 	SHAPE_INF;

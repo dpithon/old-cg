@@ -15,7 +15,7 @@
 #include "ipoint.h"
 #include "pixmap.h"
 #include "sampler.h"
-#include "renderer.h"
+#include "render.h"
 
 
 /* Pinhole cartesian coordinate system */
@@ -144,7 +144,7 @@ static void sampling_center(int px, int py)
 	unit_vector(&ray.v, &center, &point_o);
 	reset_ipoint(&i);
 	if (intersect(&i, &ray)) {
-		rendering(&rgb, &i);
+		render(&rgb, &i);
 		set_pixel(px, py, &rgb);
 	} else {
 		set_pixel(px, py, 0);
@@ -153,7 +153,7 @@ static void sampling_center(int px, int py)
 
 
 #define DEFAULT_SAMPLER 0
-static void (*samplers[])(int, int) = { sampling_center, 0 };
+static sample_f samplers[] = { sampling_center, 0 };
 
 /**
  * init_pinhole - initialize pinhole camera.

@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-extern void set_painter(struct shape*, painter, void*);
+extern void set_painter(struct shape*, paint_f, void*);
 
-extern painter default_painter;
+extern paint_f default_painter;
 
 #endif /* PAINTER_H */

@@ -1,8 +1,8 @@
 #ifndef MM_H
 #define MM_H
 
-#define alloc_struct(name)	do_alloc_struct(sizeof(struct name))
+#define alloc_struct(name)	alloc_struct_(sizeof(struct name))
 
-extern void *do_alloc_struct(int);
+extern void *alloc_struct_(int);
 
 #endif /* MM_H */

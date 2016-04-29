@@ -46,7 +46,7 @@ static double set_cs(struct quadric *q, const struct coord *base,
 
 
 struct shape *quadric(const struct coord *base, const struct coord *apex,
-		      double r, intersector intersect)
+		      double r, intersect_f intersect)
 {
 	assert_is_point(base);
 	assert(r > 0.);

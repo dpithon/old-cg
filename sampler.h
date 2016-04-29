@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-void set_sampler(sampler);
+void set_sampler(sample_f);
 
-extern sampler pixel_sampling;
+extern sample_f sampler;
 
 #endif /* SAMPLER_H */

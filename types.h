@@ -13,10 +13,10 @@ struct coord_system;
 struct matrix;
 struct plain_color;
 
-typedef void (*renderer)(struct rgb*, const struct ipoint*);
-typedef void (*sampler)(int, int);
-typedef void (*painter)(struct rgb*, const struct ipoint*);
-typedef bool (*intersector)(struct ipoint*, const struct ray*,
+typedef void (*render_f)(struct rgb*, const struct ipoint*);
+typedef void (*sample_f)(int, int);
+typedef void (*paint_f)(struct rgb*, const struct ipoint*);
+typedef bool (*intersect_f)(struct ipoint*, const struct ray*,
 			    const struct shape*);
 
 #endif /* TYPES_H */
