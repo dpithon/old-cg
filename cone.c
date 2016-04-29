@@ -2,9 +2,9 @@
 
 #include "ipoint.h"
 #include "ray.h"
-#include "misc.h"
 #include "log.h"
 #include "quadric.h"
+#include "macros.h"
 
 
 static bool ci_main(struct ipoint *i, const struct ray *ray,
@@ -87,7 +87,7 @@ static bool cone_intersect(struct ipoint *i, const struct ray *ray,
 			double sqrt_delta = sqrt(delta);
 			double k1 = (-b - sqrt_delta) / (2. * a);
 			double k2 = (-b + sqrt_delta) / (2. * a);
-			ORDER_FLOAT(k1, k2);
+			SORT(k1, k2);
 			return ci_main(i, ray, s, k1, k2);
 		} else {
 			warning("cone_intersect: delta == 0");

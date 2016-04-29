@@ -1,5 +1,5 @@
-cone.o: cone.c ipoint.h types.h vmath.h ray.h misc.h log.h quadric.h \
- shape.h
+cone.o: cone.c ipoint.h types.h vmath.h ray.h log.h quadric.h shape.h \
+ macros.h
 cylinder.o: cylinder.c ipoint.h types.h vmath.h ray.h quadric.h shape.h
 deprecated.o: deprecated.c
 ipoint.o: ipoint.c ipoint.h types.h vmath.h
