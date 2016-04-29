@@ -9,7 +9,7 @@
 
 
 struct plane {
-	SHAPE_INF;
+	SHAPE_BASIC;
 };
 
 
