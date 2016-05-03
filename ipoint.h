@@ -29,6 +29,7 @@ struct ipoint {
 };
 
 extern void reset_ipoint(struct ipoint*);
-extern void set_ipoint(struct ipoint*, const struct shape*, int, double);
+extern void set_ipoint(struct ipoint*, const struct shape*, const struct ray*,
+		       int, double);
 
 #endif /* IPOINT_H */
