@@ -23,7 +23,7 @@ run: raycaster
 	@./raycaster >raycaster.log 2>raycaster.err
 
 clean:
-	@rm -rf *.o *.gcda *.gcno *.info *.bak
+	@rm -rf *.o *.gcda *.gcno *.info *.bak *.pnm
 	@echo "CLEAN"
 
 purge: clean
