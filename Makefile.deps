@@ -16,7 +16,7 @@ quadric.o: quadric.c quadric.h types.h shape.h vmath.h ray.h stack.h \
  log.h mm.h
 raycaster.o: raycaster.c pinhole.h types.h scene.h pixmap.h rgb.h \
  ipoint.h vmath.h stack.h shape.h log.h sampler.h material.h
-render.o: render.c render.h types.h ipoint.h vmath.h shape.h material.h
+render.o: render.c material.h types.h ipoint.h vmath.h shape.h
 sampler.o: sampler.c sampler.h types.h log.h
 scene.o: scene.c vmath.h types.h shape.h ipoint.h ray.h log.h
 sphere.o: sphere.c ipoint.h types.h vmath.h ray.h quadric.h shape.h

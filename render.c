@@ -1,6 +1,3 @@
-#include "render.h"
-#include "ipoint.h"
-#include "shape.h"
 #include "material.h"
 
 static void default_render(struct rgb *rgb, const struct ipoint *i)
