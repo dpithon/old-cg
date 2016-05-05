@@ -9,7 +9,7 @@ struct rgb;
 struct shape;
 struct plane;
 struct coord;
-struct coord_system;
+struct cs;
 struct matrix;
 struct plain_color;
 

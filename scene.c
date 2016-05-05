@@ -59,7 +59,7 @@ void add_shape(struct shape *shp)
 }
 
 
-void prepare_shape_matrices(const struct coord_system *cam_cs)
+void prepare_shape_matrices(const struct cs *cam_cs)
 {
 	struct shape *s = list_head;
 

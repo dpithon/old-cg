@@ -605,7 +605,7 @@ struct matrix *translation(struct matrix *m, struct coord *v)
 }
 
 
-void change_of_coord_mat(struct coord_system *cs)
+void change_of_coord_mat(struct cs *cs)
 {
 	struct matrix rot, tsl;
 	struct coord minus_os;

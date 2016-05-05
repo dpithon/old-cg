@@ -19,7 +19,7 @@
 
 
 /* Pinhole cartesian coordinate system */
-static struct coord_system coord_system = STANDARD_CS;
+static struct cs coord_system = STANDARD_CS;
 
 /* Focal length and field of view */
 static double focal, fov = 40.;
@@ -187,7 +187,7 @@ bool init_pinhole(int w, int h, double fov)
 /**
  *
  */
-const struct coord_system *pinhole_coord_system(void)
+const struct cs *pinhole_coord_system(void)
 {
 	return &coord_system;
 }

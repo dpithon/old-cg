@@ -18,7 +18,7 @@ struct matrix {
 	double cell[4][4];
 };
 
-struct coord_system {
+struct cs {
 	struct coord o;
 	struct coord i;
 	struct coord j;
@@ -108,7 +108,7 @@ extern struct matrix *rotation(struct matrix*, const struct coord*, double);
 extern struct matrix *scaling(struct matrix*, double, double, double);
 extern struct matrix *translation(struct matrix*, struct coord*);
 
-extern void change_of_coord_mat(struct coord_system*);
+extern void change_of_coord_mat(struct cs*);
 
 extern void random_point(struct coord*);
 extern void random_vector(struct coord*);

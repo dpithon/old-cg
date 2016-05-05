@@ -6,7 +6,7 @@
 
 #define CAST_SHAPE(s)	((struct shape*)(s))
 #define SHAPE_BASIC	struct shape *next;\
-			struct coord_system cs;\
+			struct cs cs;\
 			struct matrix cam_to_shp;\
 			struct matrix shp_to_cam;\
 			void  *paint_data;\
