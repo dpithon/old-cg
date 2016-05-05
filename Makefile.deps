@@ -3,23 +3,20 @@ cone.o: cone.c ipoint.h types.h vmath.h ray.h log.h quadric.h shape.h \
 cylinder.o: cylinder.c ipoint.h types.h vmath.h ray.h quadric.h shape.h
 ipoint.o: ipoint.c ipoint.h types.h vmath.h ray.h
 log.o: log.c ansicodes.h
+material.o: material.c material.h types.h ipoint.h vmath.h shape.h rgb.h \
+ mm.h
 mm.o: mm.c log.h
-painter.o: painter.c log.h shape.h types.h vmath.h ipoint.h plain-color.h \
- rgb.h
 paraboloid.o: paraboloid.c ipoint.h types.h vmath.h ray.h quadric.h \
  shape.h
 pinhole.o: pinhole.c log.h pinhole.h types.h vmath.h scene.h ray.h rgb.h \
  ipoint.h pixmap.h sampler.h render.h
 pixmap.o: pixmap.c pixmap.h types.h rgb.h log.h
-plain-color.o: plain-color.c mm.h plain-color.h shape.h types.h vmath.h \
- rgb.h ipoint.h
-plane.o: plane.c mm.h vmath.h types.h ipoint.h ray.h shape.h painter.h \
- stack.h
+plane.o: plane.c mm.h vmath.h types.h ipoint.h ray.h shape.h stack.h
 quadric.o: quadric.c quadric.h types.h shape.h vmath.h ray.h stack.h \
- log.h mm.h painter.h
+ log.h mm.h
 raycaster.o: raycaster.c pinhole.h types.h scene.h pixmap.h rgb.h \
- ipoint.h vmath.h plain-color.h shape.h stack.h log.h sampler.h
-render.o: render.c render.h types.h ipoint.h vmath.h shape.h
+ ipoint.h vmath.h stack.h shape.h log.h sampler.h material.h
+render.o: render.c render.h types.h ipoint.h vmath.h shape.h material.h
 sampler.o: sampler.c sampler.h types.h log.h
 scene.o: scene.c vmath.h types.h shape.h ipoint.h ray.h log.h
 sphere.o: sphere.c ipoint.h types.h vmath.h ray.h quadric.h shape.h

@@ -9,9 +9,8 @@
 			struct cs cs;\
 			struct matrix cam_to_shp;\
 			struct matrix shp_to_cam;\
-			void  *paint_data;\
-			intersect_f intersect;\
-			paint_f paint
+			struct material *material;\
+			intersect_f intersect
 
 
 struct shape {

@@ -4,7 +4,6 @@
 #include "ipoint.h"
 #include "ray.h"
 #include "shape.h"
-#include "painter.h"
 #include "stack.h"
 
 
@@ -61,8 +60,6 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 
 	change_of_coord_mat(&pln->cs);
 	pln->intersect  = plane_intersect;
-	pln->paint      = default_painter;
-	pln->paint_data = 0;
 
 	return CAST_SHAPE(pln);
 }

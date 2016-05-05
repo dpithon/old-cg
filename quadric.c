@@ -4,7 +4,6 @@
 #include "stack.h"
 #include "log.h"
 #include "mm.h"
-#include "painter.h"
 
 /**
  * set_cs: compute local coordinate system
@@ -72,8 +71,6 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 	change_of_coord_mat(&q->cs);
 
 	q->intersect  = intersect;
-	q->paint      = default_painter;
-	q->paint_data = 0;
 
 	return CAST_SHAPE(q);
 }

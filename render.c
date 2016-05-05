@@ -1,10 +1,11 @@
 #include "render.h"
 #include "ipoint.h"
 #include "shape.h"
+#include "material.h"
 
 static void default_render(struct rgb *rgb, const struct ipoint *i)
 {
-	i->shape->paint(rgb, i);
+	get_intrinsic(rgb, i);
 }
 render_f render = default_render;
 

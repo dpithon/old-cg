@@ -3,11 +3,11 @@
 #include "pixmap.h"
 #include "rgb.h"
 #include "ipoint.h"
-#include "plain-color.h"
 #include "stack.h"
 #include "shape.h"
 #include "log.h"
 #include "sampler.h"
+#include "material.h"
 
 #define W	750
 #define H	500
@@ -33,25 +33,21 @@ void build_scene(void)
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
 		s = cone(&loc2, &loc1, 2.);
-		set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
-		set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
+		set_material_plain_colors(s, RGBLightBlue, RGBDarkBlue);
 		add_shape(s);
 
 		s = paraboloid(&loc1, &loc3, 2.);
-		set_plain_color(s, FLAG_OUTSIDE, RGBLightGray);
-		set_plain_color(s, FLAG_INSIDE, RGBDarkGray);
+		set_material_plain_colors(s, RGBLightGray, RGBDarkGray);
 		add_shape(s);
 	}
 
-	translate(0, 2, 0);
 	s = plane(&point_o, &vector_j);
-	set_plain_color(s, FLAG_OVER,  RGBOrange);
-	set_plain_color(s, FLAG_UNDER, RGBRed);
+	set_material_plain_color(s, RGBWhite);
 	add_shape(s);
 }
 
 
-
+/*
 void build_scene2(void)
 {
 	struct shape *s;
@@ -74,6 +70,7 @@ void build_scene3(void)
 	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
 	add_shape(s);
 }
+*/
 
 
 int main()
