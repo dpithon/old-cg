@@ -12,15 +12,26 @@ struct material {
 	MATERIAL_BASIC;
 };
 
-extern void set_material_plain_color(struct shape*, double, double, double);
+extern void set_material_plain_color(struct shape*, int, double, double, double);
 extern void set_material_plain_colors(struct shape *shp,
 				      double, double, double,
 				      double, double, double);
+extern void set_material_stripes(struct shape *shp, int, double,
+				 double, double, double,
+				 double, double, double);
+extern void set_material_circle_stripes(struct shape *shp, int, double,
+					double, double, double,
+					double, double, double);
 
 static inline void get_intrinsic(struct rgb *rgb, const struct ipoint *i)
 {
-	i->shape->material->get_intrinsic(
-		rgb, i, i->shape->material
+	int n = 0;
+
+	if (is_inside(i) || is_under(i))
+		n = 1;
+
+	i->shape->material[n]->get_intrinsic(
+		rgb, i, i->shape->material[n]
 	);
 }
 

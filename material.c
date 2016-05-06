@@ -7,14 +7,15 @@ struct plain_color {
 	struct rgb rgb;
 };
 
-struct plain_colors {
+struct stripes {
 	MATERIAL_BASIC;
+	double size;
 	struct rgb rgb[2];
 };
 
 
 #define PLAIN_COLOR(mat)	((struct plain_color*) mat)
-#define PLAIN_COLORS(mat)	((struct plain_colors*) mat)
+#define STRIPES(mat)		((struct stripes*) mat)
 
 
 static void plain_color(struct rgb *rgb, const struct ipoint *i,
@@ -23,26 +24,56 @@ static void plain_color(struct rgb *rgb, const struct ipoint *i,
 	rgb->r = PLAIN_COLOR(mat)->rgb.r;
 	rgb->g = PLAIN_COLOR(mat)->rgb.g;
 	rgb->b = PLAIN_COLOR(mat)->rgb.b;
-	(void)i;
+
+	(void)i; /* prevent gcc "unused argument" warning */
 }
 
 
-static void plain_colors(struct rgb *rgb, const struct ipoint *i,
-			 const struct material *mat)
+static void stripes(struct rgb *rgb, const struct ipoint *i,
+		    const struct material *mat)
 {
-	int n = 1;
+	int x, n = 0;
 
-	if (is_outside(i) || is_over(i))
-		n = 0;
+	x = ((int) trunc(((struct coord*)i)->x / STRIPES(mat)->size)) % 2;
+	if (x == 0)
+		n = 1;
 
-	rgb->r = PLAIN_COLORS(mat)->rgb[n].r;
-	rgb->g = PLAIN_COLORS(mat)->rgb[n].g;
-	rgb->b = PLAIN_COLORS(mat)->rgb[n].b;
+	if (((struct coord*)i)->x < 0.)
+		n = n?0:1;
+
+	rgb->r = STRIPES(mat)->rgb[n].r;
+	rgb->g = STRIPES(mat)->rgb[n].g;
+	rgb->b = STRIPES(mat)->rgb[n].b;
 }
 
 
-void set_material_plain_color(struct shape *shp, double r, double g, double b)
+static void circle_stripes(struct rgb *rgb, const struct ipoint *i,
+			   const struct material *mat)
 {
+	int r, n = 0;
+
+	r = ((int) trunc(sqrt(((struct coord*)i)->x * ((struct coord*)i)->x +
+			     ((struct coord*)i)->z * ((struct coord*)i)->z) / STRIPES(mat)->size)) % 2;
+
+	if (r == 0)
+		n = 1;
+
+	rgb->r = STRIPES(mat)->rgb[n].r;
+	rgb->g = STRIPES(mat)->rgb[n].g;
+	rgb->b = STRIPES(mat)->rgb[n].b;
+}
+
+
+void set_material_plain_colors(struct shape *shp, double r1, double g1, double b1, double r2, double g2, double b2)
+{
+	set_material_plain_color(shp, FLAG_INSIDE, r1, g1, b1);
+	set_material_plain_color(shp, FLAG_OUTSIDE, r2, g2, b2);
+}
+
+
+void set_material_plain_color(struct shape *shp, int side, double r, double g, double b)
+{
+	int n = 0;
 	struct plain_color *p = alloc_struct(plain_color);
 
 	p->rgb.r = r;
@@ -51,32 +82,56 @@ void set_material_plain_color(struct shape *shp, double r, double g, double b)
 
 	p->get_intrinsic = plain_color;
 
-	shp->material = CAST_MATERIAL(p);
+	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(p);
 }
 
 
-void set_material_plain_colors(struct shape *shp,
-			       double r1, double g1, double b1,
-			       double r2, double g2, double b2)
+void set_material_stripes(struct shape *shp, int side, double s,
+			  double r1, double g1, double b1,
+			  double r2, double g2, double b2)
 {
-	struct plain_colors *p = alloc_struct(plain_colors);
+	int n = 0;
+	struct stripes *m = alloc_struct(stripes);
 
-	p->rgb[0].r = r1;
-	p->rgb[0].g = g1;
-	p->rgb[0].b = b1;
-	p->rgb[1].r = r2;
-	p->rgb[1].g = g2;
-	p->rgb[1].b = b2;
+	m->size     = s;
+	m->rgb[0].r = r1;
+	m->rgb[0].g = g1;
+	m->rgb[0].b = b1;
+	m->rgb[1].r = r2;
+	m->rgb[1].g = g2;
+	m->rgb[1].b = b2;
 
-	p->get_intrinsic = plain_colors;
+	m->get_intrinsic = stripes;
 
-	shp->material = CAST_MATERIAL(p);
+	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(m);
 }
 
 
+void set_material_circle_stripes(struct shape *shp, int side, double s,
+				 double r1, double g1, double b1,
+				 double r2, double g2, double b2)
+{
+	int n = 0;
+	struct stripes *m = alloc_struct(stripes);
 
+	m->size     = s;
+	m->rgb[0].r = r1;
+	m->rgb[0].g = g1;
+	m->rgb[0].b = b1;
+	m->rgb[1].r = r2;
+	m->rgb[1].g = g2;
+	m->rgb[1].b = b2;
 
+	m->get_intrinsic = circle_stripes;
 
+	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+		n = 1;
 
-
-
+	shp->material[n] = CAST_MATERIAL(m);
+}

@@ -9,7 +9,7 @@
 #include "sampler.h"
 #include "material.h"
 
-#define W	750
+#define W	500
 #define H	500
 
 
@@ -33,17 +33,24 @@ void build_scene(void)
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
 		s = cone(&loc2, &loc1, 2.);
-		set_material_plain_colors(s, RGBLightBlue, RGBDarkBlue);
+		set_material_circle_stripes(s, FLAG_OUTSIDE, .1, RGBLightGray, RGBDarkBlue);
+		set_material_circle_stripes(s, FLAG_INSIDE, .3, RGBOrange, RGBWhite);
 		add_shape(s);
 
 		s = paraboloid(&loc1, &loc3, 2.);
-		set_material_plain_colors(s, RGBLightGray, RGBDarkGray);
+		set_material_circle_stripes(s, FLAG_INSIDE, .1, RGBCyan, RGBGreen);
+		set_material_circle_stripes(s, FLAG_OUTSIDE, .3, RGBBlack, RGBBlue);
 		add_shape(s);
 	}
 
 	s = plane(&point_o, &vector_j);
-	set_material_plain_color(s, RGBWhite);
+	set_material_stripes(s, FLAG_OVER, 0.8, RGBRed, RGBDarkGray);
 	add_shape(s);
+
+	s = sphere(&point_o, 4);
+	set_material_stripes(s, FLAG_OUTSIDE, 0.2, RGBWhite, RGBDarkGray);
+	add_shape(s);
+
 }
 
 
