@@ -47,6 +47,30 @@ static void stripes(struct rgb *rgb, const struct ipoint *i,
 }
 
 
+static void checker(struct rgb *rgb, const struct ipoint *i,
+		    const struct material *mat)
+{
+	int x, z, n = 0;
+	int sx, sz, p;
+
+	sx = ((struct coord*)i)->x > 0.;
+	sz = ((struct coord*)i)->z > 0.;
+	x = ((int) trunc(fabs(((struct coord*)i)->x) / STRIPES(mat)->size)) % 2;
+	z = ((int) trunc(fabs(((struct coord*)i)->z) / STRIPES(mat)->size)) % 2;
+	p  = (sx == sz);
+
+	if (p) {
+		n = (x == z);
+	} else {
+		n = (x != z);
+	}
+	
+	rgb->r = STRIPES(mat)->rgb[n].r;
+	rgb->g = STRIPES(mat)->rgb[n].g;
+	rgb->b = STRIPES(mat)->rgb[n].b;
+}
+
+
 static void circle_stripes(struct rgb *rgb, const struct ipoint *i,
 			   const struct material *mat)
 {
@@ -105,6 +129,30 @@ void set_material_stripes(struct shape *shp, int side, double s,
 	m->rgb[1].b = b2;
 
 	m->get_intrinsic = stripes;
+
+	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(m);
+}
+
+
+void set_material_checker(struct shape *shp, int side, double s,
+			  double r1, double g1, double b1,
+			  double r2, double g2, double b2)
+{
+	int n = 0;
+	struct stripes *m = alloc_struct(stripes);
+
+	m->size     = s;
+	m->rgb[0].r = r1;
+	m->rgb[0].g = g1;
+	m->rgb[0].b = b1;
+	m->rgb[1].r = r2;
+	m->rgb[1].g = g2;
+	m->rgb[1].b = b2;
+
+	m->get_intrinsic = checker;
 
 	if (side == FLAG_UNDER || side == FLAG_INSIDE)
 		n = 1;

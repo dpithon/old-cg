@@ -44,11 +44,11 @@ void build_scene(void)
 	}
 
 	s = plane(&point_o, &vector_j);
-	set_material_stripes(s, FLAG_OVER, 0.8, RGBRed, RGBDarkGray);
+	set_material_checker(s, FLAG_OVER, 5., RGBRed, RGBDarkGray);
 	add_shape(s);
 
 	s = sphere(&point_o, 4);
-	set_material_stripes(s, FLAG_OUTSIDE, 0.2, RGBWhite, RGBDarkGray);
+	set_material_stripes(s, FLAG_OUTSIDE, 0.8, RGBWhite, RGBDarkGray);
 	add_shape(s);
 
 }
