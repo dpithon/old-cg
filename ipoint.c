@@ -4,16 +4,16 @@
 
 void reset_ipoint(struct ipoint *i)
 {
-	i->flags = 0;
+	i->side = NONE;
 	i->k = DBL_MAX;
 }
 
 
 void set_ipoint(struct ipoint *i, const struct shape *shp,
-		const struct ray *ray, int flg, double k)
+		const struct ray *ray, enum side s, double k)
 {
 	i->shape = shp;
-	i->flags = flg;
+	i->side  = s;
 	i->k     = k;
 	i->i.x   = k * Vx + Sx;
 	i->i.y   = k * Vy + Sy;
