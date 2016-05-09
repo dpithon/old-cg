@@ -90,8 +90,8 @@ static void circle_stripes(struct rgb *rgb, const struct ipoint *i,
 
 void set_material_plain_colors(struct shape *shp, double r1, double g1, double b1, double r2, double g2, double b2)
 {
-	set_material_plain_color(shp, FLAG_INSIDE, r1, g1, b1);
-	set_material_plain_color(shp, FLAG_OUTSIDE, r2, g2, b2);
+	set_material_plain_color(shp, INSIDE, r1, g1, b1);
+	set_material_plain_color(shp, OUTSIDE, r2, g2, b2);
 }
 
 
@@ -106,7 +106,7 @@ void set_material_plain_color(struct shape *shp, int side, double r, double g, d
 
 	p->get_intrinsic = plain_color;
 
-	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+	if (side == UNDER || side == INSIDE)
 		n = 1;
 
 	shp->material[n] = CAST_MATERIAL(p);
@@ -130,7 +130,7 @@ void set_material_stripes(struct shape *shp, int side, double s,
 
 	m->get_intrinsic = stripes;
 
-	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+	if (side == UNDER || side == INSIDE)
 		n = 1;
 
 	shp->material[n] = CAST_MATERIAL(m);
@@ -154,7 +154,7 @@ void set_material_checker(struct shape *shp, int side, double s,
 
 	m->get_intrinsic = checker;
 
-	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+	if (side == UNDER || side == INSIDE)
 		n = 1;
 
 	shp->material[n] = CAST_MATERIAL(m);
@@ -178,7 +178,7 @@ void set_material_circle_stripes(struct shape *shp, int side, double s,
 
 	m->get_intrinsic = circle_stripes;
 
-	if (side == FLAG_UNDER || side == FLAG_INSIDE)
+	if (side == UNDER || side == INSIDE)
 		n = 1;
 
 	shp->material[n] = CAST_MATERIAL(m);

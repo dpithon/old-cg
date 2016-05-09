@@ -4,17 +4,16 @@
 #include "types.h"
 #include "vmath.h"
 
-#define FLAG_DEFINED	 1
-#define FLAG_INSIDE	 2
-#define FLAG_OUTSIDE	 4
-#define FLAG_OVER	 8
-#define FLAG_UNDER	16
+#define INSIDE	1
+#define OUTSIDE	2
+#define OVER	4
+#define UNDER	8
 
-#define is_inside(i)	((i)->flags & FLAG_INSIDE)
-#define is_outside(i)	((i)->flags & FLAG_OUTSIDE)
-#define is_over(i)	((i)->flags & FLAG_OVER)
-#define is_under(i)	((i)->flags & FLAG_UNDER)
-#define is_defined(i)	((i)->flags & FLAG_DEFINED)
+#define is_inside(i)	((i)->flags & INSIDE)
+#define is_outside(i)	((i)->flags & OUTSIDE)
+#define is_over(i)	((i)->flags & OVER)
+#define is_under(i)	((i)->flags & UNDER)
+#define is_defined(i)	((i)->flags)
 
 #define x(i)		(((struct coord*)i)->x)
 #define y(i)		(((struct coord*)i)->y)

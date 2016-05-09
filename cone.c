@@ -14,17 +14,17 @@ static bool ci_main(struct ipoint *i, const struct ray *ray,
 		return false;
 	
 	if (k1 <= 0. && k2 < i->k && in_range(k2, s, ray)) {
-		int side = (k1 * Vy + Sy > H)? FLAG_OUTSIDE: FLAG_INSIDE;
+		int side = (k1 * Vy + Sy > H)? OUTSIDE: INSIDE;
 		set_ipoint(i, s, ray, side, k2);
 		return true;
 	} else if (k1 <= 0.) {
 		return false;
 	} else if (in_range(k1, s, ray)) {
-		int side = (k2 * Vy + Sy <= H)? FLAG_OUTSIDE: FLAG_INSIDE;
+		int side = (k2 * Vy + Sy <= H)? OUTSIDE: INSIDE;
 		set_ipoint(i, s, ray, side, k1);
 		return true;
 	} else if (k2 < i->k && in_range(k2, s, ray)) {
-		int side = (k1 * Vy + Sy > H)? FLAG_OUTSIDE: FLAG_INSIDE;
+		int side = (k1 * Vy + Sy > H)? OUTSIDE: INSIDE;
 		set_ipoint(i, s, ray, side, k2);
 		return true;
 	}
@@ -45,7 +45,7 @@ static bool ci_delta0(struct ipoint *i, const struct ray *ray,
 		double zk2 = zk * zk;
 		double rho_y2 = rho_y * rho_y;
 
-		int side = (xk2 + zk2 >= rho_y2)? FLAG_OUTSIDE: FLAG_INSIDE;
+		int side = (xk2 + zk2 >= rho_y2)? OUTSIDE: INSIDE;
 		set_ipoint(i, s, ray, side, k);
 		return true;
 	}
@@ -60,7 +60,7 @@ static bool ci_linear(struct ipoint *i, const struct ray *ray,
 	if (b != 0.) {
 		double k = -c/b;
 		if (k > 0. && k < i->k && in_range(k, s, ray)) {
-			int side = (Vy > 0.)? FLAG_INSIDE: FLAG_OUTSIDE;
+			int side = (Vy > 0.)? INSIDE: OUTSIDE;
 			set_ipoint(i, s, ray, side, k);
 			return true;
 		} 

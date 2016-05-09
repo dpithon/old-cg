@@ -22,7 +22,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 
 	k = - (Sy / Vy);
 	if (k > 0 && k < i->k) {
-		set_ipoint(i, s, ray, Vy > 0? FLAG_UNDER: FLAG_OVER, k);
+		set_ipoint(i, s, ray, Vy > 0? UNDER: OVER, k);
 		return true;
 	}
 

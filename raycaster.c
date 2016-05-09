@@ -33,22 +33,22 @@ void build_scene(void)
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
 		s = cone(&loc2, &loc1, 2.);
-		set_material_circle_stripes(s, FLAG_OUTSIDE, .1, RGBLightGray, RGBDarkBlue);
-		set_material_circle_stripes(s, FLAG_INSIDE, .3, RGBOrange, RGBWhite);
+		set_material_circle_stripes(s, OUTSIDE, .1, RGBLightGray, RGBDarkBlue);
+		set_material_circle_stripes(s, INSIDE, .3, RGBOrange, RGBWhite);
 		add_shape(s);
 
 		s = paraboloid(&loc1, &loc3, 2.);
-		set_material_circle_stripes(s, FLAG_INSIDE, .1, RGBCyan, RGBGreen);
-		set_material_circle_stripes(s, FLAG_OUTSIDE, .3, RGBBlack, RGBBlue);
+		set_material_circle_stripes(s, INSIDE, .1, RGBCyan, RGBGreen);
+		set_material_circle_stripes(s, OUTSIDE, .3, RGBBlack, RGBBlue);
 		add_shape(s);
 	}
 
 	s = plane(&point_o, &vector_j);
-	set_material_checker(s, FLAG_OVER, 5., RGBRed, RGBDarkGray);
+	set_material_checker(s, OVER, 5., RGBRed, RGBDarkGray);
 	add_shape(s);
 
 	s = sphere(&point_o, 4);
-	set_material_stripes(s, FLAG_OUTSIDE, 0.8, RGBWhite, RGBDarkGray);
+	set_material_stripes(s, OUTSIDE, 0.8, RGBWhite, RGBDarkGray);
 	add_shape(s);
 
 }
@@ -61,8 +61,8 @@ void build_scene2(void)
 	struct coord apex = { 0, 10, 0, 1};
 
 	s = paraboloid(&point_o, &apex, 5.);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
+	set_plain_color(s, OUTSIDE, RGBLightBlue);
+	set_plain_color(s, INSIDE, RGBDarkBlue);
 	add_shape(s);
 }
 
@@ -73,8 +73,8 @@ void build_scene3(void)
 	struct coord apex = { 0, 10, 0, 1};
 
 	s = cone(&point_o, &apex, 10.);
-	set_plain_color(s, FLAG_OUTSIDE, RGBLightBlue);
-	set_plain_color(s, FLAG_INSIDE, RGBDarkBlue);
+	set_plain_color(s, OUTSIDE, RGBLightBlue);
+	set_plain_color(s, INSIDE, RGBDarkBlue);
 	add_shape(s);
 }
 */

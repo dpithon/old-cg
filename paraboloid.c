@@ -5,7 +5,7 @@
 #include "quadric.h"
 
 
-#define WHICH_SIDE	((Vy > 0.)? FLAG_OUTSIDE: FLAG_INSIDE)
+#define WHICH_SIDE	((Vy > 0.)? OUTSIDE: INSIDE)
 static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 				 const struct shape *s)
 {
@@ -37,12 +37,12 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 			return false;
 
 		if (k1 > 0. && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, FLAG_OUTSIDE, k1);
+			set_ipoint(i, s, ray, OUTSIDE, k1);
 			return true;
 		}
 
 		if (k2 < i->k && in_range(k2, s, ray)) {
-			set_ipoint(i, s, ray, FLAG_INSIDE, k2);
+			set_ipoint(i, s, ray, INSIDE, k2);
 			return true;
 		}
 
