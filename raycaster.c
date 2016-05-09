@@ -33,22 +33,22 @@ void build_scene(void)
 		loc3.z = sin(nangle) * (RADIUS - 4.);
 
 		s = cone(&loc2, &loc1, 2.);
-		set_material_circle_stripes(s, OUTSIDE, .1, RGBLightGray, RGBDarkBlue);
-		set_material_circle_stripes(s, INSIDE, .3, RGBOrange, RGBWhite);
+		pattern_circle(s, OUTSIDE, .1, RGBLightGray, RGBDarkBlue);
+		pattern_circle(s, INSIDE, .3, RGBOrange, RGBWhite);
 		add_shape(s);
 
 		s = paraboloid(&loc1, &loc3, 2.);
-		set_material_circle_stripes(s, INSIDE, .1, RGBCyan, RGBGreen);
-		set_material_circle_stripes(s, OUTSIDE, .3, RGBBlack, RGBBlue);
+		pattern_circle(s, INSIDE, .1, RGBCyan, RGBGreen);
+		pattern_circle(s, OUTSIDE, .3, RGBBlack, RGBBlue);
 		add_shape(s);
 	}
 
 	s = plane(&point_o, &vector_j);
-	set_material_checker(s, OVER, 5., RGBRed, RGBDarkGray);
+	pattern_checker(s, OVER, 5., RGBRed, RGBDarkGray);
 	add_shape(s);
 
 	s = sphere(&point_o, 4);
-	set_material_stripes(s, OUTSIDE, 0.8, RGBWhite, RGBDarkGray);
+	pattern_stripes(s, OUTSIDE, 0.8, RGBWhite, RGBDarkGray);
 	add_shape(s);
 
 }

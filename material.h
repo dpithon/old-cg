@@ -12,17 +12,17 @@ struct material {
 	MATERIAL_BASIC;
 };
 
-extern void set_material_plain_color(struct shape*, int, double, double, double);
-extern void set_material_plain_colors(struct shape *shp,
+extern void plain_color(struct shape*, int, double, double, double);
+extern void plain_colors(struct shape *shp,
 				      double, double, double,
 				      double, double, double);
-extern void set_material_stripes(struct shape *shp, int, double,
+extern void pattern_stripes(struct shape *shp, int, double,
 				 double, double, double,
 				 double, double, double);
-extern void set_material_checker(struct shape *shp, int, double,
+extern void pattern_checker(struct shape *shp, int, double,
 				 double, double, double,
 				 double, double, double);
-extern void set_material_circle_stripes(struct shape *shp, int, double,
+extern void pattern_circle(struct shape *shp, int, double,
 					double, double, double,
 					double, double, double);
 
