@@ -18,4 +18,5 @@ void set_ipoint(struct ipoint *i, const struct shape *shp,
 	i->i.x   = k * Vx + Sx;
 	i->i.y   = k * Vy + Sy;
 	i->i.z   = k * Vz + Sz;
+	i->i.w   = 1.;
 }
