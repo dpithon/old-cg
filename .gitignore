@@ -10,3 +10,4 @@ tags
 *.out
 raycaster
 .DS_Store
+x11colors

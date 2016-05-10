@@ -27,7 +27,7 @@ clean:
 	@echo "CLEAN"
 
 purge: clean
-	@rm -rf raycaster html
+	@rm -rf raycaster html x11colors
 	@echo "PURGE"
 
 deps:
@@ -45,6 +45,10 @@ tags:
 push:
 	git push
 	git push github master
+
+x11colors: x11colors.o
+	@$(LD) $< -o $@ $(LDFLAGS) 
+	@echo "LD $@"
 
 include Makefile.deps
 
