@@ -2,31 +2,37 @@
 #include "rgb.h"
 #include "mm.h"
 
+#define PLAIN_COLOR(mat)	((struct plain_color*) mat)
+#define ALTERN_COLORS(mat)	((struct altern_colors*) mat)
+#define RED(mat)		(PLAIN_COLOR(mat)->rgb.r)
+#define GREEN(mat)		(PLAIN_COLOR(mat)->rgb.g)
+#define BLUE(mat)		(PLAIN_COLOR(mat)->rgb.b)
+#define ALTERN_RED(mat, n)	(ALTERN_COLORS(mat)->rgb[n].r)
+#define ALTERN_GREEN(mat, n)	(ALTERN_COLORS(mat)->rgb[n].g)
+#define ALTERN_BLUE(mat, n)	(ALTERN_COLORS(mat)->rgb[n].b)
+#define SIZE			(ALTERN_COLORS(mat)->size)
+#define X			(((struct coord*)i)->x)
+#define Z			(((struct coord*)i)->z)
+
+
 struct plain_color {
 	MATERIAL_BASIC;
 	struct rgb rgb;
 };
 
-struct stripes {
+
+struct altern_colors {
 	MATERIAL_BASIC;
 	double size;
 	struct rgb rgb[2];
 };
 
-
-#define PLAIN_COLOR(mat)	((struct plain_color*) mat)
-#define STRIPES(mat)		((struct stripes*) mat)
-#define X			(((struct coord*)i)->x)
-#define Z			(((struct coord*)i)->z)
-#define SIZE			(((struct stripes*) mat)->size)
-
-
 static void color(struct rgb *rgb, const struct ipoint *i,
 		  const struct material *mat)
 {
-	rgb->r = PLAIN_COLOR(mat)->rgb.r;
-	rgb->g = PLAIN_COLOR(mat)->rgb.g;
-	rgb->b = PLAIN_COLOR(mat)->rgb.b;
+	rgb->r = RED(mat);
+	rgb->g = GREEN(mat);
+	rgb->b = BLUE(mat);
 
 	(void)i; /* prevent gcc "unused argument" warning */
 }
@@ -41,9 +47,9 @@ static void stripes(struct rgb *rgb, const struct ipoint *i,
 	mod_x = ((int) trunc(fabs(X) / SIZE)) % 2;
 	n = sx? mod_x: !mod_x;
 
-	rgb->r = STRIPES(mat)->rgb[n].r;
-	rgb->g = STRIPES(mat)->rgb[n].g;
-	rgb->b = STRIPES(mat)->rgb[n].b;
+	rgb->r = ALTERN_RED(mat, n);
+	rgb->g = ALTERN_GREEN(mat, n);
+	rgb->b = ALTERN_BLUE(mat, n);
 }
 
 
@@ -59,9 +65,9 @@ static void checker(struct rgb *rgb, const struct ipoint *i,
 
 	n = (sx == sz)? (mod_x == mod_z): (mod_x != mod_z);
 	
-	rgb->r = STRIPES(mat)->rgb[n].r;
-	rgb->g = STRIPES(mat)->rgb[n].g;
-	rgb->b = STRIPES(mat)->rgb[n].b;
+	rgb->r = ALTERN_RED(mat, n);
+	rgb->g = ALTERN_GREEN(mat, n);
+	rgb->b = ALTERN_BLUE(mat, n);
 }
 
 
@@ -72,9 +78,9 @@ static void circles(struct rgb *rgb, const struct ipoint *i,
 
 	mod_r = ((int) trunc(sqrt(X * X + Z * Z) / SIZE)) % 2;
 
-	rgb->r = STRIPES(mat)->rgb[mod_r].r;
-	rgb->g = STRIPES(mat)->rgb[mod_r].g;
-	rgb->b = STRIPES(mat)->rgb[mod_r].b;
+	rgb->r = ALTERN_RED(mat, mod_r);
+	rgb->g = ALTERN_GREEN(mat, mod_r);
+	rgb->b = ALTERN_BLUE(mat, mod_r);
 }
 
 
@@ -87,9 +93,9 @@ static void sphstripes(struct rgb *rgb, const struct ipoint *i,
 	cart2sphr((struct coord*)i, &s);
 	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
 
-	rgb->r = STRIPES(mat)->rgb[mod_theta].r;
-	rgb->g = STRIPES(mat)->rgb[mod_theta].g;
-	rgb->b = STRIPES(mat)->rgb[mod_theta].b;
+	rgb->r = ALTERN_RED(mat, mod_theta);
+	rgb->g = ALTERN_GREEN(mat, mod_theta);
+	rgb->b = ALTERN_BLUE(mat, mod_theta);
 }
 
 
@@ -105,29 +111,54 @@ static void sphchecker(struct rgb *rgb, const struct ipoint *i,
 
 	n = (mod_theta == mod_phy);
 
-	rgb->r = STRIPES(mat)->rgb[n].r;
-	rgb->g = STRIPES(mat)->rgb[n].g;
-	rgb->b = STRIPES(mat)->rgb[n].b;
+	rgb->r = ALTERN_RED(mat, n);
+	rgb->g = ALTERN_GREEN(mat, n);
+	rgb->b = ALTERN_BLUE(mat, n);
 }
 
 
-void plain_colors(struct shape *shp,
-		  double r1, double g1, double b1,
-		  double r2, double g2, double b2)
+static void set_pattern(struct shape *shp, int side, struct altern_colors *ac, 
+			void (*fun)(struct rgb*, const struct ipoint*,
+				    const struct material*))
 {
-	plain_color(shp, INSIDE, r1, g1, b1);
-	plain_color(shp, OUTSIDE, r2, g2, b2);
+	int n = 0;
+
+	ac->get_intrinsic = fun;
+
+	if (side == UNDER || side == INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(ac);
 }
 
 
-void plain_color(struct shape *shp, int side, double r, double g, double b)
+struct altern_colors *altern_colors(double size, struct rgb *c1, struct rgb *c2)
+{
+	struct altern_colors *ac = alloc_struct(altern_colors);
+
+	ac->size = size;
+	ac->rgb[0] = *c1;
+	ac->rgb[1] = *c2;
+
+	return ac;
+}
+
+
+void plain_colors(struct shape *shp, struct rgb *rgb)
+{
+	plain_color(shp, INSIDE, &rgb[0]);
+	plain_color(shp, OUTSIDE, &rgb[1]);
+}
+
+
+void plain_color(struct shape *shp, int side, struct rgb *rgb)
 {
 	int n = 0;
 	struct plain_color *p = alloc_struct(plain_color);
 
-	p->rgb.r = r;
-	p->rgb.g = g;
-	p->rgb.b = b;
+	p->rgb.r = rgb->r;
+	p->rgb.g = rgb->g;
+	p->rgb.b = rgb->b;
 
 	p->get_intrinsic = color;
 
@@ -138,123 +169,31 @@ void plain_color(struct shape *shp, int side, double r, double g, double b)
 }
 
 
-void pattern_stripes(struct shape *shp, int side, double s,
-		     double r1, double g1, double b1,
-		     double r2, double g2, double b2)
+void pat_stripes(struct shape *shp, int side, struct altern_colors *ac)
 {
-	int n = 0;
-	struct stripes *m = alloc_struct(stripes);
-
-	m->size     = s;
-	m->rgb[0].r = r1;
-	m->rgb[0].g = g1;
-	m->rgb[0].b = b1;
-	m->rgb[1].r = r2;
-	m->rgb[1].g = g2;
-	m->rgb[1].b = b2;
-
-	m->get_intrinsic = stripes;
-
-	if (side == UNDER || side == INSIDE)
-		n = 1;
-
-	shp->material[n] = CAST_MATERIAL(m);
+	set_pattern(shp, side, ac, stripes);
 }
 
 
-void pattern_checker(struct shape *shp, int side, double s,
-		     double r1, double g1, double b1,
-		     double r2, double g2, double b2)
+void pat_checker(struct shape *shp, int side, struct altern_colors *ac)
 {
-	int n = 0;
-	struct stripes *m = alloc_struct(stripes);
-
-	m->size     = s;
-	m->rgb[0].r = r1;
-	m->rgb[0].g = g1;
-	m->rgb[0].b = b1;
-	m->rgb[1].r = r2;
-	m->rgb[1].g = g2;
-	m->rgb[1].b = b2;
-
-	m->get_intrinsic = checker;
-
-	if (side == UNDER || side == INSIDE)
-		n = 1;
-
-	shp->material[n] = CAST_MATERIAL(m);
+	set_pattern(shp, side, ac, checker);
 }
 
 
-void pattern_circle(struct shape *shp, int side, double s,
-		    double r1, double g1, double b1,
-		    double r2, double g2, double b2)
+void pat_circles(struct shape *shp, int side, struct altern_colors *ac)
 {
-	int n = 0;
-	struct stripes *m = alloc_struct(stripes);
-
-	m->size     = s;
-	m->rgb[0].r = r1;
-	m->rgb[0].g = g1;
-	m->rgb[0].b = b1;
-	m->rgb[1].r = r2;
-	m->rgb[1].g = g2;
-	m->rgb[1].b = b2;
-
-	m->get_intrinsic = circles;
-
-	if (side == UNDER || side == INSIDE)
-		n = 1;
-
-	shp->material[n] = CAST_MATERIAL(m);
+	set_pattern(shp, side, ac, circles);
 }
 
 
-void pattern_sphstripes(struct shape *shp, int side, double s,
-			double r1, double g1, double b1,
-			double r2, double g2, double b2)
+void pat_sphstripes(struct shape *shp, int side, struct altern_colors *ac)
 {
-	int n = 0;
-	struct stripes *m = alloc_struct(stripes);
-
-	m->size     = s;
-	m->rgb[0].r = r1;
-	m->rgb[0].g = g1;
-	m->rgb[0].b = b1;
-	m->rgb[1].r = r2;
-	m->rgb[1].g = g2;
-	m->rgb[1].b = b2;
-
-	m->get_intrinsic = sphstripes;
-
-	if (side == UNDER || side == INSIDE)
-		n = 1;
-
-	shp->material[n] = CAST_MATERIAL(m);
+	set_pattern(shp, side, ac, sphstripes);
 }
 
 
-void pattern_sphchecker(struct shape *shp, int side, double s,
-			double r1, double g1, double b1,
-			double r2, double g2, double b2)
+void pat_sphchecker(struct shape *shp, int side, struct altern_colors *ac)
 {
-	int n = 0;
-	struct stripes *m = alloc_struct(stripes);
-
-	m->size     = s;
-	m->rgb[0].r = r1;
-	m->rgb[0].g = g1;
-	m->rgb[0].b = b1;
-	m->rgb[1].r = r2;
-	m->rgb[1].g = g2;
-	m->rgb[1].b = b2;
-
-	m->get_intrinsic = sphchecker;
-
-	if (side == UNDER || side == INSIDE)
-		n = 1;
-
-	shp->material[n] = CAST_MATERIAL(m);
+	set_pattern(shp, side, ac, sphchecker);
 }
-
-
