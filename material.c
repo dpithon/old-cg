@@ -78,6 +78,22 @@ static void circles(struct rgb *rgb, const struct ipoint *i,
 }
 
 
+static void sphstripes(struct rgb *rgb, const struct ipoint *i,
+		       const struct material *mat)
+{
+	struct sphcoord s;
+	cart2sphr((struct coord*)i, &s);
+
+	int mod_theta;
+
+	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
+
+	rgb->r = STRIPES(mat)->rgb[mod_theta].r;
+	rgb->g = STRIPES(mat)->rgb[mod_theta].g;
+	rgb->b = STRIPES(mat)->rgb[mod_theta].b;
+}
+
+
 void plain_colors(struct shape *shp,
 		  double r1, double g1, double b1,
 		  double r2, double g2, double b2)
@@ -175,3 +191,29 @@ void pattern_circle(struct shape *shp, int side, double s,
 
 	shp->material[n] = CAST_MATERIAL(m);
 }
+
+
+void pattern_sphstripes(struct shape *shp, int side, double s,
+			double r1, double g1, double b1,
+			double r2, double g2, double b2)
+{
+	int n = 0;
+	struct stripes *m = alloc_struct(stripes);
+
+	m->size     = s;
+	m->rgb[0].r = r1;
+	m->rgb[0].g = g1;
+	m->rgb[0].b = b1;
+	m->rgb[1].r = r2;
+	m->rgb[1].g = g2;
+	m->rgb[1].b = b2;
+
+	m->get_intrinsic = sphstripes;
+
+	if (side == UNDER || side == INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(m);
+}
+
+

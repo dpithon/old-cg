@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 
-#define W	192
-#define H	192
+#define W	512
+#define H	512
 
 
 #define CONES	12
@@ -51,7 +51,7 @@ void build_scene(void)
 	add_shape(s);
 
 	s = sphere(&point_o, 4);
-	pattern_stripes(s, OUTSIDE, 0.8, RGBLightSteelBlue, RGBDarkSeaGreen4);
+	pattern_sphstripes(s, OUTSIDE, 30., RGBLightSteelBlue, RGBDarkSeaGreen4);
 	add_shape(s);
 
 }
