@@ -28,6 +28,9 @@ extern void pattern_circle(struct shape *shp, int, double,
 extern void pattern_sphstripes(struct shape *shp, int, double,
 				 double, double, double,
 				 double, double, double);
+extern void pattern_sphchecker(struct shape *shp, int, double,
+				 double, double, double,
+				 double, double, double);
 
 static inline void get_intrinsic(struct rgb *rgb, const struct ipoint *i)
 {

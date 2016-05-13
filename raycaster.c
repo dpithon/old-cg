@@ -50,8 +50,8 @@ void build_scene(void)
 	pattern_checker(s, UNDER, 5., RGBMediumOrchid1, RGBGrey100);
 	add_shape(s);
 
-	s = sphere(&point_o, 4);
-	pattern_sphstripes(s, OUTSIDE, 30., RGBLightSteelBlue, RGBDarkSeaGreen4);
+	s = sphere(&point_o, 6);
+	pattern_sphchecker(s, OUTSIDE, 15., RGBLightSteelBlue, RGBDarkSeaGreen4);
 	add_shape(s);
 
 }
@@ -90,6 +90,7 @@ int main()
 				sampler(x, y);
 
 		sprintf(filename, "a%03d.pnm", n);
+		debug(filename);
 		write_pixmap(FORMAT_PPM, filename);
 	}
 

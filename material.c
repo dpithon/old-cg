@@ -81,16 +81,33 @@ static void circles(struct rgb *rgb, const struct ipoint *i,
 static void sphstripes(struct rgb *rgb, const struct ipoint *i,
 		       const struct material *mat)
 {
-	struct sphcoord s;
-	cart2sphr((struct coord*)i, &s);
-
 	int mod_theta;
+	struct sphcoord s;
 
+	cart2sphr((struct coord*)i, &s);
 	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
 
 	rgb->r = STRIPES(mat)->rgb[mod_theta].r;
 	rgb->g = STRIPES(mat)->rgb[mod_theta].g;
 	rgb->b = STRIPES(mat)->rgb[mod_theta].b;
+}
+
+
+static void sphchecker(struct rgb *rgb, const struct ipoint *i,
+		       const struct material *mat)
+{
+	int mod_theta, mod_phy, n;
+	struct sphcoord s;
+
+	cart2sphr((struct coord*)i, &s);
+	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
+	mod_phy   = ((int) trunc(DEG(s.phy) / SIZE)) % 2;
+
+	n = (mod_theta == mod_phy);
+
+	rgb->r = STRIPES(mat)->rgb[n].r;
+	rgb->g = STRIPES(mat)->rgb[n].g;
+	rgb->b = STRIPES(mat)->rgb[n].b;
 }
 
 
@@ -209,6 +226,30 @@ void pattern_sphstripes(struct shape *shp, int side, double s,
 	m->rgb[1].b = b2;
 
 	m->get_intrinsic = sphstripes;
+
+	if (side == UNDER || side == INSIDE)
+		n = 1;
+
+	shp->material[n] = CAST_MATERIAL(m);
+}
+
+
+void pattern_sphchecker(struct shape *shp, int side, double s,
+			double r1, double g1, double b1,
+			double r2, double g2, double b2)
+{
+	int n = 0;
+	struct stripes *m = alloc_struct(stripes);
+
+	m->size     = s;
+	m->rgb[0].r = r1;
+	m->rgb[0].g = g1;
+	m->rgb[0].b = b1;
+	m->rgb[1].r = r2;
+	m->rgb[1].g = g2;
+	m->rgb[1].b = b2;
+
+	m->get_intrinsic = sphchecker;
 
 	if (side == UNDER || side == INSIDE)
 		n = 1;
