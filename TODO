@@ -1,2 +1,24 @@
 - remove sampler.[ch] or move it in pinhole module 
+- material.c: do not copy color but copy pointer:
 
+static void color(struct rgb *rgb, const struct ipoint *i,
+                  const struct material *mat)
+{
+        rgb->r = RED(mat);
+        rgb->g = GREEN(mat);
+        rgb->b = BLUE(mat);
+
+        (void)i; /* prevent gcc "unused argument" warning */
+}
+ 
+become
+
+
+static void color(struct rgb **rgb, const struct ipoint *i,
+                  const struct material *mat)
+{
+        *rgb = &(PLAIN_COLOR(mat)->rgb);
+
+        (void)i; /* prevent gcc "unused argument" warning */
+}
+ 
