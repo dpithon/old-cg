@@ -8,6 +8,7 @@ struct ray;
 struct rgb;
 struct shape;
 struct coord;
+struct sphcoord;
 struct cs;
 struct matrix;
 struct material;

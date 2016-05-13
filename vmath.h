@@ -14,6 +14,13 @@ struct coord {
 	double x, y, z, w;
 };
 
+struct sphcoord {
+	double rho, theta, phy;
+};
+
+
+#define DEG(rad) ((rad) * 180. / M_PI)
+
 struct matrix {
 	double cell[4][4];
 };
@@ -109,6 +116,9 @@ extern struct matrix *scaling(struct matrix*, double, double, double);
 extern struct matrix *translation(struct matrix*, struct coord*);
 
 extern void change_of_coord_mat(struct cs*);
+
+extern void cart2sphr(const struct coord*, struct sphcoord*);
+extern void sphr2cart(const struct sphcoord*, struct coord*);
 
 extern void random_point(struct coord*);
 extern void random_vector(struct coord*);

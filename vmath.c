@@ -618,6 +618,42 @@ void change_of_coord_mat(struct cs *cs)
 }
 
 
+void cart2sphr(const struct coord *p, struct sphcoord *s)
+{
+	double x2, y2, rhoxy;
+
+	x2 = p->x * p->x;
+	y2 = p->y * p->y;
+
+	s->rho = sqrt(x2 + y2 + p->z * p->z);
+	if (s->rho < epsilon) {
+		s->theta = s->phy = s->rho = 0.;
+		return;
+	}
+
+	s->phy = acos(p->z / s->rho);
+	rhoxy = sqrt(x2 + y2);
+	if (rhoxy < epsilon) {
+		s->theta = 0.;
+		return;
+	}
+
+	s->theta = acos(p->x / rhoxy);
+	if (p->y < 0.)
+		s->theta = 2 * M_PI - s->theta;
+}
+
+
+void sphr2cart(const struct sphcoord *s, struct coord *p)
+{
+	double rhoxy = s->rho * sin(s->phy);
+	p->x = rhoxy * cos(s->theta);
+	p->y = rhoxy * sin(s->theta);
+	p->z = s->rho * cos(s->phy);
+	p->w = 1.;
+}
+
+
 /*************************************************************/
 #ifndef NDEBUG
 
