@@ -153,7 +153,7 @@ double len(const struct coord *v)
 {
 	assert_is_vector(v);
 
-	return sqrtf(DOT(v, v));
+	return sqrt(DOT(v, v));
 }
 
 
