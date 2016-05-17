@@ -8,11 +8,12 @@
 #include "log.h"
 #include "sampler.h"
 #include "material.h"
+#include "pool.h"
 
 #include <stdio.h>
 
-#define W	512
-#define H	512
+#define W	32
+#define H	32
 
 
 #define CONES	12
@@ -84,18 +85,18 @@ int main()
 
 	build_scene();
 
+	int pixmap_pool = init_pool(2 * MEGA);
+
 	for (int n = 0; n < iter; n++, angle += step) {
 		x = cos(angle) * radius;
 		z = sin(angle) * radius;
 		y = sin(angle) * 45.;
 		set_location(x, y, z);
 		set_target(0, 0, 0);
-		if (!init_pinhole(W, H, 45.)) {
+		if (!init_pinhole(pixmap_pool, W, H, 45.)) {
 			fatal("failed to initialize pinhole camera");
 			return 1;
 		}
-
-		init_pixmap(W, H);
 
 		prepare_shape_matrices(pinhole_coord_system());
 

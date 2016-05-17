@@ -10,7 +10,7 @@
 
 #define FORMAT_PPM 1
 
-int init_pixmap(int, int);
+int init_pixmap(int, int, int);
 int set_pixel(int, int, struct rgb*);
 int write_pixmap(int, const char*);
 void cleanup_pixmap(void);

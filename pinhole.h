@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-bool init_pinhole(int, int, double);
+bool init_pinhole(int, int, int, double);
 const struct cs *pinhole_coord_system(void);
 void cleanup_pinhole(void);
 

@@ -6,7 +6,7 @@ LD=gcc
 OBJS=pinhole.o raycaster.o sampler.o scene.o log.o render.o\
      plane.o sphere.o vmath.o ipoint.o material.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o mm.o\
-     quadric.o rgb.o
+     quadric.o rgb.o pool.o
 
 all: conf raycaster
 

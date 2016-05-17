@@ -1,10 +1,11 @@
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
+
 #include "pixmap.h"
 #include "rgb.h"
 #include "log.h"
+#include "pool.h"
 
 static struct rgb def_rgb = Black;
 
@@ -15,6 +16,8 @@ static struct {
 	unsigned char *data;  /* pointer to pixmap buffer   */
 } bp;
 
+static int pool_id;
+
 
 /** init_pixmap - initialize pixmap
  * 
@@ -23,21 +26,19 @@ static struct {
  *
  * return 0 on success
  */
-int init_pixmap(int w, int h)
+int init_pixmap(int pool, int w, int h)
 {
-	debug("entering init_pixmap");
 	if (bp.data != NULL)
 		warning("bp.data is not clean");
 
 	if (w < 0 || h < 0)
 		return error("bad width or size", 1);
 
+	pool_id = pool;
+
 	bp.w = w;
 	bp.h = h;
-
-	bp.data = malloc(w * h * 3);
-	if (! bp.data)
-		return error("failed to allocate memory", 2);
+	bp.data = alloc_from_pool(pool_id, w * h * 3);
 
 	return 0;
 }
@@ -93,7 +94,7 @@ int write_pixmap(int fmt, const char *fname)
 void cleanup_pixmap(void)
 {
 	if (bp.data) {
-		free(bp.data);
+		empty_pool(pool_id);
 		bp.data = NULL;
 	} else {
 		warning("bp.data already freed");

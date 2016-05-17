@@ -163,10 +163,12 @@ static sample_f samplers[] = { sampling_center, 0 };
  * fov: field of view
  *
  */
-bool init_pinhole(int w, int h, double fov)
+bool init_pinhole(int pool_id, int w, int h, double fov)
 {
 	if (h > w || w <= 0 || h <= 0)
 		return false;
+
+	init_pixmap(pool_id, w, h);
 
 	width  = w;
 	height = h;
