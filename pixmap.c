@@ -26,6 +26,8 @@ static struct {
 int init_pixmap(int w, int h)
 {
 	debug("entering init_pixmap");
+	if (bp.data != NULL)
+		warning("bp.data is not clean");
 
 	if (w < 0 || h < 0)
 		return error("bad width or size", 1);
@@ -84,5 +86,16 @@ int write_pixmap(int fmt, const char *fname)
 	default:
 		warning("unknown file format (default to ppm)");
 		return write_ppm(fname);
+	}
+}
+
+
+void cleanup_pixmap(void)
+{
+	if (bp.data) {
+		free(bp.data);
+		bp.data = NULL;
+	} else {
+		warning("bp.data already freed");
 	}
 }

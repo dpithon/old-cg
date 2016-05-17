@@ -13,5 +13,6 @@
 int init_pixmap(int, int);
 int set_pixel(int, int, struct rgb*);
 int write_pixmap(int, const char*);
+void cleanup_pixmap(void);
 
 #endif /* PIXMAP_H */

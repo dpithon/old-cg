@@ -22,7 +22,7 @@
 static struct cs coord_system = STANDARD_CS;
 
 /* Focal length and field of view */
-static double focal, fov = 40.;
+static double focal, fov;
 
 /* Pinhole camera sensor width and height and mapping constants */
 static int width, height;
@@ -191,3 +191,10 @@ const struct cs *pinhole_coord_system(void)
 {
 	return &coord_system;
 }
+
+
+void cleanup_pinhole(void)
+{
+	 cleanup_pixmap();
+}
+

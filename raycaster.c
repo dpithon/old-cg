@@ -106,6 +106,8 @@ int main()
 		sprintf(filename, "a%03d.pnm", n);
 		debug(filename);
 		write_pixmap(FORMAT_PPM, filename);
+
+		cleanup_pinhole();
 	}
 
 	return 0;
