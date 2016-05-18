@@ -1,15 +1,4 @@
-*.o
 *.swp
-*.pnm
-*.png
-*.gch
-*.a
 tags
-*.log
-*.err
-*.out
-*.gif
-demo1
-raycaster
+build
 .DS_Store
-x11colors

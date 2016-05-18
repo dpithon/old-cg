@@ -1,6 +1,5 @@
-cg - basic computer graphics
-===============================
+= cg - basic computer graphics
 
 Useless project to build a basic ray tracer from scratch.
 
-image:animate.gif[animate.gif]
+image:doc/animate.gif[animate.gif]

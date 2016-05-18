@@ -1,71 +1,91 @@
-.PHONY: default prod dev gcov gprof clang purge clean deps conf init
+.PHONY: default prod dev cov profile purge clean deps conf init
 
-OBJSDIR=/tmp/.cgobjs
-OBJS=$(OBJSDIR)/pinhole.o\
-     $(OBJSDIR)/demo1.o\
-     $(OBJSDIR)/sampler.o\
-     $(OBJSDIR)/scene.o\
-     $(OBJSDIR)/log.o\
-     $(OBJSDIR)/render.o\
-     $(OBJSDIR)/plane.o\
-     $(OBJSDIR)/sphere.o\
-     $(OBJSDIR)/vmath.o\
-     $(OBJSDIR)/ipoint.o\
-     $(OBJSDIR)/material.o\
-     $(OBJSDIR)/paraboloid.o\
-     $(OBJSDIR)/cylinder.o\
-     $(OBJSDIR)/pixmap.o\
-     $(OBJSDIR)/cone.o\
-     $(OBJSDIR)/stack.o\
-     $(OBJSDIR)/quadric.o\
-     $(OBJSDIR)/rgb.o\
-     $(OBJSDIR)/pool.o
+CF_CMN=-std=c99 -pedantic -Wall -Wextra -Werror -pipe
+CF_PRD=$(CFLAGS_CMN) -DNDEBUG -O2 -g0
+CF_DEV=$(CFLAGS_CMN) -O0 -g2
+CF_COV=$(CFLAGS_CMN) -O0 -g2 --coverage
+
+LDF_CMN=-lm
+LDF_PRD=$(LDF_CMN)
+LDF_DEV=$(LDF_CMN)
+LDF_COV=$(LDF_CMN) --coverage
+
+MAKE=make --no-print-directory
+
+BUILDDIR=build
+
+OBJS=$(BUILDDIR)/pinhole.o\
+     $(BUILDDIR)/demo1.o\
+     $(BUILDDIR)/sampler.o\
+     $(BUILDDIR)/scene.o\
+     $(BUILDDIR)/log.o\
+     $(BUILDDIR)/render.o\
+     $(BUILDDIR)/plane.o\
+     $(BUILDDIR)/sphere.o\
+     $(BUILDDIR)/vmath.o\
+     $(BUILDDIR)/ipoint.o\
+     $(BUILDDIR)/material.o\
+     $(BUILDDIR)/paraboloid.o\
+     $(BUILDDIR)/cylinder.o\
+     $(BUILDDIR)/pixmap.o\
+     $(BUILDDIR)/cone.o\
+     $(BUILDDIR)/stack.o\
+     $(BUILDDIR)/quadric.o\
+     $(BUILDDIR)/rgb.o\
+     $(BUILDDIR)/pool.o
 
 
 default: dev
 
 conf:
-	@echo
-	@echo "########################################################################"
-	@echo "CC     :" $(CC)
-	@echo "LD     :" $(LD)
-	@echo "CFLAGS :" $(CFLAGS)
-	@echo "LDFLAG :" $(LDFLAGS)
-	@echo "########################################################################"
+	@echo 
+	@echo "CC = "$(CC)
+	@echo "LD = "$(LD)
+	@echo "CFLAGS = "$(CFLAGS)
+	@echo "LDFLAG = "$(LDFLAGS)
 	@echo
 
 init:
-	@mkdir -p $(OBJSDIR)
 	@echo "INIT"
+	@mkdir -p $(BUILDDIR)
 
 deps: init
-	@$(CC) -MM src/*.c >$(OBJSDIR)/makefile.deps
 	@echo "DEPS"
+	@$(CC) -MM src/*.c >$(BUILDDIR)/makefile.deps
 
 clean:
-	@rm -rf $(OBJSDIR) *.gcda *.gcno *.info *.bak *.pnm
 	@echo "CLEAN"
+	@rm -rf $(BUILDDIR)
 
 purge: clean
-	@rm -rf demo1 demo1.gif html x11colors
 	@echo "PURGE"
+	@rm -rf $(BUILDDIR)
 
 tags:
 	rm -f tags
 	ctags -R --exclude='.git' .
 
 prod: deps
-	@CC=gcc LD=gcc CFLAGS="-Wall -Wextra -Werror -std=c99 -pedantic -pipe -DNDEBUG -O2 -g0" LDFLAGS="-lm" $(MAKE) --no-print-directory demo1
+	@CFLAGS="$(CF_PRD)" LDFLAGS="$(LDF_PRD)" $(MAKE) $(BUILDDIR)/demo1
 
 dev: deps
-	@CC=gcc LD=gcc CFLAGS="-Wall -Wextra -Werror -std=c99 -pedantic -pipe -O0 -g2" LDFLAGS="-lm" $(MAKE) --no-print-directory demo1
+	@CFLAGS="$(CF_DEV)" LDFLAGS="$(LDF_DEV)" $(MAKE) $(BUILDDIR)/demo1
 
-demo1: conf $(OBJS)
-	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
+coverage: deps
+	@CFLAGS="$(CF_COV)" LDFLAGS="$(LDF_COV)" $(MAKE) $(BUILDDIR)/demo1
+	@echo "RUN"
+	@cd $(BUILDDIR) && ./demo1
+	@echo "LCOV"
+	@lcov -q -c -d $(BUILDDIR) -o $(BUILDDIR)/cov.info
+	@echo "GENHTML : file:///$(PWD)/$(BUILDDIR)/src/index.html"
+	@genhtml -q $(BUILDDIR)/cov.info -o $(BUILDDIR)
+
+$(BUILDDIR)/demo1: conf $(OBJS)
 	@echo "LD $@"
+	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 
-$(OBJSDIR)/%.o: src/%.c
-	@$(CC) $(CFLAGS) -c -o $@ $<
+$(BUILDDIR)/%.o: src/%.c
 	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
--include $(OBJSDIR)/makefile.deps
+-include $(BUILDDIR)/makefile.deps
