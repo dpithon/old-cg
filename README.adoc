@@ -1,6 +1,6 @@
 = cg - basic computer graphics
 
-'''Useless project to build a basic ray tracer from scratch.'''
+_Useless project to build a basic ray tracer from scratch._
 
 Right now **cg** provides a simple raycaster featuring :
 
@@ -13,4 +13,4 @@ Right now **cg** provides a simple raycaster featuring :
 
 image:doc/pics/animate.gif[animate.gif]
 
-GIF built from 180 images.
+GIF built from 180 images. (git tag testanim2)
