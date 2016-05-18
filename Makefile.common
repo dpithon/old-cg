@@ -29,7 +29,7 @@ clean:
 	@echo "CLEAN"
 
 purge: clean
-	@rm -rf raycaster html x11colors
+	@rm -rf raycaster demo1 demo1.gif html x11colors
 	@echo "PURGE"
 
 deps:
