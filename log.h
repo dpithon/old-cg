@@ -2,8 +2,9 @@
 #define LOG_H
 
 extern void fatal(const char*);
-extern void warning(const char*);
 extern int  error(const char*, int);
+extern void warning(const char*);
+extern void info(const char*);
 
 #ifndef NDEBUG
 #define debug(m)		 debug_(m)

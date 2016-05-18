@@ -18,14 +18,20 @@ void fatal(const char *msg)
 }
 
 
-void warning(const char *msg)
+int error(const char *msg, int ret)
 {
-	fprintf(stderr, YELLOW "Warning: %s\n" NOHL, msg);
+	fprintf(stderr, RED "error: %s\n" NOHL, msg);
+	return ret;
 }
 
 
-int error(const char *msg, int ret)
+void warning(const char *msg)
 {
-	fprintf(stderr, RED "Error: %s\n" NOHL, msg);
-	return ret;
+	fprintf(stderr, YELLOW "warning: %s\n" NOHL, msg);
+}
+
+
+void info(const char *msg)
+{
+	fprintf(stderr, GREEN "info: %s\n" NOHL, msg);
 }
