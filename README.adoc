@@ -1,11 +1,16 @@
 = cg - basic computer graphics
 
-Useless project to build a basic ray tracer from scratch.
+'''Useless project to build a basic ray tracer from scratch.'''
 
-Right now cg provides a raycaster featuring :
+Right now **cg** provides a simple raycaster featuring :
 
 * pinhole camera
 * quadric surfaces (paraboloid, cone, cylinder, sphere)
-* some pattern textures (stripes, checker) on planar/spherical coordinates
+* some pattern textures (stripes, checker) mapped on cartesian/spherical
+  coordinates
+
+== A small animation
 
 image:doc/pics/animate.gif[animate.gif]
+
+GIF built from 180 images.
