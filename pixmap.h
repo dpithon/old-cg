@@ -1,18 +1,15 @@
-/**
- * Basic pixmap package.
- *
- */
-
 #ifndef PIXMAP_H
 #define PIXMAP_H
 
 #include "types.h"
 
-#define FORMAT_PPM 1
+extern int  init_pixmap(int, int);
+extern int  set_pixel(int, int, struct rgb*);
+extern int  write_pixmap(const char*);
+extern void release_pixmap(void);
 
-int init_pixmap(int, int, int);
-int set_pixel(int, int, struct rgb*);
-int write_pixmap(int, const char*);
-void cleanup_pixmap(void);
+extern int  pixmap_size(void);
+extern int  pixmap_width(void);
+extern int  pixmap_height(void);
 
 #endif /* PIXMAP_H */

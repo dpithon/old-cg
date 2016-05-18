@@ -6,6 +6,8 @@
 
 #define MAX_POOL	16
 
+static int default_pool = -1;
+
 static struct pool {
 	char *bottom;
 	char *top;
@@ -20,12 +22,15 @@ static int initialized;
 /*
  * init_pool: allocate a new pool with given size
  *
- * sz: size of pool
+ * sz: size of pool.
  *
  * returns pool id or raise fatal error
  */
 int init_pool(size_t sz)
 {
+	int  pool_id;
+	char *mem;
+
 	if (!initialized) {
 		for (int n = 0; n < MAX_POOL; n++)
 			stack[n] = n;
@@ -34,23 +39,32 @@ int init_pool(size_t sz)
 		initialized = true;
 	}
 
-	if (top) {
-		int pool_id = stack[--top];
-		char *mem = malloc(sz);
-		if (mem == NULL)
-			fatal("out of memory");
-		pool[pool_id].bottom = pool[pool_id].free = mem;
-		pool[pool_id].top = mem + sz;
-		return pool_id;
-	}
+	if (!top)
+		fatal("no more pool on stack");
 
-	fatal("no more pool");
-	return -1; /* never reached */
+	if ((mem = malloc(sz)) == NULL)
+		fatal("out of memory");
+
+	pool_id = stack[--top];
+	pool[pool_id].bottom = pool[pool_id].free = mem;
+	pool[pool_id].top = mem + sz;
+
+	return pool_id;
 }
 
 
-char *alloc_from_pool(int pool_id, size_t sz)
+void set_default_pool(int pool_id)
 {
+	assert(pool_id >= 0 && pool_id < MAX_POOL);
+	assert(pool[pool_id].bottom != NULL);
+
+	default_pool = pool_id;
+}
+
+
+void *alloc_from_pool(int pool_id, size_t sz)
+{
+	assert(pool_id >= 0 && pool_id < MAX_POOL);
 	assert(pool[pool_id].bottom != NULL);
 
 	char *mem = pool[pool_id].free;
@@ -63,17 +77,31 @@ char *alloc_from_pool(int pool_id, size_t sz)
 }
 
 
+void *alloc_from_default_pool(size_t sz)
+{
+	return alloc_from_pool(default_pool, sz);
+}
+
+
 void empty_pool(int pool_id)
 {
+	assert(pool_id >= 0 && pool_id < MAX_POOL);
 	assert(pool[pool_id].bottom != NULL);
+
+	if (pool[pool_id].free == pool[pool_id].bottom)
+		warning("pool already empty");
+
 	pool[pool_id].free = pool[pool_id].bottom;
 }
 
 
 void release_pool(int pool_id)
 {
-	assert(top < MAX_POOL);
+	assert(pool_id >= 0 && pool_id < MAX_POOL);
 	assert(pool[pool_id].bottom != NULL);
+
+	if (top >= MAX_POOL)
+		fatal("pool stack overflow");
 
 	free(pool[pool_id].bottom);
 	pool[pool_id].free = pool[pool_id].bottom = pool[pool_id].top = NULL;

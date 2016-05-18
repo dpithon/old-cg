@@ -3,8 +3,10 @@
 
 #include "types.h"
 
-bool init_pinhole(int, int, int, double);
+void set_location(double x, double y, double z);
+void set_target(double x, double y, double z);
+bool set_fov(double f);
+bool setup_pinhole(void);
 const struct cs *pinhole_coord_system(void);
-void cleanup_pinhole(void);
 
 #endif /* PINHOLE_H */

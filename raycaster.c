@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 
-#define W	32
-#define H	32
+#define W	512
+#define H	512
 
 
 #define CONES	12
@@ -77,26 +77,28 @@ int main()
 	char filename[16];
 	int iter;
 	double x, y, z, angle, step, radius;
+	int scene_pool;
 
 	angle = 0.;
 	radius = 30.;
 	iter = 180;
 	step = 2. * M_PI / (double) iter;
 
+	init_pixmap(W, H);
+	scene_pool = init_pool(24 * KILO); 
+	set_default_pool(scene_pool);
+
 	build_scene();
 
-	int pixmap_pool = init_pool(2 * MEGA);
-
+	set_target(0, 0, 0);
+	set_fov(45.);
 	for (int n = 0; n < iter; n++, angle += step) {
 		x = cos(angle) * radius;
 		z = sin(angle) * radius;
 		y = sin(angle) * 45.;
 		set_location(x, y, z);
-		set_target(0, 0, 0);
-		if (!init_pinhole(pixmap_pool, W, H, 45.)) {
-			fatal("failed to initialize pinhole camera");
-			return 1;
-		}
+		if (!setup_pinhole())
+			fatal("failed to setup pinhole camera");
 
 		prepare_shape_matrices(pinhole_coord_system());
 
@@ -106,10 +108,11 @@ int main()
 
 		sprintf(filename, "a%03d.pnm", n);
 		debug(filename);
-		write_pixmap(FORMAT_PPM, filename);
-
-		cleanup_pinhole();
+		write_pixmap(filename);
 	}
+
+	release_pool(scene_pool);
+	release_pixmap();
 
 	return 0;
 }

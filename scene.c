@@ -4,29 +4,9 @@
 #include "ray.h"
 #include "log.h"
 
-struct coord camera_location = {100., 100., 100., 1.};
-struct coord camera_target   = POINT_O;
 
 static struct shape *list_head;
 static struct shape *list_tail;
-
-
-void set_location(double x, double y, double z)
-{
-	camera_location.x = x;
-	camera_location.y = y;
-	camera_location.z = z;
-	camera_location.w = 1.;
-}
-
-
-void set_target(double x, double y, double z)
-{
-	camera_target.x = x;
-	camera_target.y = y;
-	camera_target.z = z;
-	camera_target.w = 1.;
-}
 
 
 bool intersect(struct ipoint *i, const struct ray *ray_cam)

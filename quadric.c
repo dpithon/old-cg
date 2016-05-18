@@ -3,7 +3,7 @@
 #include "quadric.h"
 #include "stack.h"
 #include "log.h"
-#include "mm.h"
+#include "pool.h"
 
 /**
  * set_cs: compute local coordinate system

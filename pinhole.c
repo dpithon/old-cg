@@ -23,9 +23,11 @@ static struct cs coord_system = STANDARD_CS;
 
 /* Focal length and field of view */
 static double focal, fov;
+static struct coord camera_location = {100., 100., 100., 1.};
+static struct coord camera_target   = POINT_O;
+
 
 /* Pinhole camera sensor width and height and mapping constants */
-static int width, height;
 static double sqr_edge, fac_xy, off_x, off_y;
 
 
@@ -79,7 +81,7 @@ static bool compute_coordsys(void)
  *
  * return false if field of view is invalid.
  */
-static bool set_fov(double f)
+bool set_fov(double f)
 {
 	if (f <= 0. || f >= 180.)
 		return error("fov is out of range", false);
@@ -96,12 +98,13 @@ static bool set_fov(double f)
  */
 static void init_mapping(void)
 {
-	assert(width >= height);
+	if (pixmap_width() < pixmap_height())
+		fatal("pixmap_width < pixmap_height");
 
-	sqr_edge = 1. / ((double) width);
+	sqr_edge = 1. / pixmap_width();
 	fac_xy   = - sqr_edge;
 	off_x    = 0.5 - sqr_edge;
-	off_y    = ((double) height) / ((double) (2. * width)) - sqr_edge;
+	off_y    = pixmap_height() / (2. * pixmap_width()) - sqr_edge;
 }
 
 
@@ -156,26 +159,16 @@ static void sampling_center(int px, int py)
 static sample_f samplers[] = { sampling_center, 0 };
 
 /**
- * init_pinhole - initialize pinhole camera.
+ * setup_pinhole - setup pinhole camera.
  *
  * w:   horizontal resolution of pinhole sensor
  * h:   vertical resolution of pinhole sensor
  * fov: field of view
  *
  */
-bool init_pinhole(int pool_id, int w, int h, double fov)
+bool setup_pinhole(void)
 {
-	if (h > w || w <= 0 || h <= 0)
-		return false;
-
-	init_pixmap(pool_id, w, h);
-
-	width  = w;
-	height = h;
 	init_mapping();
-
-	if (!set_fov(fov))
-		return false;
 
 	if (!compute_coordsys())
 		return false;
@@ -195,8 +188,21 @@ const struct cs *pinhole_coord_system(void)
 }
 
 
-void cleanup_pinhole(void)
+void set_location(double x, double y, double z)
 {
-	 cleanup_pixmap();
+	camera_location.x = x;
+	camera_location.y = y;
+	camera_location.z = z;
+	camera_location.w = 1.;
 }
+
+
+void set_target(double x, double y, double z)
+{
+	camera_target.x = x;
+	camera_target.y = y;
+	camera_target.z = z;
+	camera_target.w = 1.;
+}
+
 
