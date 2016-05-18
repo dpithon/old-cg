@@ -8,6 +8,8 @@ tags
 *.log
 *.err
 *.out
+*.gif
+demo1
 raycaster
 .DS_Store
 x11colors

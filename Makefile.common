@@ -3,12 +3,12 @@
 CC=gcc
 LD=gcc
 
-OBJS=pinhole.o raycaster.o sampler.o scene.o log.o render.o\
+OBJS=pinhole.o demo1.o sampler.o scene.o log.o render.o\
      plane.o sphere.o vmath.o ipoint.o material.o\
      paraboloid.o cylinder.o pixmap.o cone.o stack.o\
      quadric.o rgb.o pool.o
 
-all: conf raycaster
+all: conf demo1
 
 conf:
 	@echo
@@ -18,9 +18,11 @@ conf:
 	@echo "###############################################################"
 	@echo
 
-run: raycaster
+run: demo1
 	@echo "RUN"
-	@./raycaster >raycaster.log 2>raycaster.err
+	@./demo1
+	@echo "CONVERT"
+	@convert -delay 4 -loop 0 a*.pnm demo1.gif
 
 clean:
 	@rm -rf *.o *.gcda *.gcno *.info *.bak *.pnm
@@ -34,7 +36,7 @@ deps:
 	@$(CC) -MM *.c >Makefile.deps
 	@echo "DEPS"
 
-raycaster: $(OBJS) 
+demo1: $(OBJS) 
 	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 	@echo "LD $@"
 

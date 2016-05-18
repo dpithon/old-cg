@@ -1,6 +1,8 @@
 cone.o: cone.c ipoint.h types.h vmath.h ray.h log.h quadric.h shape.h \
  macros.h
 cylinder.o: cylinder.c ipoint.h types.h vmath.h ray.h quadric.h shape.h
+demo1.o: demo1.c pinhole.h types.h scene.h pixmap.h rgb.h ipoint.h \
+ vmath.h stack.h shape.h log.h sampler.h material.h pool.h
 ipoint.o: ipoint.c ipoint.h types.h vmath.h ray.h
 log.o: log.c ansicodes.h
 material.o: material.c material.h types.h ipoint.h vmath.h shape.h rgb.h \
@@ -14,8 +16,6 @@ plane.o: plane.c pool.h vmath.h types.h ipoint.h ray.h shape.h stack.h
 pool.o: pool.c log.h
 quadric.o: quadric.c quadric.h types.h shape.h vmath.h ray.h stack.h \
  log.h pool.h
-raycaster.o: raycaster.c pinhole.h types.h scene.h pixmap.h rgb.h \
- ipoint.h vmath.h stack.h shape.h log.h sampler.h material.h pool.h
 render.o: render.c material.h types.h ipoint.h vmath.h shape.h
 rgb.o: rgb.c pool.h rgb.h
 sampler.o: sampler.c sampler.h types.h log.h
