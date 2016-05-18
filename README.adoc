@@ -2,4 +2,10 @@
 
 Useless project to build a basic ray tracer from scratch.
 
-image:doc/animate.gif[animate.gif]
+Right now cg provides a raycaster featuring :
+
+* pinhole camera
+* quadric surfaces (paraboloid, cone, cylinder, sphere)
+* some pattern textures (stripes, checker) on planar/spherical coordinates
+
+image:doc/pics/animate.gif[animate.gif]

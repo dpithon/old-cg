@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 
-#define W	512
-#define H	512
+#define W	256
+#define H	256
 
 
 #define CONES	12
