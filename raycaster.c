@@ -75,6 +75,7 @@ void build_scene(void)
 int main()
 {
 	char filename[16];
+	char infoline[32];
 	int iter;
 	double x, y, z, angle, step, radius;
 	int scene_pool;
@@ -107,7 +108,8 @@ int main()
 				sampler(x, y);
 
 		sprintf(filename, "a%03d.pnm", n);
-		debug(filename);
+		sprintf(infoline, "writing %s", filename);
+		info(infoline);
 		write_pixmap(filename);
 	}
 
