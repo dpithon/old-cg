@@ -35,8 +35,8 @@ void build_scene(void)
 	parab_outside  = altern_colors(.3, rgb(RGBBlack), rgb(RGBBlue));
 	plane_under    = altern_colors(5., rgb(RGBMediumOrchid1), rgb(RGBGrey100));
 	plane_over     = altern_colors(10., rgb(RGBCornflowerBlue), rgb(RGBSnow));
-	sphere_outside = altern_colors(15., rgb(RGBLightSteelBlue),
-				           rgb(RGBDarkSeaGreen4));
+	sphere_outside = altern_colors(22.5, rgb(RGBOrangeRed),
+				           rgb(RGBGray100));
 
 	loc2.y = 4.;
 	loc3.y = 1.;
