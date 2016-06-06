@@ -1,6 +1,6 @@
 .PHONY: default prod dev cov profile purge clean deps conf init
 
-CF_CMN=-std=c99 -pedantic -Wall -Wextra -Werror -pipe
+CF_CMN=-std=c99 -pedantic -Wall -Wextra -Werror -pipe -fstrict-aliasing
 CF_PRD=$(CF_CMN) -DNDEBUG -O2 -g0
 CF_DEV=$(CF_CMN) -O0 -g2
 CF_COV=$(CF_CMN) -O0 -g2 --coverage
