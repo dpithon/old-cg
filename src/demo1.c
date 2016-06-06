@@ -33,8 +33,10 @@ void build_scene(void)
 	cone_outside   = altern_colors(.4, rgb(RGBLightGray), rgb(RGBDarkBlue));
 	parab_inside   = altern_colors(.1, rgb(RGBCyan), rgb(RGBGreen));
 	parab_outside  = altern_colors(.3, rgb(RGBBlack), rgb(RGBBlue));
-	plane_under    = altern_colors(5., rgb(RGBMediumOrchid1), rgb(RGBGrey100));
-	plane_over     = altern_colors(10., rgb(RGBCornflowerBlue), rgb(RGBSnow));
+	plane_under    = altern_colors(5., rgb(RGBMediumOrchid1),
+					   rgb(RGBGrey100));
+	plane_over     = altern_colors(10., rgb(RGBCornflowerBlue),
+					    rgb(RGBSnow));
 	sphere_outside = altern_colors(22.5, rgb(RGBOrangeRed),
 				           rgb(RGBGray100));
 

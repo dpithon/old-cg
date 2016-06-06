@@ -706,7 +706,8 @@ int main()
 	      );
 
 	for (unsigned int n = 0; n < NR; n++) {
-		printf("#define RGB%c%-20s", toupper(x11colors[n].name[0]), &x11colors[n].name[1]);
+		printf("#define RGB%c%-20s", toupper(x11colors[n].name[0]),
+			&x11colors[n].name[1]);
 		printf("%18.16f, %18.16f, %18.16f\n",
 			(double) x11colors[n].red / 255.,
 			(double) x11colors[n].green / 255.,
@@ -717,8 +718,10 @@ int main()
 	printf("\n");
 
 	for (unsigned int n = 0; n < NR; n++) {
-		printf("#define %c%-20s", toupper(x11colors[n].name[0]), &x11colors[n].name[1]);
-		printf("{ RGB%c%s }\n", toupper(x11colors[n].name[0]), &x11colors[n].name[1]);
+		printf("#define %c%-20s", toupper(x11colors[n].name[0]),
+				&x11colors[n].name[1]);
+		printf("{ RGB%c%s }\n", toupper(x11colors[n].name[0]),
+				&x11colors[n].name[1]);
 	}
 
 	printf("\n\n#endif /* RGB_H */\n");
