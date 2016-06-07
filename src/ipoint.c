@@ -13,6 +13,7 @@ void set_ipoint(struct ipoint *i, const struct shape *shp,
 		const struct ray *ray, enum side s, double k)
 {
 	i->shape = shp;
+	i->ray   = ray;
 	i->side  = s;
 	i->k     = k;
 	i->i.x   = k * Vx + Sx;

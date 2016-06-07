@@ -10,7 +10,8 @@
 			struct matrix cam_to_shp;\
 			struct matrix shp_to_cam;\
 			struct material *material[2];\
-			intersect_f intersect
+			intersect_f intersect;\
+			normal_f normal_vector
 
 
 struct shape {

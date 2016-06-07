@@ -58,8 +58,20 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
+static void normal(struct coord *norm, const struct coord *i)
+{
+	norm->w = 0.;
+	norm->x = 2. * i->x;
+	norm->y = -1.;
+	norm->z = 2. * i->z;
+
+	normalize_in_place(norm);
+}
+
+
+
 struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 			 double r)
 {
-	return quadric(base, apex, r, paraboloid_intersect);
+	return quadric(base, apex, r, paraboloid_intersect, normal);
 }

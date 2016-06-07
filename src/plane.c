@@ -30,6 +30,15 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 }
 
 
+static void normal(struct coord *norm, const struct coord *i)
+{
+	norm->w = 0.;
+	norm->x = 0. * i->x;
+	norm->y = 1.;
+	norm->z = 0.;
+}
+
+
 struct shape *plane(const struct coord *loc, const struct coord *norm)
 {
 	assert_is_point(loc);
@@ -60,6 +69,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 
 	change_of_coord_mat(&pln->cs);
 	pln->intersect  = plane_intersect;
+	pln->normal_vector  = normal;
 
 	return CAST_SHAPE(pln);
 }

@@ -13,6 +13,7 @@ enum side { NONE = 0, INSIDE = 1, OUTSIDE = 2, OVER = 4, UNDER = 8 };
 
 struct ipoint {
 	struct coord i;
+	const struct ray *ray;
 	const struct shape *shape;
 	enum side side;
 	double  k;

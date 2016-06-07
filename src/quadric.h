@@ -20,7 +20,7 @@ struct quadric {
 #define H2R2	((const struct quadric*)s)->h2r2
 
 struct shape *quadric(const struct coord*, const struct coord*,
-		      double, intersect_f);
+		      double, intersect_f, normal_f);
 
 static inline bool in_range(double k, const struct shape *s,
 			    const struct ray *ray)

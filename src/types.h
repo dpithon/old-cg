@@ -19,5 +19,6 @@ typedef void (*intrinsic_f)(struct rgb*, const struct ipoint*,
 			    const struct material*);
 typedef bool (*intersect_f)(struct ipoint*, const struct ray*,
 			    const struct shape*);
+typedef void (*normal_f)(struct coord*, const struct coord*);
 
 #endif /* TYPES_H */
