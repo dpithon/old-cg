@@ -172,10 +172,11 @@ struct coord *vector(struct coord *v, const struct coord *p,
 	assert_is_point(p);
 	assert_is_point(q);
 
-	v->x = q->x / q->w - p->x / p->w;
-	v->y = q->y / q->w - p->y / p->w;
-	v->z = q->z / q->w - p->z / p->w;
-	v->w = 0.;
+	set_vector(v,
+		q->x / q->w - p->x / p->w,
+		q->y / q->w - p->y / p->w,
+		q->z / q->w - p->z / p->w
+	);
 
 	return v;
 }
@@ -190,10 +191,13 @@ struct coord *unit_vector(struct coord *v, const struct coord *p,
 
 struct coord *scale(struct coord *v, const struct coord *u, double k)
 {
-	v->x = u->x * k;
-	v->y = u->y * k;
-	v->z = u->z * k;
-	v->w = u->w;
+	assert_is_vector(u);
+
+	set_vector(v, 
+		u->x * k,
+		u->y * k,
+		u->z * k
+	);
 
 	return v;
 }
@@ -216,10 +220,11 @@ struct coord *normalize(struct coord *v, const struct coord *u)
 
 	double l = sqrtf(DOT(u, u));
 
-	v->x = u->x / l;
-	v->y = u->y / l;
-	v->z = u->z / l;
-	v->w = 0.;
+	set_vector(v,
+		u->x / l,
+		u->y / l,
+		u->z / l
+	);
 
 	return v;
 }
@@ -243,9 +248,14 @@ struct coord *normalize_in_place(struct coord *v)
 
 struct coord *add(struct coord *v, const struct coord *u, const struct coord *w)
 {
-	v->x = u->x + w->x;
-	v->y = u->y + w->y;
-	v->z = u->z + w->z;
+	assert_is_vector(u);
+	assert_is_vector(w);
+
+	set_vector(v,
+		u->x + w->x,
+		u->y + w->y,
+		u->z + w->z
+	);
 
 	return v;
 }
@@ -253,9 +263,14 @@ struct coord *add(struct coord *v, const struct coord *u, const struct coord *w)
 
 struct coord *add_in_place(struct coord *v, const struct coord *u)
 {
-	v->x += u->x;
-	v->y += u->y;
-	v->z += u->z;
+	assert_is_vector(u);
+	assert_is_vector(v);
+
+	set_vector(v,
+		v->x + u->x,
+		v->y + u->y,
+		v->z + u->z
+	);
 
 	return v;
 }
@@ -263,9 +278,14 @@ struct coord *add_in_place(struct coord *v, const struct coord *u)
 
 struct coord *sub(struct coord *v, const struct coord *u, const struct coord *w)
 {
-	v->x = u->x - w->x;
-	v->y = u->y - w->y;
-	v->z = u->z - w->z;
+	assert_is_vector(u);
+	assert_is_vector(w);
+
+	set_vector(v,
+		u->x - w->x,
+		u->y - w->y,
+		u->z - w->z
+	);
 
 	return v;
 }
@@ -273,9 +293,14 @@ struct coord *sub(struct coord *v, const struct coord *u, const struct coord *w)
 
 struct coord *sub_in_place(struct coord *v, const struct coord *u)
 {
-	v->x -= u->x;
-	v->y -= u->y;
-	v->z -= u->z;
+	assert_is_vector(u);
+	assert_is_vector(v);
+
+	set_vector(v,
+		v->x - u->x,
+		v->y - u->y,
+		v->z - u->z
+	);
 
 	return v;
 }
@@ -287,10 +312,11 @@ struct coord *cross(struct coord *v, const struct coord *u,
 	assert_is_vector(u);
 	assert_is_vector(w);
 
-	v->x = u->y * w->z  -  u->z * w->y;
-	v->y = u->z * w->x  -  u->x * w->z;
-	v->z = u->x * w->y  -  u->y * w->x;
-	v->w = 0.;
+	set_vector(v,
+		u->y * w->z  -  u->z * w->y,
+		u->z * w->x  -  u->x * w->z,
+		u->x * w->y  -  u->y * w->x
+	);
 
 	return v;
 }
@@ -299,10 +325,12 @@ struct coord *cross(struct coord *v, const struct coord *u,
 struct coord *matcol(struct coord *v, const struct matrix *m,
 		     const struct coord *u)
 {
-	v->x = ROW_MUL(m, 0, u);
-	v->y = ROW_MUL(m, 1, u);
-	v->z = ROW_MUL(m, 2, u);
-	v->w = ROW_MUL(m, 3, u);
+	set_coord(v,
+		ROW_MUL(m, 0, u),
+		ROW_MUL(m, 1, u),
+		ROW_MUL(m, 2, u),
+		ROW_MUL(m, 3, u)
+	);
 
 	return v;
 }
@@ -312,10 +340,12 @@ struct coord *matcol_in_place(struct coord *v, const struct matrix *m)
 {
 	struct coord u = *v;
 
-	v->x = ROW_MUL(m, 0, &u);
-	v->y = ROW_MUL(m, 1, &u);
-	v->z = ROW_MUL(m, 2, &u);
-	v->w = ROW_MUL(m, 3, &u);
+	set_coord(v,
+		ROW_MUL(m, 0, &u),
+		ROW_MUL(m, 1, &u),
+		ROW_MUL(m, 2, &u),
+		ROW_MUL(m, 3, &u)
+	);
 
 	return v;
 }
@@ -325,10 +355,11 @@ struct coord *homogeneize(struct coord *p, const struct coord *q)
 {
 	assert_is_point(q);
 
-	p->x = q->x / q->w;
-	p->y = q->y / q->w;
-	p->z = q->z / q->w;
-	p->w = 1.;
+	set_point(p,
+		q->x / q->w,
+		q->y / q->w,
+		q->z / q->w
+	);
 
 	return p;
 }
@@ -612,15 +643,18 @@ void change_of_coord_mat(struct cs *cs)
 
 	matrix(&cs->m, &cs->i, &cs->j, &cs->k, &cs->o);
 
-	translation(&tsl, scale(&minus_os, &cs->o, -1.));
+	set_point(&minus_os, -cs->o.x, -cs->o.y, -cs->o.z);
+	translation(&tsl, &minus_os);
 	matrixr(&rot, &cs->i, &cs->j, &cs->k, &point_o);
 	matmat(&cs->mi, &rot, &tsl);
 }
 
 
-void cart2sphr(const struct coord *p, struct sphcoord *s)
+void cart2sphr(struct sphcoord *s, const struct coord *p)
 {
 	double x2, y2, rhoxy;
+
+	assert_is_point(p);
 
 	x2 = p->x * p->x;
 	y2 = p->y * p->y;
@@ -644,13 +678,15 @@ void cart2sphr(const struct coord *p, struct sphcoord *s)
 }
 
 
-void sphr2cart(const struct sphcoord *s, struct coord *p)
+void sphr2cart(struct coord *p, const struct sphcoord *s)
 {
 	double rhoxy = s->rho * sin(s->phy);
-	p->x = rhoxy * cos(s->theta);
-	p->y = rhoxy * sin(s->theta);
-	p->z = s->rho * cos(s->phy);
-	p->w = 1.;
+
+	set_point(p,
+		rhoxy * cos(s->theta),
+		rhoxy * sin(s->theta),
+		s->rho * cos(s->phy)
+	);
 }
 
 

@@ -118,10 +118,11 @@ static void init_mapping(void)
  */
 static void map_pixel(struct coord *c, int x, int y)
 {
-	c->x = ((double) x) * fac_xy + off_x;
-	c->y = ((double) y) * fac_xy + off_y;
-	c->z = - focal;
-	c->w = 1.;
+	set_point(c,
+		((double) x) * fac_xy + off_x,
+		((double) y) * fac_xy + off_y,
+		-focal
+	);
 }
 
 
@@ -190,19 +191,13 @@ const struct cs *pinhole_coord_system(void)
 
 void set_location(double x, double y, double z)
 {
-	camera_location.x = x;
-	camera_location.y = y;
-	camera_location.z = z;
-	camera_location.w = 1.;
+	set_point(&camera_location, x, y, z);
 }
 
 
 void set_target(double x, double y, double z)
 {
-	camera_target.x = x;
-	camera_target.y = y;
-	camera_target.z = z;
-	camera_target.w = 1.;
+	set_point(&camera_target, x, y, z);
 }
 
 

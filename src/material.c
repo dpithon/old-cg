@@ -90,7 +90,7 @@ static void sphstripes(struct rgb *rgb, const struct ipoint *i,
 	int mod_theta;
 	struct sphcoord s;
 
-	cart2sphr((struct coord*)i, &s);
+	cart2sphr(&s, (struct coord*)i);
 	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
 
 	rgb->r = ALTERN_RED(mat, mod_theta);
@@ -105,7 +105,7 @@ static void sphchecker(struct rgb *rgb, const struct ipoint *i,
 	int mod_theta, mod_phy, n;
 	struct sphcoord s;
 
-	cart2sphr((struct coord*)i, &s);
+	cart2sphr(&s, (struct coord*)i);
 	mod_theta = ((int) trunc(DEG(s.theta) / SIZE)) % 2;
 	mod_phy   = ((int) trunc(DEG(s.phy) / SIZE)) % 2;
 

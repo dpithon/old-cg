@@ -23,7 +23,7 @@ void phong_render(struct rgb *rgb, const struct ipoint *i)
 	cd = dot(&norm_vec, &light_vec);
 	scale(&r_vec, &norm_vec, 2. * cd);
 	sub_in_place(&r_vec, &light_vec);
-	cs = pow(dot(&r_vec, &i->ray->v), m);
+	cs = pow(dot(&r_vec, &i->ray.v), m);
 
 	if (cd > 0.) {
 		rgb->r = rgb->r * ka + rgb->r * kd * cd + rgb->r * ks * cs;

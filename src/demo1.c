@@ -40,16 +40,23 @@ void build_scene(void)
 	sphere_outside = altern_colors(22.5, rgb(RGBOrangeRed),
 				           rgb(RGBGray100));
 
-	loc2.y = 4.;
-	loc3.y = 1.;
 	for (int n = 0; n < CONES; n++) {
 		double nangle = angle * (double) n;
-		loc1.x = cos(nangle) * RADIUS;
-		loc1.z = sin(nangle) * RADIUS;
-		loc2.x = cos(nangle) * (RADIUS + 4.);
-		loc2.z = sin(nangle) * (RADIUS + 4.);
-		loc3.x = cos(nangle) * (RADIUS - 4.);
-		loc3.z = sin(nangle) * (RADIUS - 4.);
+		set_point(&loc1,
+			cos(nangle) * RADIUS,
+			0.,
+			sin(nangle) * RADIUS
+		);
+		set_point(&loc2,
+			cos(nangle) * (RADIUS + 4.),
+			4.,
+			sin(nangle) * (RADIUS + 4.)
+		);
+		set_point(&loc3,
+			cos(nangle) * (RADIUS - 4.),
+			1.,
+			sin(nangle) * (RADIUS - 4.)
+		);
 
 		s = cone(&loc2, &loc1, 2.);
 		pat_circles(s, OUTSIDE, cone_outside);

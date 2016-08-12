@@ -15,9 +15,7 @@ void translate(double x, double y, double z)
 	static struct coord t = POINT_O;
 
 	if (index < MAX_INDEX) {
-		t.x = x;
-		t.y = y;
-		t.z = z;
+		set_point(&t, x, y, z);
 		translation(&mat, &t);
 		matmat(&stack[index + 1], &stack[index], &mat);
 		index ++;

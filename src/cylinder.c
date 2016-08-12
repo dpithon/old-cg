@@ -52,11 +52,7 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 
 static void normal(struct coord *norm, const struct coord *i)
 {
-	norm->w = 0.;
-	norm->x = 2. * i->x;
-	norm->y = 0.;
-	norm->z = 2. * i->z;
-
+	set_vector(norm, 2. * i->x, 0., 2. * i->z);
 	normalize_in_place(norm);
 }
 

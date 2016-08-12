@@ -47,10 +47,7 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 
 static void normal_vec(struct coord *norm, const struct coord *i)
 {
-	norm->w = 0.;
-	norm->x = 2. * i->x;
-	norm->y = 2. * i->y;
-	norm->z = 2. * i->z;
+	set_vector(norm, 2. * i->x, 2. * i->y, 2. * i->z);
 	normalize_in_place(norm);
 }
 

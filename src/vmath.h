@@ -117,11 +117,39 @@ extern struct matrix *translation(struct matrix*, struct coord*);
 
 extern void change_of_coord_mat(struct cs*);
 
-extern void cart2sphr(const struct coord*, struct sphcoord*);
-extern void sphr2cart(const struct sphcoord*, struct coord*);
+extern void cart2sphr(struct sphcoord*, const struct coord*);
+extern void sphr2cart(struct coord*, const struct sphcoord*);
 
 extern void random_point(struct coord*);
 extern void random_vector(struct coord*);
+
+/* Do not write to coord directly. Use helper functions */
+
+static inline void set_coord(struct coord *c, double x, double y, double z, double w)
+{
+	c->x = x; /* DIRECT WRITE ALLOWED */
+	c->y = y; /* DIRECT WRITE ALLOWED */
+	c->z = z; /* DIRECT WRITE ALLOWED */
+	c->w = w; /* DIRECT WRITE ALLOWED */
+}
+
+
+static inline void set_point(struct coord *p, double x, double y, double z)
+{
+	p->x = x; /* DIRECT WRITE ALLOWED */
+	p->y = y; /* DIRECT WRITE ALLOWED */
+	p->z = z; /* DIRECT WRITE ALLOWED */
+	p->w = 1.; /* DIRECT WRITE ALLOWED */
+}
+
+
+static inline void set_vector(struct coord *v, double x, double y, double z)
+{
+	v->x = x; /* DIRECT WRITE ALLOWED */
+	v->y = y; /* DIRECT WRITE ALLOWED */
+	v->z = z; /* DIRECT WRITE ALLOWED */
+	v->w = 0.; /* DIRECT WRITE ALLOWED */
+}
 
 #ifndef NDEBUG
 #define assert_is_mequal(m1, m2) assert__is_mequal(m1, m2, __LINE__, __FILE__)
