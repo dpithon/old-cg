@@ -1,0 +1,6 @@
+Build instructions
+==================
+
+$ export CC=gcc
+$ export LD=gcc
+$ make 
