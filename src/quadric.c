@@ -75,4 +75,3 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 
 	return CAST_SHAPE(q);
 }
-

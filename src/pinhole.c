@@ -147,11 +147,11 @@ static void sampling_center(int px, int py)
 
 	unit_vector(&ray.v, &center, &point_o);
 	reset_ipoint(&i);
-	if (intersect(&i, &ray)) {
+	if (scene_intersect(&i, &ray)) {
 		render(&rgb, &i);
 		set_pixel(px, py, &rgb);
 	} else {
-		set_pixel(px, py, 0);
+		set_pixel(px, py, 0); /* 0 is default background color */
 	}
 }
 
@@ -199,5 +199,3 @@ void set_target(double x, double y, double z)
 {
 	set_point(&camera_target, x, y, z);
 }
-
-
