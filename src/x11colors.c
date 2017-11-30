@@ -703,6 +703,7 @@ int main()
 		"\tdouble g;\n"
 		"\tdouble b;\n"
 		"};\n\n"
+		"extern struct rgb *rgb(double, double, double);\n\n"
 	      );
 
 	for (unsigned int n = 0; n < NR; n++) {
