@@ -1,4 +1,5 @@
 #include <float.h>
+
 #include "ipoint.h"
 #include "ray.h"
 
