@@ -1,10 +1,11 @@
-#include "pool.h"
-#include "vmath.h"
-#include "types.h"
-#include "ipoint.h"
-#include "ray.h"
+#include "../pool.h"
+#include "../vmath.h"
+#include "../types.h"
+#include "../ipoint.h"
+#include "../ray.h"
+#include "../stack.h"
+
 #include "shape.h"
-#include "stack.h"
 
 
 struct plane {

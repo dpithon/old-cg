@@ -1,7 +1,8 @@
 #include <math.h>
 
-#include "ipoint.h"
-#include "ray.h"
+#include "../ipoint.h"
+#include "../ray.h"
+
 #include "quadric.h"
 
 

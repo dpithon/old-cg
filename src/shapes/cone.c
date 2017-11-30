@@ -1,10 +1,11 @@
 #include <math.h>
 
-#include "ipoint.h"
-#include "ray.h"
-#include "log.h"
+#include "../ipoint.h"
+#include "../ray.h"
+#include "../log.h"
+#include "../macros.h"
+
 #include "quadric.h"
-#include "macros.h"
 
 
 static bool ci_main(struct ipoint *i, const struct ray *ray,

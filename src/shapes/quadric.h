@@ -1,9 +1,10 @@
 #ifndef QUADRIC_H
 #define QUADRIC_H
 
-#include "types.h"
+#include "../types.h"
+#include "../ray.h"
+
 #include "shape.h"
-#include "ray.h"
 
 struct quadric {
 	SHAPE_BASIC;

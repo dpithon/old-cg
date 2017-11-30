@@ -1,8 +1,8 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-#include "types.h"
-#include "vmath.h"
+#include "../types.h"
+#include "../vmath.h"
 
 #define CAST_SHAPE(s)	((struct shape*)(s))
 #define SHAPE_BASIC	struct shape *next;\
