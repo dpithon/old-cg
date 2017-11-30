@@ -1,6 +1,9 @@
 #ifndef STACK_H
 #define STACK_H
 
+#include "types.h"
+
+
 extern void translate(double, double, double);
 extern void rotate_x(double);
 extern void rotate_y(double);
