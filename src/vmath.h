@@ -2,6 +2,7 @@
 #define VMATH_H
 
 #include <math.h>
+
 #include "types.h"
 
 #ifndef M_PI
