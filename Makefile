@@ -20,17 +20,17 @@ OBJS=$(BUILDDIR)/pinhole.o\
      $(BUILDDIR)/scene.o\
      $(BUILDDIR)/log.o\
      $(BUILDDIR)/render.o\
-     $(BUILDDIR)/plane.o\
-     $(BUILDDIR)/sphere.o\
+     $(BUILDDIR)/shapes/plane.o\
+     $(BUILDDIR)/shapes/sphere.o\
      $(BUILDDIR)/vmath.o\
      $(BUILDDIR)/ipoint.o\
      $(BUILDDIR)/material.o\
-     $(BUILDDIR)/paraboloid.o\
-     $(BUILDDIR)/cylinder.o\
+     $(BUILDDIR)/shapes/paraboloid.o\
+     $(BUILDDIR)/shapes/cylinder.o\
      $(BUILDDIR)/pixmap.o\
-     $(BUILDDIR)/cone.o\
+     $(BUILDDIR)/shapes/cone.o\
      $(BUILDDIR)/stack.o\
-     $(BUILDDIR)/quadric.o\
+     $(BUILDDIR)/shapes/quadric.o\
      $(BUILDDIR)/rgb.o\
      $(BUILDDIR)/pool.o
 
@@ -47,11 +47,11 @@ conf:
 
 init:
 	@echo "INIT"
-	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(BUILDDIR) $(BUILDDIR)/shapes
 
 deps: init
 	@echo "DEPS"
-	@$(CC) -MM src/*.c >$(BUILDDIR)/makefile.deps
+	@$(CC) -MM src/*.c src/shapes/*.c >$(BUILDDIR)/makefile.deps
 
 clean:
 	@echo "CLEAN"
@@ -85,6 +85,10 @@ $(BUILDDIR)/demo1: conf $(OBJS)
 	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 
 $(BUILDDIR)/%.o: src/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/shapes/%.o: src/shapes/%.c
 	@echo "CC $<"
 	@$(CC) $(CFLAGS) -c -o $@ $<
 

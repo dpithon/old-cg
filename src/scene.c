@@ -1,5 +1,6 @@
+#include "shapes/shape.h"
+
 #include "vmath.h"
-#include "shape.h"
 #include "ipoint.h"
 #include "ray.h"
 #include "log.h"

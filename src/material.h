@@ -1,9 +1,10 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include "shapes/shape.h"
+
 #include "types.h"
 #include "ipoint.h"
-#include "shape.h"
 
 #define CAST_MATERIAL(m)	((struct material*)m)
 #define MATERIAL_BASIC		intrinsic_f get_intrinsic
