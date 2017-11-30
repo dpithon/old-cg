@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+struct quadratic;
 struct ipoint;
 struct ray;
 struct rgb;

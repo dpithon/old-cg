@@ -22,6 +22,39 @@ const struct coord  point_o   = POINT_O;
 const double epsilon=1e-4;
 
 
+int solve_quadratic(struct quadratic *q)
+{
+	double aa, sq, k;
+
+	if (q->a == 0.) {
+		warning("not a quadratic equation (a == 0)");
+		return (q->count = -1);
+	}
+
+	q->d = q->b * q->b  -  4 * q->a * q->c; 
+	if (q->d < 0.)
+		return (q->count = 0);
+
+	aa = 2. * q->a;
+	sq = sqrt(q->d);
+	if (q->d == 0.) {
+		q->k1 = -q->b / aa;
+		q->count = 1;
+	} else {
+		q->k1 = (-q->b - sq) / aa;
+		q->k2 = (-q->b + sq) / aa;
+		if (q->k2 > q->k1) {
+			k = q->k1;
+			q->k1 = q->k2;
+			q->k2 = k;
+		}
+		q->count = 2;
+	}
+
+	return q->count;
+}
+
+
 bool double_equals(double a, double b)
 {
 	double absA = fabs(a);
@@ -57,8 +90,9 @@ bool is_vzero(const struct coord *v)
 {
 	assert_is_vector(v);
 
-	return double_equals(v->x, 0.) && double_equals(v->y, 0.) &&
-		double_equals(v->z, 0.);
+	return double_equals(v->x, 0.) &&
+	       double_equals(v->y, 0.) &&
+	       double_equals(v->z, 0.);
 }
 
 
@@ -72,7 +106,7 @@ bool is_vunit(const struct coord *v)
 
 bool is_vortho(const struct coord *u, const struct coord *v)
 {
-	assert_is_vector(u); /* u, w are vectors */
+	assert_is_vector(u); /* u, v are vectors */
 	assert_is_vector(v);
 
 	return double_equals(DOT(u, v), 0.);
@@ -81,21 +115,25 @@ bool is_vortho(const struct coord *u, const struct coord *v)
 
 bool is_vequal(const struct coord *u, const struct coord *v)
 {
-	assert_is_vector(u); /* u, w are vectors */
+	assert_is_vector(u); /* u, v are vectors */
 	assert_is_vector(v);
 
-	return double_equals(u->x, v->x) && double_equals(u->y, v->y) &&
-	       double_equals(u->z, v->z) && double_equals(u->w, v->w);
+	return double_equals(u->x, v->x) &&
+	       double_equals(u->y, v->y) &&
+	       double_equals(u->z, v->z) &&
+	       double_equals(u->w, v->w);
 }
 
 
 bool is_pequal(const struct coord *u, const struct coord *v)
 {
-	assert_is_point(u); /* u, w are points */
+	assert_is_point(u); /* u, v are points */
 	assert_is_point(v);
 
-	return double_equals(u->x, v->x) && double_equals(u->y, v->y) &&
-	       double_equals(u->z, v->z) && double_equals(u->w, v->w);
+	return double_equals(u->x, v->x) &&
+	       double_equals(u->y, v->y) &&
+	       double_equals(u->z, v->z) &&
+	       double_equals(u->w, v->w);
 }
 
 

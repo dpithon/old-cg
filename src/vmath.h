@@ -8,6 +8,13 @@
 #define M_PI 3.141592653589793238462643383
 #endif /* M_PI */
 
+struct quadratic {
+	double a, b, c;
+	double d;
+	double k1, k2;
+	int count;
+};
+
 extern const double epsilon;
 
 struct coord {
@@ -57,6 +64,7 @@ extern const struct coord  vector_j;
 extern const struct coord  vector_k;
 extern const struct coord  point_o;
 
+extern int  solve_quadratic(struct quadratic *q);
 extern bool double_equals(double a, double b);
 extern bool is_point(const struct coord*);
 extern bool is_vector(const struct coord*);
