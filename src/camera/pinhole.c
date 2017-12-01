@@ -6,16 +6,16 @@
 #include <assert.h>
 #include <math.h>
 
+#include "ipoint.h"
 #include "log.h"
 #include "pinhole.h"
-#include "vmath.h"
-#include "scene.h"
-#include "ray.h"
-#include "rgb.h"
-#include "ipoint.h"
 #include "pixmap.h"
-#include "sampler.h"
+#include "ray.h"
 #include "render.h"
+#include "rgb.h"
+#include "sampler.h"
+#include "scene.h"
+#include "vmath.h"
 
 
 /* Pinhole cartesian coordinate system */

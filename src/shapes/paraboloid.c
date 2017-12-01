@@ -1,9 +1,8 @@
 #include <math.h>
 
-#include "../ipoint.h"
-#include "../ray.h"
-
+#include "ipoint.h"
 #include "quadric.h"
+#include "ray.h"
 
 
 #define WHICH_SIDE	((Vy > 0.)? OUTSIDE: INSIDE)

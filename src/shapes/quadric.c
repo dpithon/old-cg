@@ -1,10 +1,9 @@
 #include <assert.h>
 
-#include "../stack.h"
-#include "../log.h"
-#include "../pool.h"
-
+#include "log.h"
+#include "pool.h"
 #include "quadric.h"
+#include "stack.h"
 
 
 /**

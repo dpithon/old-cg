@@ -1,9 +1,8 @@
 #include <math.h>
 
-#include "../ipoint.h"
-#include "../ray.h"
-
+#include "ipoint.h"
 #include "quadric.h"
+#include "ray.h"
 
 
 static bool sphere_intersect(struct ipoint *i, const struct ray *ray,

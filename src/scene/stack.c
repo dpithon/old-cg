@@ -1,6 +1,6 @@
-#include "vmath.h"
-#include "stack.h"
 #include "log.h"
+#include "stack.h"
+#include "vmath.h"
 
 #define STACK_SIZE 16
 #define MAX_INDEX  (STACK_SIZE - 1)

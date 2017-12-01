@@ -1,9 +1,9 @@
 #ifndef IPOINT_H
 #define IPOINT_H
 
+#include "ray.h"
 #include "types.h"
 #include "vmath.h"
-#include "ray.h"
 
 enum side { NONE = 0, INSIDE = 1, OUTSIDE = 2, OVER = 4, UNDER = 8 };
 

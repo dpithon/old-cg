@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "rgb.h"
 #include "log.h"
 #include "pool.h"
+#include "rgb.h"
 
 static struct rgb def_rgb = Black;
 static int pixmap_pool;

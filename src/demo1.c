@@ -1,21 +1,19 @@
-#include "shapes/shape.h"
-
-#include "pinhole.h"
-#include "scene.h"
-#include "pixmap.h"
-#include "rgb.h"
-#include "ipoint.h"
-#include "stack.h"
-#include "log.h"
-#include "sampler.h"
-#include "material.h"
-#include "pool.h"
-
 #include <stdio.h>
+
+#include "ipoint.h"
+#include "log.h"
+#include "material.h"
+#include "pinhole.h"
+#include "pixmap.h"
+#include "pool.h"
+#include "rgb.h"
+#include "sampler.h"
+#include "scene.h"
+#include "shape.h"
+#include "stack.h"
 
 #define W	256
 #define H	256
-
 
 #define CONES	12
 #define RADIUS 15

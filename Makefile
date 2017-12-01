@@ -1,6 +1,31 @@
 .PHONY: default prod dev cov profile purge clean deps conf init
 
-CF_CMN=-std=c99 -pedantic -Wall -Wextra -Werror -pipe -fstrict-aliasing
+CC=gcc
+LD=gcc
+MAKE=make --no-print-directory
+
+############################################################################
+
+ROOTDIR=$(abspath .)
+SRCDIR=$(ROOTDIR)/src
+BUILDDIR=$(ROOTDIR)/build
+
+INCDIR=-I$(SRCDIR)\
+       -I$(SRCDIR)/core\
+       -I$(SRCDIR)/shapes\
+       -I$(SRCDIR)/sys\
+       -I$(SRCDIR)/materials\
+       -I$(SRCDIR)/camera\
+       -I$(SRCDIR)/scene
+
+############################################################################
+
+CSTD=-std=c99 -pedantic -fstrict-aliasing
+CERR=-Wall -Wextra -Werror
+
+############################################################################
+
+CF_CMN=-pipe $(INCDIR) $(CSTD) $(CERR)
 CF_PRD=$(CF_CMN) -DNDEBUG -O2 -g0
 CF_DEV=$(CF_CMN) -O0 -g2
 CF_COV=$(CF_CMN) -O0 -g2 --coverage
@@ -10,30 +35,37 @@ LDF_PRD=$(LDF_CMN)
 LDF_DEV=$(LDF_CMN)
 LDF_COV=$(LDF_CMN) --coverage
 
-MAKE=make --no-print-directory
+############################################################################
 
-BUILDDIR=build
-
-OBJS=$(BUILDDIR)/pinhole.o\
-     $(BUILDDIR)/demo1.o\
-     $(BUILDDIR)/sampler.o\
-     $(BUILDDIR)/scene.o\
-     $(BUILDDIR)/log.o\
-     $(BUILDDIR)/render.o\
-     $(BUILDDIR)/shapes/plane.o\
-     $(BUILDDIR)/shapes/sphere.o\
-     $(BUILDDIR)/vmath.o\
-     $(BUILDDIR)/ipoint.o\
-     $(BUILDDIR)/material.o\
-     $(BUILDDIR)/shapes/paraboloid.o\
-     $(BUILDDIR)/shapes/cylinder.o\
-     $(BUILDDIR)/pixmap.o\
+OBJS=$(BUILDDIR)/camera/pinhole.o\
+     $(BUILDDIR)/camera/pixmap.o\
+     $(BUILDDIR)/camera/render.o\
+     $(BUILDDIR)/camera/sampler.o\
+     $(BUILDDIR)/core/ipoint.o\
+     $(BUILDDIR)/core/vmath.o\
+     $(BUILDDIR)/materials/material.o\
+     $(BUILDDIR)/materials/rgb.o\
+     $(BUILDDIR)/scene/scene.o\
+     $(BUILDDIR)/scene/stack.o\
      $(BUILDDIR)/shapes/cone.o\
-     $(BUILDDIR)/stack.o\
+     $(BUILDDIR)/shapes/cylinder.o\
+     $(BUILDDIR)/shapes/paraboloid.o\
+     $(BUILDDIR)/shapes/plane.o\
      $(BUILDDIR)/shapes/quadric.o\
-     $(BUILDDIR)/rgb.o\
-     $(BUILDDIR)/pool.o
+     $(BUILDDIR)/shapes/sphere.o\
+     $(BUILDDIR)/sys/log.o\
+     $(BUILDDIR)/sys/pool.o\
+     $(BUILDDIR)/demo1.o
 
+SOURCES=src/*.c\
+	src/shapes/*.c\
+       	src/sys/*.c\
+       	src/camera/*.c\
+       	src/materials/*.c\
+       	src/scene/*.c\
+       	src/core/*.c
+
+############################################################################
 
 default: dev
 
@@ -47,11 +79,16 @@ conf:
 
 init:
 	@echo "INIT"
-	@mkdir -p $(BUILDDIR) $(BUILDDIR)/shapes
+	@mkdir -p $(BUILDDIR)/shapes\
+	       	  $(BUILDDIR)/sys\
+	       	  $(BUILDDIR)/camera\
+	       	  $(BUILDDIR)/materials\
+	       	  $(BUILDDIR)/scene\
+	       	  $(BUILDDIR)/core
 
 deps: init
 	@echo "DEPS"
-	@$(CC) -MM src/*.c src/shapes/*.c >$(BUILDDIR)/makefile.deps
+	@$(CC) -MM $(INCDIR) $(SOURCES) >$(BUILDDIR)/makefile.deps
 
 clean:
 	@echo "CLEAN"
@@ -92,4 +129,23 @@ $(BUILDDIR)/shapes/%.o: src/shapes/%.c
 	@echo "CC $<"
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
+$(BUILDDIR)/sys/%.o: src/sys/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/camera/%.o: src/camera/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/materials/%.o: src/materials/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/scene/%.o: src/scene/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/core/%.o: src/core/%.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 -include $(BUILDDIR)/makefile.deps

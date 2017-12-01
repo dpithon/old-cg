@@ -1,6 +1,6 @@
 #include "material.h"
-#include "rgb.h"
 #include "pool.h"
+#include "rgb.h"
 
 #define PLAIN_COLOR(mat)	((struct plain_color*) mat)
 #define ALTERN_COLORS(mat)	((struct altern_colors*) mat)
