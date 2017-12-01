@@ -1,6 +1,6 @@
 Build instructions
 ==================
 
-$ export CC=gcc
-$ export LD=gcc
-$ make 
+$ cd cg/
+$ make purge deps
+$ make

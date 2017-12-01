@@ -134,7 +134,8 @@ extern void random_vector(struct coord*);
 
 /* Do not write to coord directly. Use helper functions */
 
-static inline void set_coord(struct coord *c, double x, double y, double z, double w)
+static inline void set_coord(struct coord *c,
+			     double x, double y, double z, double w)
 {
 	c->x = x; /* DIRECT WRITE ALLOWED */
 	c->y = y; /* DIRECT WRITE ALLOWED */
