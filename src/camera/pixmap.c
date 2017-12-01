@@ -88,9 +88,3 @@ int pixmap_height(void)
 {
 	return pix_height;
 }
-
-
-int pixmap_size(void)
-{
-	return pix_size;
-}
