@@ -114,11 +114,11 @@ coverage: deps
 	@cd $(BUILDDIR) && ./demo1
 	@echo "LCOV"
 	@lcov -q -c -d $(BUILDDIR) -o $(BUILDDIR)/cov.info
-	@echo "GENHTML : file:///$(PWD)/$(BUILDDIR)/src/index.html"
+	@echo "GENHTML : file:///$(BUILDDIR)/src/index.html"
 	@genhtml -q $(BUILDDIR)/cov.info -o $(BUILDDIR)
 
 $(BUILDDIR)/demo1: conf $(OBJS)
-	@echo "LD $@"
+	@echo "\nLD $@"
 	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
 
 $(BUILDDIR)/%.o: src/%.c
@@ -148,4 +148,5 @@ $(BUILDDIR)/scene/%.o: src/scene/%.c
 $(BUILDDIR)/core/%.o: src/core/%.c
 	@echo "CC $<"
 	@$(CC) $(CFLAGS) -c -o $@ $<
+
 -include $(BUILDDIR)/makefile.deps

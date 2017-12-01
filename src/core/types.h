@@ -3,16 +3,16 @@
 
 #include <stdbool.h>
 
-struct quadratic;
+struct coord;
+struct cs;
 struct ipoint;
+struct material;
+struct matrix;
+struct quadratic;
 struct ray;
 struct rgb;
 struct shape;
-struct coord;
 struct sphcoord;
-struct cs;
-struct matrix;
-struct material;
 
 typedef void (*render_f)(struct rgb*, const struct ipoint*);
 typedef void (*sample_f)(int, int);
