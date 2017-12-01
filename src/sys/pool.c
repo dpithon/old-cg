@@ -19,25 +19,30 @@ static int top = -1;
 static int initialized;
 
 
+static void init_stack(void)
+{
+	for (int n = 0; n < MAX_POOL; n++)
+		stack[n] = n;
+
+	top = MAX_POOL;
+	initialized = true;
+}
+
+
 /*
- * init_pool: allocate a new pool with given size
+ * init_new_pool: allocate a new pool with given size
  *
  * sz: size of pool.
  *
  * returns pool id or raise fatal error
  */
-int init_pool(size_t sz)
+int init_new_pool(size_t sz)
 {
 	int  pool_id;
 	char *mem;
 
-	if (!initialized) {
-		for (int n = 0; n < MAX_POOL; n++)
-			stack[n] = n;
-
-		top = MAX_POOL;
-		initialized = true;
-	}
+	if (!initialized)
+		init_stack();
 
 	if (!top)
 		fatal("no more pool on stack");

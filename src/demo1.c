@@ -94,7 +94,7 @@ int main()
 	step = 2. * M_PI / (double) iter;
 
 	init_pixmap(W, H);
-	scene_pool = init_pool(24 * KILO); 
+	scene_pool = init_new_pool(24 * KILO); 
 	set_default_pool(scene_pool);
 
 	build_scene();

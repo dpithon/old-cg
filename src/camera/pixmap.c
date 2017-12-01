@@ -32,7 +32,7 @@ int init_pixmap(int w, int h)
 	pix_size = pix_width * pix_height * 3;
 	pix_stride = pix_width * 3;
 
-	pixmap_pool = init_pool(pix_size);
+	pixmap_pool = init_new_pool(pix_size);
 	data = alloc_from_pool(pixmap_pool, pix_size);
 
 	return 0;
