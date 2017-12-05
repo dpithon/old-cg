@@ -27,7 +27,7 @@ struct altern_colors {
 	struct rgb rgb[2];
 };
 
-static void color(struct rgb *rgb, const struct ipoint *i,
+static void color(struct rgb *rgb, const struct hit *i,
 		  const struct material *mat)
 {
 	rgb->r = RED(mat);
@@ -38,7 +38,7 @@ static void color(struct rgb *rgb, const struct ipoint *i,
 }
 
 
-static void stripes(struct rgb *rgb, const struct ipoint *i,
+static void stripes(struct rgb *rgb, const struct hit *i,
 		    const struct material *mat)
 {
 	int mod_x, sx, n;
@@ -53,7 +53,7 @@ static void stripes(struct rgb *rgb, const struct ipoint *i,
 }
 
 
-static void checker(struct rgb *rgb, const struct ipoint *i,
+static void checker(struct rgb *rgb, const struct hit *i,
 		    const struct material *mat)
 {
 	int mod_x, mod_z, sx, sz, n;
@@ -71,7 +71,7 @@ static void checker(struct rgb *rgb, const struct ipoint *i,
 }
 
 
-static void circles(struct rgb *rgb, const struct ipoint *i,
+static void circles(struct rgb *rgb, const struct hit *i,
 		    const struct material *mat)
 {
 	int mod_r;
@@ -84,7 +84,7 @@ static void circles(struct rgb *rgb, const struct ipoint *i,
 }
 
 
-static void sphstripes(struct rgb *rgb, const struct ipoint *i,
+static void sphstripes(struct rgb *rgb, const struct hit *i,
 		       const struct material *mat)
 {
 	int mod_theta;
@@ -99,7 +99,7 @@ static void sphstripes(struct rgb *rgb, const struct ipoint *i,
 }
 
 
-static void sphchecker(struct rgb *rgb, const struct ipoint *i,
+static void sphchecker(struct rgb *rgb, const struct hit *i,
 		       const struct material *mat)
 {
 	int mod_theta, mod_phy, n;
@@ -118,7 +118,7 @@ static void sphchecker(struct rgb *rgb, const struct ipoint *i,
 
 
 static void set_pattern(struct shape *shp, int side, struct altern_colors *ac, 
-			void (*fun)(struct rgb*, const struct ipoint*,
+			void (*fun)(struct rgb*, const struct hit*,
 				    const struct material*))
 {
 	int n = 0;

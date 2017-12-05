@@ -1,11 +1,11 @@
 #include <math.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "quadric.h"
 #include "ray.h"
 
 
-static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
+static bool cylinder_intersect(struct hit *i, const struct ray *ray,
 			       const struct shape *s)
 {
 	double a, b, c, delta, k1, k2, sqrt_delta;
@@ -30,19 +30,19 @@ static bool cylinder_intersect(struct ipoint *i, const struct ray *ray,
 			return false;
 
 		if (k1 > 0. && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, OUTSIDE, k1);
+			set_hit(i, s, ray, OUTSIDE, k1);
 			return true;
 		}
 
 		if (k2 < i->k && in_range(k2, s, ray)) {
-			set_ipoint(i, s, ray, INSIDE, k2);
+			set_hit(i, s, ray, INSIDE, k2);
 			return true;
 		}
 
 	} else {
 		k1 = -b / (2. * a);
 		if (k1 > 0. && k1 < i->k && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, OUTSIDE, k1);
+			set_hit(i, s, ray, OUTSIDE, k1);
 			return true;
 		}
 	}

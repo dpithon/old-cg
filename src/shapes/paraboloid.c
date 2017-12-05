@@ -1,12 +1,12 @@
 #include <math.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "quadric.h"
 #include "ray.h"
 
 
 #define WHICH_SIDE	((Vy > 0.)? OUTSIDE: INSIDE)
-static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
+static bool paraboloid_intersect(struct hit *i, const struct ray *ray,
 				 const struct shape *s)
 {
 	double a, b, c, delta, sqrt_delta, k1, k2;
@@ -15,7 +15,7 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 	if (a < epsilon) {
 		k1 = (HR2 / Vy) * (Sx * Sx + Sz * Sz) - (Sy / Vy);
 		if (k1 > 0. && k1 < i->k && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, WHICH_SIDE, k1);
+			set_hit(i, s, ray, WHICH_SIDE, k1);
 			return true;
 		}
 		return false;
@@ -37,19 +37,19 @@ static bool paraboloid_intersect(struct ipoint *i, const struct ray *ray,
 			return false;
 
 		if (k1 > 0. && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, OUTSIDE, k1);
+			set_hit(i, s, ray, OUTSIDE, k1);
 			return true;
 		}
 
 		if (k2 < i->k && in_range(k2, s, ray)) {
-			set_ipoint(i, s, ray, INSIDE, k2);
+			set_hit(i, s, ray, INSIDE, k2);
 			return true;
 		}
 
 	} else {
 		k1 = -b / (2. * a);
 		if (k1 > 0. && k1 < i->k && in_range(k1, s, ray)) {
-			set_ipoint(i, s, ray, WHICH_SIDE, k1);
+			set_hit(i, s, ray, WHICH_SIDE, k1);
 			return true;
 		}
 	}

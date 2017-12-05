@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "log.h"
 #include "material.h"
 #include "pinhole.h"

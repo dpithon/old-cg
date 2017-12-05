@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "log.h"
 #include "pinhole.h"
 #include "pixmap.h"
@@ -136,7 +136,7 @@ static void sampling_center(int px, int py)
 {
 	struct ray ray;
 	struct coord center;
-	struct ipoint i;
+	struct hit i;
 	struct rgb rgb;
 
 	ray.s = point_o;
@@ -146,7 +146,7 @@ static void sampling_center(int px, int py)
 	center.y += sqr_edge / 2.;
 
 	unit_vector(&ray.v, &center, &point_o);
-	reset_ipoint(&i);
+	reset_hit(&i);
 	if (scene_intersect(&i, &ray)) {
 		render(&rgb, &i);
 		set_pixel(px, py, &rgb);

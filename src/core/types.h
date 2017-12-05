@@ -5,7 +5,7 @@
 
 struct coord;
 struct cs;
-struct ipoint;
+struct hit;
 struct material;
 struct matrix;
 struct quadratic;
@@ -14,11 +14,11 @@ struct rgb;
 struct shape;
 struct sphcoord;
 
-typedef void (*render_f)(struct rgb*, const struct ipoint*);
+typedef void (*render_f)(struct rgb*, const struct hit*);
 typedef void (*sample_f)(int, int);
-typedef void (*intrinsic_f)(struct rgb*, const struct ipoint*,
+typedef void (*intrinsic_f)(struct rgb*, const struct hit*,
 			    const struct material*);
-typedef bool (*intersect_f)(struct ipoint*, const struct ray*,
+typedef bool (*intersect_f)(struct hit*, const struct ray*,
 			    const struct shape*);
 typedef void (*normal_f)(struct coord*, const struct coord*);
 

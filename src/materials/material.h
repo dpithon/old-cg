@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "ipoint.h"
+#include "hit.h"
 #include "shape.h"
 #include "types.h"
 
@@ -24,7 +24,7 @@ extern void pat_circles(struct shape*, int, struct altern_colors*);
 extern void pat_sphstripes(struct shape*, int, struct altern_colors*);
 extern void pat_sphchecker(struct shape*, int, struct altern_colors*);
 
-static inline void get_intrinsic(struct rgb *rgb, const struct ipoint *i)
+static inline void get_intrinsic(struct rgb *rgb, const struct hit *i)
 {
 	int n = 0;
 

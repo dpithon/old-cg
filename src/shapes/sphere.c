@@ -1,11 +1,11 @@
 #include <math.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "quadric.h"
 #include "ray.h"
 
 
-static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
+static bool sphere_intersect(struct hit *i, const struct ray *ray,
 			     const struct shape *s)
 {
 	double a, b, c, delta, k1, k2, sqrt_delta;
@@ -25,10 +25,10 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 		k2 = (-b + sqrt_delta) / (2. * a);
 
 		if (k1 > 0. && k1 < i->k) {
-			set_ipoint(i, s, ray, OUTSIDE, k1);
+			set_hit(i, s, ray, OUTSIDE, k1);
 			return true;
 		} else if (k2 > 0. && k2 < i->k) {
-			set_ipoint(i, s, ray, INSIDE, k2);
+			set_hit(i, s, ray, INSIDE, k2);
 			return true;
 		}
 
@@ -36,7 +36,7 @@ static bool sphere_intersect(struct ipoint *i, const struct ray *ray,
 		k1 = -b / (2. * a);
 
 		if (k1 > 0. && k1 < i->k) {
-			set_ipoint(i, s, ray, OUTSIDE, k1);
+			set_hit(i, s, ray, OUTSIDE, k1);
 			return true;
 		}
 	}

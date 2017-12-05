@@ -41,7 +41,7 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/camera/pixmap.o\
      $(BUILDDIR)/camera/render.o\
      $(BUILDDIR)/camera/sampler.o\
-     $(BUILDDIR)/core/ipoint.o\
+     $(BUILDDIR)/core/hit.o\
      $(BUILDDIR)/core/vmath.o\
      $(BUILDDIR)/materials/material.o\
      $(BUILDDIR)/materials/rgb.o\

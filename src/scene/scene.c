@@ -1,4 +1,4 @@
-#include "ipoint.h"
+#include "hit.h"
 #include "log.h"
 #include "ray.h"
 #include "shape.h"
@@ -9,7 +9,7 @@ static struct shape *list_head;
 static struct shape *list_tail;
 
 
-bool scene_intersect(struct ipoint *i, const struct ray *ray_cam)
+bool scene_intersect(struct hit *i, const struct ray *ray_cam)
 {
 	struct shape *s = list_head;
 	struct ray ray_shp;

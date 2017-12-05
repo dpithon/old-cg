@@ -2,13 +2,13 @@
 #include "ray.h"
 #include "rgb.h"
 
-void default_render(struct rgb *rgb, const struct ipoint *i)
+void default_render(struct rgb *rgb, const struct hit *i)
 {
 	get_intrinsic(rgb, i);
 }
 
 
-void phong_render(struct rgb *rgb, const struct ipoint *i)
+void phong_render(struct rgb *rgb, const struct hit *i)
 {
 	static struct coord world_light = { 1000., 1000., 1000., 1. };
 	static double ka = .3, kd = .5, ks = .2, m = 100.;

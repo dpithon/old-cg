@@ -1,16 +1,16 @@
 #include <float.h>
 
-#include "ipoint.h"
+#include "hit.h"
 #include "ray.h"
 
-void reset_ipoint(struct ipoint *i)
+void reset_hit(struct hit *i)
 {
 	i->side = NONE;
 	i->k = DBL_MAX;
 }
 
 
-void set_ipoint(struct ipoint *i, const struct shape *shp,
+void set_hit(struct hit *i, const struct shape *shp,
 		const struct ray *ray, enum side s, double k)
 {
 	i->shape = shp;

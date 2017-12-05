@@ -1,4 +1,4 @@
-#include "ipoint.h"
+#include "hit.h"
 #include "pool.h"
 #include "ray.h"
 #include "shape.h"
@@ -12,7 +12,7 @@ struct plane {
 };
 
 
-static bool plane_intersect(struct ipoint *i, const struct ray *ray,
+static bool plane_intersect(struct hit *i, const struct ray *ray,
 			    const struct shape *s)
 {
 	double k;
@@ -22,7 +22,7 @@ static bool plane_intersect(struct ipoint *i, const struct ray *ray,
 
 	k = - (Sy / Vy);
 	if (k > 0 && k < i->k) {
-		set_ipoint(i, s, ray, Vy > 0? UNDER: OVER, k);
+		set_hit(i, s, ray, Vy > 0? UNDER: OVER, k);
 		return true;
 	}
 

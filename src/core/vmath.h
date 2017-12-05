@@ -57,7 +57,7 @@ struct cs {
 		      .k = VECTOR_K,\
 		      .m = MATRIX_ID,\
 		      .mi = MATRIX_ID\
-		 }
+		    }
 
 extern const struct matrix matrix_id;
 extern const struct coord  vector_i;
