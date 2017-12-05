@@ -31,7 +31,7 @@ int solve_quadratic(struct quadratic *q)
 		return (q->count = -1);
 	}
 
-	q->d = q->b * q->b  -  4 * q->a * q->c; 
+	q->d = q->b * q->b  -  4. * q->a * q->c; 
 	if (q->d < 0.)
 		return (q->count = 0);
 
@@ -43,7 +43,7 @@ int solve_quadratic(struct quadratic *q)
 	} else {
 		q->k1 = (-q->b - sq) / aa;
 		q->k2 = (-q->b + sq) / aa;
-		if (q->k2 > q->k1) {
+		if (q->k2 < q->k1) {
 			k = q->k1;
 			q->k1 = q->k2;
 			q->k2 = k;

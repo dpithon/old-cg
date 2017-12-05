@@ -15,10 +15,7 @@ static bool sphere_intersect(struct hit *i, const struct ray *ray,
 	};
 	solve_quadratic(&q);
 
-	if (q.count <= 0) {
-		return false;
-
-	} else if (q.count == 2) {
+	if (q.count == 2) {
 		if (q.k1 > 0. && q.k1 < i->k) {
 			set_hit(i, s, ray, OUTSIDE, q.k1);
 			return true;
@@ -27,7 +24,7 @@ static bool sphere_intersect(struct hit *i, const struct ray *ray,
 			return true;
 		}
 
-	} else {
+	} else if (q.count == 1) {
 		if (q.k1 > 0. && q.k1 < i->k) {
 			set_hit(i, s, ray, OUTSIDE, q.k1);
 			return true;
