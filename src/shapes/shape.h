@@ -1,11 +1,12 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include "dlink.h"
 #include "types.h"
 #include "vmath.h"
 
 #define CAST_SHAPE(s)	((struct shape*)(s))
-#define SHAPE_BASIC	struct shape *next;\
+#define SHAPE_BASIC	struct dlink dlink;\
 			struct cs cs;\
 			struct matrix cam_to_shp;\
 			struct matrix shp_to_cam;\
