@@ -3,6 +3,11 @@
 
 #include "types.h"
 
+#define foreach_shape(s, scene) \
+		struct list_iterator iter;\
+		init_list_iterator(&iter, scene);\
+		foreach (SHAPE, s, &iter)
+
 extern bool scene_intersect(struct hit*, const struct ray*);
 extern void add_shape(struct shape*);
 extern void prepare_shape_matrices(const struct cs*);

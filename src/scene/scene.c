@@ -2,6 +2,7 @@
 #include "list.h"
 #include "log.h"
 #include "ray.h"
+#include "scene.h"
 #include "shape.h"
 #include "vmath.h"
 
@@ -9,23 +10,19 @@
 static struct list scene;
 
 
-bool scene_intersect(struct hit *i, const struct ray *ray_cam)
+bool scene_intersect(struct hit *hit, const struct ray *ray_cam)
 {
 	struct ray ray_shp;
-	struct list_iterator itr;
-	struct shape *s;
+	struct shape *shape;
 
-	init_list_iterator(&itr, &scene);
+	foreach_shape (shape, &scene) {
+		matcol(&ray_shp.s, &shape->cam_to_shp, &ray_cam->s);
+		matcol(&ray_shp.v, &shape->cam_to_shp, &ray_cam->v);
 
-	for (s = iter_init(&itr, SHAPE); s; s = iterate(&itr, SHAPE)) {
-		matcol(&ray_shp.s, &s->cam_to_shp, &ray_cam->s);
-		matcol(&ray_shp.v, &s->cam_to_shp, &ray_cam->v);
-
-		s->intersect(i, &ray_shp, s);
+		shape->intersect(hit, &ray_shp, shape);
 	}
-	iter_cleanup(&itr); 
 
-	return is_defined(i);
+	return is_defined(hit);
 }
 
 
@@ -37,13 +34,9 @@ void add_shape(struct shape *shp)
 
 void prepare_shape_matrices(const struct cs *cam_cs)
 {
-	struct list_iterator iter;
 	struct shape *s;
 
-	init_list_iterator(&iter, &scene);
-
-	s = iter_init(&iter, SHAPE); 
-	while (s) {
+	foreach_shape (s, &scene) {
 		matmat(&s->cam_to_shp, &s->cs.mi, &cam_cs->m);
 		matmat(&s->shp_to_cam, &cam_cs->mi, &s->cs.m);
 
@@ -52,7 +45,5 @@ void prepare_shape_matrices(const struct cs *cam_cs)
 		matmat(&id, &s->cam_to_shp, &s->shp_to_cam);
 		assert_is_mequal(&id, &matrix_id);
 		#endif /* NDEBUG */
-		s = iterate(&iter, SHAPE);
 	}
-	iter_cleanup(&iter); 
 }

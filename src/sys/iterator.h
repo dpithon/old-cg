@@ -1,7 +1,10 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#define CAST_ITERATOR(i) ((struct iterator*)(i))
+#define CAST_ITERATOR(i) 	((struct iterator*)(i))
+#define foreach(T, s, iter)	for (s = (iter_init(iter, T));\
+				     s;\
+				     s = (iterate(iter, T)))
 
 struct iterator {
 	void *(*init)(struct iterator*);
@@ -31,15 +34,10 @@ static inline void *_iter_init(struct iterator *iter)
 #define iterate(i,TYPE) CAST_ ## TYPE(_iterate(CAST_ITERATOR(i)))
 static inline void *_iterate(struct iterator *iter)
 {
-	return iter->next_item(iter);
-}
-
-
-#define iter_cleanup(i) _iter_cleanup(CAST_ITERATOR(i))
-static inline void _iter_cleanup(struct iterator *iter)
-{
-	if (iter->cleanup)
+	void *node = iter->next_item(iter);
+	if (node == 0 && iter->cleanup) 
 		iter->cleanup(iter);
+	return node;
 }
 
 #endif /* ITERATOR_H */
