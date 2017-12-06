@@ -4,8 +4,8 @@
 #include "types.h"
 
 #define foreach_shape(s, scene) \
-		struct list_iterator iter;\
-		init_list_iterator(&iter, scene);\
+		struct dlist_iterator iter;\
+		init_dlist_iterator(&iter, scene);\
 		foreach (SHAPE, s, &iter)
 
 extern bool scene_intersect(struct hit*, const struct ray*);

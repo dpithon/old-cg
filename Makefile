@@ -53,9 +53,10 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/shapes/plane.o\
      $(BUILDDIR)/shapes/quadric.o\
      $(BUILDDIR)/shapes/sphere.o\
-     $(BUILDDIR)/sys/list.o\
+     $(BUILDDIR)/sys/dlist.o\
      $(BUILDDIR)/sys/log.o\
      $(BUILDDIR)/sys/pool.o\
+     $(BUILDDIR)/sys/slist.o\
      $(BUILDDIR)/demo1.o
 
 SOURCES=src/*.c\

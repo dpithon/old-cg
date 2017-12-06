@@ -1,5 +1,5 @@
 #include "hit.h"
-#include "list.h"
+#include "dlist.h"
 #include "log.h"
 #include "ray.h"
 #include "scene.h"
@@ -7,7 +7,7 @@
 #include "vmath.h"
 
 
-static struct list scene;
+static struct dlist scene;
 
 
 bool scene_intersect(struct hit *hit, const struct ray *ray_cam)
@@ -28,7 +28,7 @@ bool scene_intersect(struct hit *hit, const struct ray *ray_cam)
 
 void add_shape(struct shape *shp)
 {
-	list_append(&scene, shp);
+	dlist_append(&scene, shp);
 }
 
 
