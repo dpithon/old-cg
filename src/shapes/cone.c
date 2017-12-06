@@ -5,6 +5,7 @@
 #include "macros.h"
 #include "quadric.h"
 #include "ray.h"
+#include "vmath.h"
 
 
 static bool ci_main(struct hit *i, const struct ray *ray,
@@ -74,28 +75,22 @@ static bool cone_intersect(struct hit *i, const struct ray *ray,
 			   const struct shape *s)
 {
 	double f = Sy - H;
-	double a = Vy * Vy - H2R2 * (Vx * Vx + Vz * Vz);
-	double b = 2. * (Vy * f - H2R2 * (Vx * Sx + Vz * Sz));
-	double c = f * f - H2R2 * (Sx * Sx + Sz * Sz);
+	struct quadratic q = {
+		.a = Vy * Vy - H2R2 * (Vx * Vx + Vz * Vz),
+		.b = 2. * (Vy * f - H2R2 * (Vx * Sx + Vz * Sz)),
+		.c = f * f - H2R2 * (Sx * Sx + Sz * Sz)
+	};
+	solve_quadratic(&q);
 
-	if (a != 0.) { 
-		double delta = b * b - 4. * a * c;
-
-		if (delta < 0.) {
-			return false;
-		} if (delta > 0.) {
-			double sqrt_delta = sqrt(delta);
-			double k1 = (-b - sqrt_delta) / (2. * a);
-			double k2 = (-b + sqrt_delta) / (2. * a);
-			SORT(k1, k2);
-			return ci_main(i, ray, s, k1, k2);
-		} else {
-			warning("cone_intersect: delta == 0");
-			return ci_delta0(i, ray, s, -b / (2. * a));
-		}
-	} else {
-		warning("cone_intersect: a == 0");
-		return ci_linear(i, ray, s, b, c);
+	switch (q.count) {
+	case -1:
+		return ci_linear(i, ray, s, q.b, q.c);
+	case 0:
+		return false;
+	case 1:
+		return ci_delta0(i, ray, s, q.k1);
+	default:
+		return ci_main(i, ray, s, q.k1, q.k2);
 	}
 }
 
