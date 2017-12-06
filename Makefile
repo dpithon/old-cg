@@ -53,6 +53,7 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/shapes/plane.o\
      $(BUILDDIR)/shapes/quadric.o\
      $(BUILDDIR)/shapes/sphere.o\
+     $(BUILDDIR)/sys/list.o\
      $(BUILDDIR)/sys/log.o\
      $(BUILDDIR)/sys/pool.o\
      $(BUILDDIR)/demo1.o

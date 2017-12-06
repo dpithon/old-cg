@@ -1,4 +1,4 @@
 *.swp
 tags
 build
-.DS_Store
+*.gch
