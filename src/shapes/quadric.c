@@ -51,7 +51,7 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 	assert_is_point(base);
 	assert(r > 0.);
 
-	struct quadric *q = alloc_struct(quadric);
+	struct quadric *q = alloc_shape(sizeof(struct quadric));
 	q->r    = r;
 	q->r2   = r * r;
 

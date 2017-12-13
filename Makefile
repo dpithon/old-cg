@@ -44,7 +44,6 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/core/hit.o\
      $(BUILDDIR)/core/vmath.o\
      $(BUILDDIR)/materials/material.o\
-     $(BUILDDIR)/materials/rgb.o\
      $(BUILDDIR)/scene/scene.o\
      $(BUILDDIR)/scene/stack.o\
      $(BUILDDIR)/shapes/cone.o\
@@ -52,6 +51,7 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/shapes/paraboloid.o\
      $(BUILDDIR)/shapes/plane.o\
      $(BUILDDIR)/shapes/quadric.o\
+     $(BUILDDIR)/shapes/shape.o\
      $(BUILDDIR)/shapes/sphere.o\
      $(BUILDDIR)/sys/dlist.o\
      $(BUILDDIR)/sys/log.o\
@@ -102,7 +102,7 @@ purge: clean
 
 tags:
 	rm -f tags
-	ctags -R --exclude='.git' .
+	cd src;ctags -R --exclude='.git' .
 
 prod: deps
 	@CFLAGS="$(CF_PRD)" LDFLAGS="$(LDF_PRD)" $(MAKE) $(BUILDDIR)/demo1

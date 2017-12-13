@@ -43,7 +43,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	assert_is_vector(norm);
 
 	double f;
-	struct plane *pln = alloc_struct(plane);
+	struct plane *pln = alloc_shape(sizeof(struct plane));
 
 	normalize(&pln->cs.j, norm);
 	pln->cs.o = *loc;

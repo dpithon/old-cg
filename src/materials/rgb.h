@@ -9,7 +9,6 @@ struct rgb {
 	double b;
 };
 
-extern struct rgb *rgb(double, double, double);
 
 #define RGBSnow                 1.0000000000000000, 0.9803921568627451, 0.9803921568627451
 #define RGBGhostWhite           0.9725490196078431, 0.9725490196078431, 1.0000000000000000

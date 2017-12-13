@@ -1,7 +1,10 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include <stddef.h>
+
 #include "hit.h"
+#include "rgb.h"
 #include "shape.h"
 #include "types.h"
 
@@ -17,6 +20,8 @@ extern struct altern_colors *altern_colors(double, struct rgb*, struct rgb*);
 
 extern void plain_color(struct shape*, int, struct rgb*);
 extern void plain_colors(struct shape*, struct rgb*);
+
+extern struct rgb *rgb(double r, double g, double b);
 
 extern void pat_stripes(struct shape*, int, struct altern_colors*);
 extern void pat_checker(struct shape*, int, struct altern_colors*);

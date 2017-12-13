@@ -2,6 +2,8 @@
 #include "pool.h"
 #include "rgb.h"
 
+#define MATERIAL_POOL_SZ	(1 * MEGA)
+
 #define PLAIN_COLOR(mat)	((struct plain_color*) mat)
 #define ALTERN_COLORS(mat)	((struct altern_colors*) mat)
 #define RED(mat)		(PLAIN_COLOR(mat)->rgb.r)
@@ -26,6 +28,18 @@ struct altern_colors {
 	double size;
 	struct rgb rgb[2];
 };
+
+
+static void *alloc_material(size_t sz)
+{
+	static int pool_id = -1;
+
+	if (pool_id < 0)
+		pool_id = pool_init(MATERIAL_POOL_SZ);
+
+	return pool_alloc(pool_id, sz);
+}
+
 
 static void color(struct rgb *rgb, const struct hit *i,
 		  const struct material *mat)
@@ -132,9 +146,21 @@ static void set_pattern(struct shape *shp, int side, struct altern_colors *ac,
 }
 
 
+struct rgb *rgb(double r, double g, double b)
+{
+	struct rgb *rgb = alloc_material(sizeof(struct rgb));
+
+	rgb->r = r;
+	rgb->g = g;
+	rgb->b = b;
+
+	return rgb;
+}
+
+
 struct altern_colors *altern_colors(double size, struct rgb *c1, struct rgb *c2)
 {
-	struct altern_colors *ac = alloc_struct(altern_colors);
+	struct altern_colors *ac = alloc_material(sizeof(struct altern_colors));
 
 	ac->size = size;
 	ac->rgb[0] = *c1;
@@ -154,7 +180,7 @@ void plain_colors(struct shape *shp, struct rgb *rgb)
 void plain_color(struct shape *shp, int side, struct rgb *rgb)
 {
 	int n = 0;
-	struct plain_color *p = alloc_struct(plain_color);
+	struct plain_color *p = alloc_material(sizeof(struct plain_color));
 
 	p->rgb.r = rgb->r;
 	p->rgb.g = rgb->g;

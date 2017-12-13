@@ -6,13 +6,11 @@
 #define KILO  1024
 #define MEGA  (KILO * 1024)
 
-#define alloc_struct(name)	alloc_from_default_pool(sizeof(struct name))
 
-extern int   init_new_pool(size_t sz);
-extern void  set_default_pool(int pool_id);
-extern void *alloc_from_pool(int pool_id, size_t sz);
-extern void *alloc_from_default_pool(size_t sz);
-extern void  empty_pool(int pool_id);
-extern void  release_pool(int pool_id);
+extern void  pool_set_max_pools(int max);
+extern int   pool_init(size_t sz);
+extern void *pool_alloc(int pool_id, size_t sz);
+extern void  pool_reset(int pool_id);
+extern void  pool_free(int pool_id);
 
 #endif /* POOL_H */

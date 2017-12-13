@@ -1,6 +1,8 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include <stddef.h>
+
 #include "dlink.h"
 #include "types.h"
 #include "vmath.h"
@@ -20,6 +22,7 @@ struct shape {
 };
 
 
+extern void         *alloc_shape(size_t);
 extern struct shape *plane(const struct coord*, const struct coord*);
 extern struct shape *sphere(const struct coord*, double);
 extern struct shape *paraboloid(const struct coord*, const struct coord*,

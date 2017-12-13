@@ -86,16 +86,13 @@ int main()
 	char infoline[32];
 	int iter;
 	double x, y, z, angle, step, radius;
-	int scene_pool;
 
 	angle = 0.;
 	radius = 30.;
-	iter = 180;
+	iter = 10;
 	step = 2. * M_PI / (double) iter;
 
 	init_pixmap(W, H);
-	scene_pool = init_new_pool(24 * KILO); 
-	set_default_pool(scene_pool);
 
 	build_scene();
 
@@ -117,11 +114,9 @@ int main()
 
 		sprintf(filename, "a%03d.pnm", n);
 		sprintf(infoline, "writing %s", filename);
-		info(infoline);
 		write_pixmap(filename);
 	}
 
-	release_pool(scene_pool);
 	release_pixmap();
 
 	return 0;

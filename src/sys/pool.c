@@ -3,109 +3,127 @@
 #include <assert.h>
 
 #include "log.h"
+#include "macros.h"
 
-#define MAX_POOL	16
+#define ALIGNMENT			sizeof(void*)
+#define is_ptr_aligned(ptr, alignment)	(((long int) ptr) % alignment == 0)
+#define align(sz, alignment)		(((sz / alignment) + 1) * alignment)
 
-static int default_pool = -1;
-
-static struct pool {
+struct pool {
 	char *bottom;
 	char *top;
 	char *free;
-} pool[MAX_POOL];
+};
 
-static int stack[MAX_POOL];
+
+static struct pool *pool;
+static int *stack;
+
+static int max_pools = 4;
 static int top = -1;
 static int initialized;
 
 
-static void init_stack(void)
+static void pool_first_init(void)
 {
-	for (int n = 0; n < MAX_POOL; n++)
+	stack = calloc(max_pools, sizeof(int));
+	pool  = calloc(max_pools, sizeof(struct pool));
+
+	if (stack == NULL || pool == NULL)
+		fatal("pool_first_init: no memory left");
+
+	for (int n = 0; n < max_pools; n++)
 		stack[n] = n;
 
-	top = MAX_POOL;
+	top = max_pools;
 	initialized = true;
 }
 
 
+void pool_set_max_pools(int max)
+{
+	assert(!initialized);
+	assert(max > 0);
+
+	max_pools = max;
+}
+
+
 /*
- * init_new_pool: allocate a new pool with given size
+ * pool_init: allocate a new pool with given size
  *
  * sz: size of pool.
  *
- * returns pool id or raise fatal error
+ * returns pool_id or halt process
  */
-int init_new_pool(size_t sz)
+int pool_init(size_t sz)
 {
 	int  pool_id;
 	char *mem;
 
 	if (!initialized)
-		init_stack();
+		pool_first_init();
 
 	if (!top)
-		fatal("no more pool on stack");
+		fatal("pool_init: no more pools");
 
-	if ((mem = malloc(sz)) == NULL)
-		fatal("out of memory");
+	if (sz % ALIGNMENT) {
+		warning("pool_init: force size alignment");	
+		sz = align(sz, ALIGNMENT);
+	}
+
+	mem = malloc(sz);
+	assert(is_ptr_aligned(mem, ALIGNMENT));
+
+	if (mem == NULL)
+		fatal("pool_init: failed to alloc memory");
 
 	pool_id = stack[--top];
-	pool[pool_id].bottom = pool[pool_id].free = mem;
 	pool[pool_id].top = mem + sz;
+	pool[pool_id].bottom = pool[pool_id].free = mem;
 
 	return pool_id;
 }
 
 
-void set_default_pool(int pool_id)
+
+void *pool_alloc(int pool_id, size_t sz)
 {
-	assert(pool_id >= 0 && pool_id < MAX_POOL);
-	assert(pool[pool_id].bottom != NULL);
-
-	default_pool = pool_id;
-}
-
-
-void *alloc_from_pool(int pool_id, size_t sz)
-{
-	assert(pool_id >= 0 && pool_id < MAX_POOL);
+	assert(initialized);
+	assert(pool_id >= 0 && pool_id < max_pools);
 	assert(pool[pool_id].bottom != NULL);
 
 	char *mem = pool[pool_id].free;
+	assert(is_ptr_aligned(mem, ALIGNMENT));
+
 	if (mem + sz > pool[pool_id].top)
 		fatal("pool overflow");
 
+	if (sz % ALIGNMENT) {
+		warning("pool_alloc: force alignment");	
+		sz = align(sz, ALIGNMENT);
+	}
 	pool[pool_id].free += sz;
 
 	return mem;
 }
 
 
-void *alloc_from_default_pool(size_t sz)
+void pool_reset(int pool_id)
 {
-	return alloc_from_pool(default_pool, sz);
-}
-
-
-void empty_pool(int pool_id)
-{
-	assert(pool_id >= 0 && pool_id < MAX_POOL);
+	assert(pool_id >= 0 && pool_id < max_pools);
 	assert(pool[pool_id].bottom != NULL);
-
-	if (pool[pool_id].free == pool[pool_id].bottom)
-		warning("pool already empty");
 
 	pool[pool_id].free = pool[pool_id].bottom;
 }
 
 
-void release_pool(int pool_id)
+void pool_free(int pool_id)
 {
-	assert(pool_id >= 0 && pool_id < MAX_POOL);
+	assert(pool_id >= 0 && pool_id < max_pools);
 	assert(pool[pool_id].bottom != NULL);
 
-	if (top >= MAX_POOL)
+	if (top >= max_pools)
 		fatal("pool stack overflow");
 
 	free(pool[pool_id].bottom);
