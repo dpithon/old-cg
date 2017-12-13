@@ -11,10 +11,10 @@ struct treenode {
 };
 
 
-#define CAST_TREENODE(i)	((struct treenode*)i)
-#define treenode_parent(i) 	treenode__parent(CAST_TREENODE(i))
-#define treenode_left_child(i)	treenode__left_child(CAST_TREENODE(i))
-#define treenode_right_child(i)	treenode__right_child(CAST_TREENODE(i))
+#define TREENODE(i)	((struct treenode*)i)
+#define treenode_parent(i) 	treenode__parent(TREENODE(i))
+#define treenode_left_child(i)	treenode__left_child(TREENODE(i))
+#define treenode_right_child(i)	treenode__right_child(TREENODE(i))
 
 static inline struct treenode *treenode__parent(struct treenode *treenode)
 {

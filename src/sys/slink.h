@@ -9,9 +9,9 @@ struct slink {
 };
 
 
-#define CAST_SLINK(i)		((struct slink*)i)
-#define slink_next(i)		slink__next(CAST_SLINK(i))
-#define slink_is_last(i)	slink__is_last(CAST_SLINK(i))
+#define SLINK(i)		((struct slink*)i)
+#define slink_next(i)		slink__next(SLINK(i))
+#define slink_is_last(i)	slink__is_last(SLINK(i))
 
 
 static inline int slink__is_last(struct slink *slink)

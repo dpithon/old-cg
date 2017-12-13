@@ -4,10 +4,10 @@
 #include "iterator.h"
 #include "dlink.h"
 
-#define CAST_DLIST_ITERATOR(i) ((struct dlist_iterator*)i)
-#define CAST_DLIST(l) ((struct dlist*)l)
+#define DLIST_ITERATOR(i) ((struct dlist_iterator*)i)
+#define DLIST(l) ((struct dlist*)l)
 
-#define dlist_append(l, d) _dlist_append(CAST_DLIST(l), CAST_DLINK(d))
+#define dlist_append(l, d) _dlist_append(DLIST(l), DLINK(d))
 
 struct dlist {
 	struct dlink *head;

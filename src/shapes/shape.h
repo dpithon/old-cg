@@ -7,7 +7,7 @@
 #include "types.h"
 #include "vmath.h"
 
-#define CAST_SHAPE(s)	((struct shape*)(s))
+#define SHAPE(s)	((struct shape*)(s))
 #define SHAPE_BASIC	struct dlink dlink;\
 			struct cs cs;\
 			struct matrix cam_to_shp;\

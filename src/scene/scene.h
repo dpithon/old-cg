@@ -6,7 +6,7 @@
 
 #define foreach_shape(s, scene) \
 		struct dlist_iterator UNIQUE_NAME(iter);\
-		init_dlist_iterator(&UNIQUE_NAME(iter), scene);\
+		init_dlist_iterator(&UNIQUE_NAME(iter), DLIST(scene));\
 		foreach (SHAPE, s, &UNIQUE_NAME(iter))
 
 extern bool scene_intersect(struct hit*, const struct ray*);

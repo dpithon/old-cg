@@ -3,17 +3,17 @@
 
 static void *slist_iter(struct iterator *iter)
 {
-	void *cursor = CAST_SLIST_ITERATOR(iter)->cursor;
+	void *cursor = SLIST_ITERATOR(iter)->cursor;
 	if (cursor)
-		CAST_SLIST_ITERATOR(iter)->cursor = 
-			CAST_SLIST_ITERATOR(iter)->cursor->next;
+		SLIST_ITERATOR(iter)->cursor = 
+			SLIST_ITERATOR(iter)->cursor->next;
 	return cursor;
 }
 
 
 void init_slist_iterator(struct slist_iterator *iter, struct slist *slist)
 {
-	iterator(CAST_ITERATOR(iter), slist_iter, slist_iter, 0);
+	iterator(ITERATOR(iter), slist_iter, slist_iter, 0);
 	iter->cursor = slist->head;
 }
 

@@ -6,7 +6,7 @@
 #include "types.h"
 
 struct quadric {
-	SHAPE_BASIC;
+	struct shape shape;
 	double r, r2;
 	double h, h2;
 	double hr2, h2r2;

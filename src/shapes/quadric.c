@@ -9,12 +9,12 @@
 /**
  * set_cs: compute local coordinate system
  *
- * q: quadric
+ * q: shape
  * base, apex: extremum points
  *
  * return length between base and apex
  */
-static double set_cs(struct quadric *q, const struct coord *base,
+static double set_cs(struct shape *q, const struct coord *base,
 		   const struct coord *apex)
 {
 	double f;
@@ -57,22 +57,26 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 
 	if (apex) {
 		assert_is_point(apex);
-		q->h    = set_cs(q, base, apex);
+		q->h    = set_cs(SHAPE(q), base, apex);
 		q->h2   = q->h * q->h;
 		q->hr2  = q->h  / q->r2;
 		q->h2r2 = q->h2 / q->r2;
 	} else {
-		q->cs.o = *base;
-		q->cs.i = vector_i;
-		q->cs.j = vector_j;
-		q->cs.k = vector_k;
+		SHAPE(q)->cs.o = *base;
+		SHAPE(q)->cs.i = vector_i;
+		SHAPE(q)->cs.j = vector_j;
+		SHAPE(q)->cs.k = vector_k;
 	}
 
-	assert_is_cartesian_coord_system(&q->cs.i, &q->cs.j, &q->cs.k);
-	change_of_coord_mat(&q->cs);
+	assert_is_cartesian_coord_system(
+		&SHAPE(q)->cs.i,
+		&SHAPE(q)->cs.j,
+		&SHAPE(q)->cs.k
+	);
+	change_of_coord_mat(&SHAPE(q)->cs);
 
-	q->intersect  = intersect;
-	q->normal_vector = normal;
+	SHAPE(q)->intersect  = intersect;
+	SHAPE(q)->normal_vector = normal;
 
-	return CAST_SHAPE(q);
+	return SHAPE(q);
 }

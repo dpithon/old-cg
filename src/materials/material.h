@@ -8,7 +8,7 @@
 #include "shape.h"
 #include "types.h"
 
-#define CAST_MATERIAL(m)	((struct material*)m)
+#define MATERIAL(m)	((struct material*)m)
 #define MATERIAL_BASIC		intrinsic_f get_intrinsic
 
 #define alloc_material(struct_name) \

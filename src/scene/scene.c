@@ -7,7 +7,12 @@
 #include "vmath.h"
 
 
-static struct dlist scene;
+struct scene {
+	struct dlist shape_list;
+};
+
+
+static struct scene scene;
 
 
 bool scene_intersect(struct hit *hit, const struct ray *ray_cam)

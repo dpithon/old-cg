@@ -10,11 +10,11 @@ struct dlink {
 };
 
 
-#define CAST_DLINK(i)		((struct dlink*)i)
-#define dlink_next(i)		dlink__next(CAST_DLINK(i))
-#define dlink_prev(i)		dlink__prev(CAST_DLINK(i))
-#define dlink_is_first(i)	dlink__is_first(CAST_DLINK(i))
-#define dlink_is_last(i)	dlink__is_last(CAST_DLINK(i))
+#define DLINK(i)		((struct dlink*)i)
+#define dlink_next(i)		dlink__next(DLINK(i))
+#define dlink_prev(i)		dlink__prev(DLINK(i))
+#define dlink_is_first(i)	dlink__is_first(DLINK(i))
+#define dlink_is_last(i)	dlink__is_last(DLINK(i))
 
 
 static inline int dlink__is_first(struct dlink *dlink)

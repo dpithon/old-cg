@@ -8,7 +8,7 @@
 
 
 struct plane {
-	SHAPE_BASIC;
+	struct shape shape;
 };
 
 
@@ -39,35 +39,41 @@ static void normal(struct coord *norm, const struct coord *i)
 
 struct shape *plane(const struct coord *loc, const struct coord *norm)
 {
+	// TODO Merge with quadric.c::set_cs()
+	
 	assert_is_point(loc);
 	assert_is_vector(norm);
 
 	double f;
 	struct plane *pln = alloc_shape(plane);
 
-	normalize(&pln->cs.j, norm);
-	pln->cs.o = *loc;
+	normalize(&SHAPE(pln)->cs.j, norm);
+	SHAPE(pln)->cs.o = *loc;
 
-	transform(&pln->cs.j);
-	transform(&pln->cs.o);
+	transform(&SHAPE(pln)->cs.j);
+	transform(&SHAPE(pln)->cs.o);
 
-	if (is_collinear(&pln->cs.j, &vector_j, &f)) {
+	if (is_collinear(&SHAPE(pln)->cs.j, &vector_j, &f)) {
 		if (f > 0.) {
-			pln->cs.i = vector_i;
-			pln->cs.k = vector_k;
+			SHAPE(pln)->cs.i = vector_i;
+			SHAPE(pln)->cs.k = vector_k;
 		} else {
-			pln->cs.i = vector_k;
-			pln->cs.k = vector_i;
+			SHAPE(pln)->cs.i = vector_k;
+			SHAPE(pln)->cs.k = vector_i;
 		}
 	} else {
-		cross(&pln->cs.k, &pln->cs.j, &vector_j);
-		normalize_in_place(&pln->cs.k);
-		cross(&pln->cs.i, &pln->cs.j, &pln->cs.k);
+		cross(
+			&SHAPE(pln)->cs.k, 
+			&SHAPE(pln)->cs.j,
+			&vector_j
+		);
+		normalize_in_place(&SHAPE(pln)->cs.k);
+		cross(&SHAPE(pln)->cs.i, &SHAPE(pln)->cs.j, &SHAPE(pln)->cs.k);
 	}
 
-	change_of_coord_mat(&pln->cs);
-	pln->intersect  = plane_intersect;
-	pln->normal_vector  = normal;
+	change_of_coord_mat(&SHAPE(pln)->cs);
+	SHAPE(pln)->intersect  = plane_intersect;
+	SHAPE(pln)->normal_vector  = normal;
 
-	return CAST_SHAPE(pln);
+	return SHAPE(pln);
 }

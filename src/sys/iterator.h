@@ -1,7 +1,7 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#define CAST_ITERATOR(i) 	((struct iterator*)(i))
+#define ITERATOR(i) 	((struct iterator*)(i))
 #define foreach(T, s, iter)	for (s = (iter_init(iter, T));\
 				     s;\
 				     s = (iterate(iter, T)))
@@ -24,14 +24,14 @@ static inline void iterator(struct iterator *iter,
 }
 
 
-#define iter_init(i, TYPE) CAST_ ## TYPE(_iter_init(CAST_ITERATOR(i)))
+#define iter_init(i, TYPE) TYPE(_iter_init(ITERATOR(i)))
 static inline void *_iter_init(struct iterator *iter)
 {
 	return iter->init(iter);
 }
 
 
-#define iterate(i,TYPE) CAST_ ## TYPE(_iterate(CAST_ITERATOR(i)))
+#define iterate(i,TYPE) TYPE(_iterate(ITERATOR(i)))
 static inline void *_iterate(struct iterator *iter)
 {
 	void *node = iter->next_item(iter);

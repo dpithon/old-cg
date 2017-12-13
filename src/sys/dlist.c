@@ -3,17 +3,17 @@
 
 static void *dlist_iter(struct iterator *iter)
 {
-	void *cursor = CAST_DLIST_ITERATOR(iter)->cursor;
+	void *cursor = DLIST_ITERATOR(iter)->cursor;
 	if (cursor)
-		CAST_DLIST_ITERATOR(iter)->cursor = 
-			CAST_DLIST_ITERATOR(iter)->cursor->next;
+		DLIST_ITERATOR(iter)->cursor = 
+			DLIST_ITERATOR(iter)->cursor->next;
 	return cursor;
 }
 
 
 void init_dlist_iterator(struct dlist_iterator *iter, struct dlist *dlist)
 {
-	iterator(CAST_ITERATOR(iter), dlist_iter, dlist_iter, 0);
+	iterator(ITERATOR(iter), dlist_iter, dlist_iter, 0);
 	iter->cursor = dlist->head;
 }
 

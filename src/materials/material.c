@@ -142,7 +142,7 @@ static void set_pattern(struct shape *shp, int side, struct altern_colors *ac,
 	if (side == UNDER || side == INSIDE)
 		n = 1;
 
-	shp->material[n] = CAST_MATERIAL(ac);
+	shp->material[n] = MATERIAL(ac);
 }
 
 
@@ -191,7 +191,7 @@ void plain_color(struct shape *shp, int side, struct rgb *rgb)
 	if (side == UNDER || side == INSIDE)
 		n = 1;
 
-	shp->material[n] = CAST_MATERIAL(p);
+	shp->material[n] = MATERIAL(p);
 }
 
 
