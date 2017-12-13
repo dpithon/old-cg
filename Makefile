@@ -101,8 +101,9 @@ purge: clean
 	@rm -rf $(BUILDDIR)
 
 tags:
-	rm -f tags
-	cd src;ctags -R --exclude='.git' .
+	@echo "TAGS"
+	@rm -f tags
+	@cd src;ctags -R --exclude='.git' .
 
 prod: deps
 	@CFLAGS="$(CF_PRD)" LDFLAGS="$(LDF_PRD)" $(MAKE) $(BUILDDIR)/demo1

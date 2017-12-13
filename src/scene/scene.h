@@ -1,12 +1,13 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "macros.h"
 #include "types.h"
 
 #define foreach_shape(s, scene) \
-		struct dlist_iterator iter;\
-		init_dlist_iterator(&iter, scene);\
-		foreach (SHAPE, s, &iter)
+		struct dlist_iterator UNIQUE_NAME(iter);\
+		init_dlist_iterator(&UNIQUE_NAME(iter), scene);\
+		foreach (SHAPE, s, &UNIQUE_NAME(iter))
 
 extern bool scene_intersect(struct hit*, const struct ray*);
 extern void add_shape(struct shape*);

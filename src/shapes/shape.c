@@ -5,7 +5,7 @@
 #define SHAPE_POOL_SZ	1 * MEGA
 
 
-void *alloc_shape(size_t sz)
+void *alloc_in_shape_pool(size_t sz)
 {
 	static int pool_id = -1;
 

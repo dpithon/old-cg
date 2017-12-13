@@ -11,6 +11,9 @@
 #define CAST_MATERIAL(m)	((struct material*)m)
 #define MATERIAL_BASIC		intrinsic_f get_intrinsic
 
+#define alloc_material(struct_name) \
+	(struct struct_name*) alloc_in_material_pool(sizeof(struct struct_name))
+
 struct material {
 	MATERIAL_BASIC;
 };

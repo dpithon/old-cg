@@ -30,7 +30,7 @@ struct altern_colors {
 };
 
 
-static void *alloc_material(size_t sz)
+static void *alloc_in_material_pool(size_t sz)
 {
 	static int pool_id = -1;
 
@@ -148,7 +148,7 @@ static void set_pattern(struct shape *shp, int side, struct altern_colors *ac,
 
 struct rgb *rgb(double r, double g, double b)
 {
-	struct rgb *rgb = alloc_material(sizeof(struct rgb));
+	struct rgb *rgb = alloc_material(rgb);
 
 	rgb->r = r;
 	rgb->g = g;
@@ -160,7 +160,7 @@ struct rgb *rgb(double r, double g, double b)
 
 struct altern_colors *altern_colors(double size, struct rgb *c1, struct rgb *c2)
 {
-	struct altern_colors *ac = alloc_material(sizeof(struct altern_colors));
+	struct altern_colors *ac = alloc_material(altern_colors);
 
 	ac->size = size;
 	ac->rgb[0] = *c1;
@@ -180,7 +180,7 @@ void plain_colors(struct shape *shp, struct rgb *rgb)
 void plain_color(struct shape *shp, int side, struct rgb *rgb)
 {
 	int n = 0;
-	struct plain_color *p = alloc_material(sizeof(struct plain_color));
+	struct plain_color *p = alloc_material(plain_color);
 
 	p->rgb.r = rgb->r;
 	p->rgb.g = rgb->g;

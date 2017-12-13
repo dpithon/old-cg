@@ -16,13 +16,15 @@
 			intersect_f intersect;\
 			normal_f normal_vector
 
+#define alloc_shape(xyz) ((struct xyz*) alloc_in_shape_pool(sizeof(struct xyz)))
 
 struct shape {
 	SHAPE_BASIC;
 };
 
 
-extern void         *alloc_shape(size_t);
+extern void *alloc_in_shape_pool(size_t);
+
 extern struct shape *plane(const struct coord*, const struct coord*);
 extern struct shape *sphere(const struct coord*, double);
 extern struct shape *paraboloid(const struct coord*, const struct coord*,
