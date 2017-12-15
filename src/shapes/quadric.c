@@ -45,7 +45,8 @@ static double set_cs(struct shape *q, const struct coord *base,
 }
 
 
-struct shape *quadric(const struct coord *base, const struct coord *apex,
+struct shape *quadric(int shape_type, const struct coord *base,
+		      const struct coord *apex,
 		      double r, intersect_f intersect, normal_f normal)
 {
 	assert_is_point(base);
@@ -75,8 +76,9 @@ struct shape *quadric(const struct coord *base, const struct coord *apex,
 	);
 	change_of_coord_mat(&SHAPE(q)->cs);
 
-	SHAPE(q)->intersect  = intersect;
-	SHAPE(q)->normal_vector = normal;
+	SHAPE(q)->shape_type = shape_type;
+	register_intersect_function(shape_type, intersect);
+	register_normal_function(shape_type, normal);
 
 	return SHAPE(q);
 }

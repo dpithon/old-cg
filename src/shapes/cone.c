@@ -71,8 +71,7 @@ static bool ci_linear(struct hit *i, const struct ray *ray,
 }
 
 
-static bool cone_intersect(struct hit *i, const struct ray *ray,
-			   const struct shape *s)
+static bool intersect_(struct hit *i, const struct ray *ray, const struct shape *s)
 {
 	double f = Sy - H;
 	struct quadratic q = {
@@ -95,7 +94,7 @@ static bool cone_intersect(struct hit *i, const struct ray *ray,
 }
 
 
-static void normal(struct coord *norm, const struct coord *i)
+static void normal_(struct coord *norm, const struct coord *i)
 {
 	set_vector(norm, 2. * i->x, 0., 2. * i->z);
 	normalize_in_place(norm);
@@ -105,5 +104,5 @@ static void normal(struct coord *norm, const struct coord *i)
 struct shape *cone(const struct coord *base, const struct coord *apex,
 		   double r)
 {
-	return quadric(base, apex, r, cone_intersect, normal);
+	return quadric(SHAPE_SURF_CONE, base, apex, r, intersect_, normal_);
 }

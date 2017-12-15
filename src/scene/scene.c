@@ -1,5 +1,5 @@
 #include "hit.h"
-#include "dlist.h"
+#include "slist.h"
 #include "log.h"
 #include "ray.h"
 #include "scene.h"
@@ -8,7 +8,7 @@
 
 
 struct scene {
-	struct dlist shape_list;
+	struct slist shape_list;
 };
 
 
@@ -24,7 +24,7 @@ bool scene_intersect(struct hit *hit, const struct ray *ray_cam)
 		matcol(&ray_shp.s, &shape->cam_to_shp, &ray_cam->s);
 		matcol(&ray_shp.v, &shape->cam_to_shp, &ray_cam->v);
 
-		shape->intersect(hit, &ray_shp, shape);
+		intersect(hit, &ray_shp, shape);
 	}
 
 	return is_defined(hit);
@@ -33,7 +33,7 @@ bool scene_intersect(struct hit *hit, const struct ray *ray_cam)
 
 void add_shape(struct shape *shp)
 {
-	dlist_append(&scene, shp);
+	slist_append(&scene, shp);
 }
 
 

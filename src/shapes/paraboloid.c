@@ -6,8 +6,7 @@
 
 
 #define WHICH_SIDE	((Vy > 0.)? OUTSIDE: INSIDE)
-static bool paraboloid_intersect(struct hit *i, const struct ray *ray,
-				 const struct shape *s)
+static bool intersect_(struct hit *i, const struct ray *ray, const struct shape *s)
 {
 	double a, b, c, delta, sqrt_delta, k1, k2;
 
@@ -58,7 +57,7 @@ static bool paraboloid_intersect(struct hit *i, const struct ray *ray,
 }
 
 
-static void normal(struct coord *norm, const struct coord *i)
+static void normal_(struct coord *norm, const struct coord *i)
 {
 	set_vector(norm, 2. * i->x, -1, 2. * i->z);
 	normalize_in_place(norm);
@@ -69,5 +68,5 @@ static void normal(struct coord *norm, const struct coord *i)
 struct shape *paraboloid(const struct coord *base, const struct coord *apex,
 			 double r)
 {
-	return quadric(base, apex, r, paraboloid_intersect, normal);
+	return quadric(SHAPE_SURF_PARABOLOID, base, apex, r, intersect_, normal_);
 }

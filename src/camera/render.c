@@ -17,7 +17,7 @@ void phong_render(struct rgb *rgb, const struct hit *i)
 
 	matcol(&light_loc, &i->shape->cs.mi, &world_light);
 	unit_vector(&light_vec, (struct coord*) i, &light_loc);
-	i->shape->normal_vector(&norm_vec, (struct coord*)i);
+	normal(&norm_vec, i);
 	get_intrinsic(rgb, i);
 
 	cd = dot(&norm_vec, &light_vec);

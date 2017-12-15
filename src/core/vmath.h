@@ -18,6 +18,7 @@ struct quadratic {
 
 extern const double epsilon;
 
+#define COORD(o)	((struct coord*)o)
 struct coord {
 	double x, y, z, w;
 };

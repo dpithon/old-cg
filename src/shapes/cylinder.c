@@ -6,8 +6,7 @@
 #include "vmath.h"
 
 
-static bool cylinder_intersect(struct hit *i, const struct ray *ray,
-			       const struct shape *s)
+static bool intersect_(struct hit *i, const struct ray *ray, const struct shape *s)
 {
 	struct quadratic q = {
 		.a = Vx * Vx + Vz * Vz,
@@ -41,7 +40,7 @@ static bool cylinder_intersect(struct hit *i, const struct ray *ray,
 	return false;
 }
 
-static void normal(struct coord *norm, const struct coord *i)
+static void normal_(struct coord *norm, const struct coord *i)
 {
 	set_vector(norm, 2. * i->x, 0., 2. * i->z);
 	normalize_in_place(norm);
@@ -51,5 +50,5 @@ static void normal(struct coord *norm, const struct coord *i)
 struct shape *cylinder(const struct coord *base, const struct coord *apex,
 		       double r)
 {
-	return quadric(base, apex, r, cylinder_intersect, normal);
+	return quadric(SHAPE_SURF_CYLINDER, base, apex, r, intersect_, normal_);
 }

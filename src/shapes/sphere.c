@@ -44,5 +44,5 @@ static void normal_vec(struct coord *norm, const struct coord *i)
 
 struct shape *sphere(const struct coord *loc, double r)
 {
-	return quadric(loc, 0, r, sphere_intersect, normal_vec);
+	return quadric(SHAPE_SURF_SPHERE, loc, 0, r, sphere_intersect, normal_vec);
 }

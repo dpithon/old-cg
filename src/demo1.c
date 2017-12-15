@@ -88,11 +88,10 @@ int main()
 	radius = 30.;
 
 	init_pixmap(W, H);
-
 	build_scene();
-
 	set_target(0, 0, 0);
 	set_fov(45.);
+
 	x = cos(angle) * radius;
 	z = sin(angle) * radius;
 	y = sin(angle) * 45.;

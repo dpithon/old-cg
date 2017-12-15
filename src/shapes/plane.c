@@ -12,8 +12,7 @@ struct plane {
 };
 
 
-static bool plane_intersect(struct hit *i, const struct ray *ray,
-			    const struct shape *s)
+static bool intersect_(struct hit *i, const struct ray *ray, const struct shape *s)
 {
 	double k;
 
@@ -30,7 +29,7 @@ static bool plane_intersect(struct hit *i, const struct ray *ray,
 }
 
 
-static void normal(struct coord *norm, const struct coord *i)
+static void normal_(struct coord *norm, const struct coord *i)
 {
 	set_vector(norm, 0., 1., 0.);
 	(void) i;
@@ -47,6 +46,7 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	double f;
 	struct plane *pln = alloc_shape(plane);
 
+	SHAPE(pln)->shape_type = SHAPE_SURF_PLANE;
 	normalize(&SHAPE(pln)->cs.j, norm);
 	SHAPE(pln)->cs.o = *loc;
 
@@ -72,8 +72,8 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	}
 
 	change_of_coord_mat(&SHAPE(pln)->cs);
-	SHAPE(pln)->intersect  = plane_intersect;
-	SHAPE(pln)->normal_vector  = normal;
+	register_intersect_function(SHAPE_SURF_PLANE, intersect_);
+	register_normal_function(SHAPE_SURF_PLANE, normal_);
 
 	return SHAPE(pln);
 }
