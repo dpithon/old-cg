@@ -1,4 +1,4 @@
-.PHONY: default prod dev cov profile purge clean deps conf init
+.PHONY: default prod dev cov profile purge clean deps conf init test
 
 CC=gcc
 LD=gcc
@@ -69,8 +69,14 @@ SOURCES=src/*.c\
 
 ############################################################################
 
-default: dev
+default: test
 
+test: purge deps tags dev
+	@echo
+	@echo "RUN"
+	@echo
+	@cd  build; ./demo1; tycat test.pnm 2>/dev/null
+	@echo
 conf:
 	@echo 
 	@echo "CC = "$(CC)

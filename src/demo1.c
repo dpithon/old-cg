@@ -82,15 +82,10 @@ void build_scene(void)
 
 int main()
 {
-	char filename[16];
-	char infoline[32];
-	int iter;
-	double x, y, z, angle, step, radius;
+	double x, y, z, angle, radius;
 
-	angle = 0.;
+	angle = 45.;
 	radius = 30.;
-	iter = 10;
-	step = 2. * M_PI / (double) iter;
 
 	init_pixmap(W, H);
 
@@ -98,25 +93,20 @@ int main()
 
 	set_target(0, 0, 0);
 	set_fov(45.);
-	for (int n = 0; n < iter; n++, angle += step) {
-		x = cos(angle) * radius;
-		z = sin(angle) * radius;
-		y = sin(angle) * 45.;
-		set_location(x, y, z);
-		if (!setup_pinhole())
-			fatal("failed to setup pinhole camera");
+	x = cos(angle) * radius;
+	z = sin(angle) * radius;
+	y = sin(angle) * 45.;
+	set_location(x, y, z);
+	if (!setup_pinhole())
+		fatal("failed to setup pinhole camera");
 
-		prepare_shape_matrices(pinhole_coord_system());
+	prepare_shape_matrices(pinhole_coord_system());
 
-		for (int x = 0; x < W; x++)
-			for (int y = 0; y < H; y++)
-				sampler(x, y);
+	for (int x = 0; x < W; x++)
+		for (int y = 0; y < H; y++)
+			sampler(x, y);
 
-		sprintf(filename, "a%03d.pnm", n);
-		sprintf(infoline, "writing %s", filename);
-		write_pixmap(filename);
-	}
-
+	write_pixmap("test.pnm");
 	release_pixmap();
 
 	return 0;
