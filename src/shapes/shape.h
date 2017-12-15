@@ -3,11 +3,11 @@
 
 #include <stddef.h>
 
-#include "slink.h"
+#include "slist.h"
 #include "types.h"
 #include "vmath.h"
 
-#define SHAPE(s)	((struct shape*)(s))
+#define SHAPE(s)  ((struct shape*)(s))
 
 struct shape {
 	struct slink slink; // slink MUST be the first field !
@@ -21,6 +21,10 @@ struct shape {
 	struct material *material[2];
 };
 
+#define foreach_shape(s, shape_list) \
+	struct slist_iterator UNIQUE_NAME(iter);\
+	init_slist_iterator(&UNIQUE_NAME(iter), SLIST(shape_list));\
+	foreach (SHAPE, s, &UNIQUE_NAME(iter))
 
 extern struct shape *plane(const struct coord*, const struct coord*);
 extern struct shape *sphere(const struct coord*, double);
