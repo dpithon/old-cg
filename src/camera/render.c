@@ -37,7 +37,7 @@ void phong_render(struct rgb *rgb, const struct hit *i)
 }
 
 
-render_f render = phong_render;
+render_f render = default_render;
 
 
 void set_render(render_f f)

@@ -5,6 +5,7 @@
 #include "macros.h"
 #include "quadric.h"
 #include "ray.h"
+#include "shape.i"
 #include "vmath.h"
 
 

@@ -12,8 +12,8 @@
 #include "shape.h"
 #include "stack.h"
 
-#define W	256
-#define H	256
+#define W	320
+#define H	320
 
 #define CONES	12
 #define RADIUS 15
@@ -73,6 +73,8 @@ void build_scene(void)
 	pat_checker(s, UNDER, plane_under);
 	add_shape(s);
 
+	rotate_x(90);
+	translate(0, 0, -4);
 	s = sphere(&point_o, 6);
 	pat_sphchecker(s, OUTSIDE, sphere_outside);
 	add_shape(s);

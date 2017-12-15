@@ -3,6 +3,7 @@
 #include "hit.h"
 #include "quadric.h"
 #include "ray.h"
+#include "shape.i"
 
 
 static bool sphere_intersect(struct hit *i, const struct ray *ray,

@@ -4,6 +4,7 @@
 #include "pool.h"
 #include "quadric.h"
 #include "stack.h"
+#include "shape.i"
 
 
 /**
@@ -67,6 +68,10 @@ struct shape *quadric(int shape_type, const struct coord *base,
 		SHAPE(q)->cs.i = vector_i;
 		SHAPE(q)->cs.j = vector_j;
 		SHAPE(q)->cs.k = vector_k;
+		transform(&SHAPE(q)->cs.o);
+		transform(&SHAPE(q)->cs.i);
+		transform(&SHAPE(q)->cs.j);
+		transform(&SHAPE(q)->cs.k);
 	}
 
 	assert_is_cartesian_coord_system(

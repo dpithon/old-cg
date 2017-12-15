@@ -1,6 +1,7 @@
 #include "hit.h"
 #include "pool.h"
 #include "shape.h"
+#include "shape.i"
 
 
 #define SHAPE_POOL_SZ	1 * MEGA
