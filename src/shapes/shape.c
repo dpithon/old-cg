@@ -2,6 +2,7 @@
 #include "pool.h"
 #include "shape.h"
 #include "shape.i"
+#include "stack.h"
 
 
 #define SHAPE_POOL_SZ	1 * MEGA
@@ -45,3 +46,39 @@ void normal(struct coord *norm, const struct hit *h)
 }
 
 
+/**
+ * set_cs: compute local coordinate system
+ *
+ * q: shape
+ * v: vector 
+ *
+ * return length between base and apex
+ */
+double set_cs(struct shape *q, const struct coord *base, const struct coord *v)
+{
+	double f;
+
+	normalize(&q->cs.j, v);
+	q->cs.o = *base;
+
+	if (is_collinear(&q->cs.j, &vector_j, &f)) {
+		if (f > 0.) {
+			q->cs.i = vector_i;
+			q->cs.k = vector_k;
+		} else {
+			q->cs.i = vector_k;
+			q->cs.k = vector_i;
+		}
+	} else {
+		cross(&q->cs.k, &q->cs.j, &vector_j);
+		normalize_in_place(&q->cs.k);
+		cross(&q->cs.i, &q->cs.j, &q->cs.k);
+	}
+
+	transform(&q->cs.i);
+	transform(&q->cs.j);
+	transform(&q->cs.k);
+	transform(&q->cs.o);
+
+	return len(v);
+}

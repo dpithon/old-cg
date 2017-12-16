@@ -28,7 +28,7 @@ void build_scene(void)
 	struct altern_colors *plane_under, *plane_over;
 	struct altern_colors *sphere_outside;
 
-	cone_inside    = altern_colors(.3, rgb(RGBOrange), rgb(RGBWhite));
+	cone_inside    = altern_colors(.9, rgb(RGBWhite), rgb(RGBOrange));
 	cone_outside   = altern_colors(.4, rgb(RGBLightGray), rgb(RGBDarkBlue));
 	parab_inside   = altern_colors(.1, rgb(RGBCyan), rgb(RGBGreen));
 	parab_outside  = altern_colors(.3, rgb(RGBBlack), rgb(RGBBlue));
@@ -57,7 +57,7 @@ void build_scene(void)
 			sin(nangle) * (RADIUS - 4.)
 		);
 
-		s = cone(&loc2, &loc1, 2.);
+		s = cone(&loc2, &loc1, 3.5);
 		pat_circles(s, OUTSIDE, cone_outside);
 		pat_circles(s, INSIDE, cone_inside);
 		add_shape(s);
@@ -78,7 +78,6 @@ void build_scene(void)
 	s = sphere(&point_o, 6);
 	pat_sphchecker(s, OUTSIDE, sphere_outside);
 	add_shape(s);
-
 }
 
 
@@ -92,7 +91,7 @@ int main()
 	init_pixmap(W, H);
 	build_scene();
 	set_target(0, 0, 0);
-	set_fov(45.);
+	set_fov(55.);
 
 	x = cos(angle) * radius;
 	z = sin(angle) * radius;

@@ -44,33 +44,10 @@ struct shape *plane(const struct coord *loc, const struct coord *norm)
 	assert_is_point(loc);
 	assert_is_vector(norm);
 
-	double f;
 	struct plane *pln = alloc_shape(plane);
 
 	SHAPE(pln)->shape_type = SHAPE_SURF_PLANE;
-	normalize(&SHAPE(pln)->cs.j, norm);
-	SHAPE(pln)->cs.o = *loc;
-
-	transform(&SHAPE(pln)->cs.j);
-	transform(&SHAPE(pln)->cs.o);
-
-	if (is_collinear(&SHAPE(pln)->cs.j, &vector_j, &f)) {
-		if (f > 0.) {
-			SHAPE(pln)->cs.i = vector_i;
-			SHAPE(pln)->cs.k = vector_k;
-		} else {
-			SHAPE(pln)->cs.i = vector_k;
-			SHAPE(pln)->cs.k = vector_i;
-		}
-	} else {
-		cross(
-			&SHAPE(pln)->cs.k, 
-			&SHAPE(pln)->cs.j,
-			&vector_j
-		);
-		normalize_in_place(&SHAPE(pln)->cs.k);
-		cross(&SHAPE(pln)->cs.i, &SHAPE(pln)->cs.j, &SHAPE(pln)->cs.k);
-	}
+	set_cs(SHAPE(pln), loc, norm);
 
 	change_of_coord_mat(&SHAPE(pln)->cs);
 	register_intersect_function(SHAPE_SURF_PLANE, intersect_);

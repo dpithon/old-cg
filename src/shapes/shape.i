@@ -13,6 +13,7 @@
 extern void *alloc_in_shape_pool(size_t);
 extern void  register_intersect_function(int, intersect_f);
 extern void  register_normal_function(int, normal_f);
+extern double set_cs(struct shape*, const struct coord*, const struct coord*);
 
 #endif /* SHAPE_I */
 /*

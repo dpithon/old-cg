@@ -7,45 +7,6 @@
 #include "shape.i"
 
 
-/**
- * set_cs: compute local coordinate system
- *
- * q: shape
- * base, apex: extremum points
- *
- * return length between base and apex
- */
-static double set_cs(struct shape *q, const struct coord *base,
-		   const struct coord *apex)
-{
-	double f;
-	struct coord vec;
-
-	vector(&vec, base, apex);
-	normalize(&q->cs.j, &vec);
-	q->cs.o = *base;
-
-	transform(&q->cs.j);
-	transform(&q->cs.o);
-
-	if (is_collinear(&q->cs.j, &vector_j, &f)) {
-		if (f > 0.) {
-			q->cs.i = vector_i;
-			q->cs.k = vector_k;
-		} else {
-			q->cs.i = vector_k;
-			q->cs.k = vector_i;
-		}
-	} else {
-		cross(&q->cs.k, &q->cs.j, &vector_j);
-		normalize_in_place(&q->cs.k);
-		cross(&q->cs.i, &q->cs.j, &q->cs.k);
-	}
-
-	return len(&vec);
-}
-
-
 struct shape *quadric(int shape_type, const struct coord *base,
 		      const struct coord *apex,
 		      double r, intersect_f intersect, normal_f normal)
@@ -59,7 +20,9 @@ struct shape *quadric(int shape_type, const struct coord *base,
 
 	if (apex) {
 		assert_is_point(apex);
-		q->h    = set_cs(SHAPE(q), base, apex);
+		struct coord vec;
+		vector(&vec, base, apex);
+		q->h    = set_cs(SHAPE(q), base, &vec);
 		q->h2   = q->h * q->h;
 		q->hr2  = q->h  / q->r2;
 		q->h2r2 = q->h2 / q->r2;
