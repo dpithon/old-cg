@@ -1,7 +1,7 @@
 #include "hit.h"
 #include "pool.h"
 #include "shape.h"
-#include "shape.i"
+#include "shape.priv.h"
 #include "stack.h"
 
 

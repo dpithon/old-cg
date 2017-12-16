@@ -4,7 +4,7 @@
 #include "pool.h"
 #include "quadric.h"
 #include "stack.h"
-#include "shape.i"
+#include "shape.priv.h"
 
 
 struct shape *quadric(int shape_type, const struct coord *base,

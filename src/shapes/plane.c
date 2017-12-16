@@ -2,7 +2,7 @@
 #include "pool.h"
 #include "ray.h"
 #include "shape.h"
-#include "shape.i"
+#include "shape.priv.h"
 #include "stack.h"
 #include "types.h"
 #include "vmath.h"

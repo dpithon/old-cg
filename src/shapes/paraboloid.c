@@ -3,7 +3,7 @@
 #include "hit.h"
 #include "quadric.h"
 #include "ray.h"
-#include "shape.i"
+#include "shape.priv.h"
 
 
 #define WHICH_SIDE	((Vy > 0.)? OUTSIDE: INSIDE)
