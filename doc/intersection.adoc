@@ -1,0 +1,46 @@
+Intersection Rayon - Objet
+==========================
+
+
+== Définitions basiques
+
+Un 'rayon' est une demi-droite définie par :
+
+1. une origine O
+2. un vecteur  v
+
+Un 'objet' est une surface ou un solide défini par une équation ou un système
+d'équations.
+
+
+== Intersection
+
+L'intersection entre un rayon et un objet est une union de 0 ou plusieurs
+segments S (un point P est considéré comme le segment [P:P]) alignés sur le
+rayon.
+
+	I = Ui(Si)
+
+Chaque point ou extrémité de segment P peut-être caractèrisé par un réel k,
+tel que :
+
+	OP = k.v
+
+En considérant les segments comme des intervalles [ki,1 : ki,2] on a :
+
+	I = Ui([ki,1: ki,2])
+
+Dans le cas d'une intersection donnant une demi-droite on a ki,n = ±∞
+
+
+== Représentation en C
+
+Une intersection est une liste de triplets Ti (si ; ki,1 ; ki,2) tels
+que pour tout i :
+
+	ki,1 == ki,2  <=>  s = 0
+	ki,1 != ki,2  <=>  s = 1
+	ki,1 <= ki,2
+	ki,2 <  ki+1,1 
+	
+	

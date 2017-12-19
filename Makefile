@@ -55,9 +55,9 @@ OBJS=$(BUILDDIR)/camera/pinhole.o\
      $(BUILDDIR)/shapes/sphere.o\
      $(BUILDDIR)/sys/dlist.o\
      $(BUILDDIR)/sys/log.o\
+     $(BUILDDIR)/sys/memcells.o\
      $(BUILDDIR)/sys/pool.o\
-     $(BUILDDIR)/sys/slist.o\
-     $(BUILDDIR)/demo1.o
+     $(BUILDDIR)/sys/slist.o
 
 SOURCES=src/*.c\
 	src/shapes/*.c\
@@ -126,9 +126,16 @@ coverage: deps
 	@echo "GENHTML : file:///$(BUILDDIR)/src/index.html"
 	@genhtml -q $(BUILDDIR)/cov.info -o $(BUILDDIR)
 
-$(BUILDDIR)/demo1: conf $(OBJS)
+testmemcells: deps
+	@CFLAGS="$(CF_DEV)" LDFLAGS="$(LDF_DEV)" $(MAKE) $(BUILDDIR)/testmemcells
+
+$(BUILDDIR)/demo1: conf $(OBJS) $(BUILDDIR)/demo1.o
 	@echo "\nLD $@"
-	@$(LD) $(OBJS) -o $@ $(LDFLAGS) 
+	@$(LD) $(OBJS) $(BUILDDIR)/demo1.o -o $@ $(LDFLAGS) 
+
+$(BUILDDIR)/testmemcells: conf $(OBJS) $(BUILDDIR)/testmemcells.o
+	@echo "\nLD $@"
+	@$(LD) $(OBJS) $(BUILDDIR)/testmemcells.o -o $@ $(LDFLAGS) 
 
 $(BUILDDIR)/%.o: src/%.c
 	@echo "CC $<"

@@ -7,10 +7,10 @@
 #include "rgb.h"
 
 static struct rgb def_rgb = Black;
-static int pixmap_pool;
 static unsigned char *data;
 static int pix_width, pix_height, pix_size, pix_stride;
 
+INIT_STATIC_POOL(pixmap_pool);
 
 /** init_pixmap - initialize pixmap
  * 
@@ -32,8 +32,8 @@ int init_pixmap(int w, int h)
 	pix_size = pix_width * pix_height * 3;
 	pix_stride = pix_width * 3;
 
-	pixmap_pool = pool_init(pix_size);
-	data = pool_alloc(pixmap_pool, pix_size);
+	pool_init(&pixmap_pool, pix_size);
+	data = pool_alloc(&pixmap_pool, pix_size);
 
 	return 0;
 }
@@ -74,7 +74,7 @@ int write_pixmap(const char *fname)
 
 void release_pixmap(void)
 {
-	pool_free(pixmap_pool);
+	pool_free(&pixmap_pool);
 }
 
 

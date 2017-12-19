@@ -12,24 +12,24 @@ struct treenode {
 
 
 #define TREENODE(i)	((struct treenode*)i)
-#define treenode_parent(i) 	treenode__parent(TREENODE(i))
-#define treenode_left_child(i)	treenode__left_child(TREENODE(i))
-#define treenode_right_child(i)	treenode__right_child(TREENODE(i))
+#define treenode_parent(i) 	_treenode_parent(TREENODE(i))
+#define treenode_left_child(i)	_treenode_left_child(TREENODE(i))
+#define treenode_right_child(i)	_treenode_right_child(TREENODE(i))
 
-static inline struct treenode *treenode__parent(struct treenode *treenode)
+static inline struct treenode *_treenode_parent(struct treenode *treenode)
 {
 	assert(treenode != 0);
 	return treenode->parent;
 }
 
-static inline struct treenode *treenode__left_child(struct treenode *treenode)
+static inline struct treenode *_treenode_left_child(struct treenode *treenode)
 {
 	assert(treenode != 0);
 	return treenode->left_child;
 }
 
 
-static inline struct treenode *treenode__right_child(struct treenode *treenode)
+static inline struct treenode *_treenode_right_child(struct treenode *treenode)
 {
 	assert(treenode != 0);
 	return treenode->right_child;

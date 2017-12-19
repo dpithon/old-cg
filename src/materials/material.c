@@ -32,12 +32,12 @@ struct altern_colors {
 
 static void *alloc_in_material_pool(size_t sz)
 {
-	static int pool_id = -1;
+	INIT_STATIC_POOL(pool);
 
-	if (pool_id < 0)
-		pool_id = pool_init(MATERIAL_POOL_SZ);
+	if (pool.bottom == 0)
+		pool_init(&pool, MATERIAL_POOL_SZ);
 
-	return pool_alloc(pool_id, sz);
+	return pool_alloc(&pool, sz);
 }
 
 
